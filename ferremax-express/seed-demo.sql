@@ -1,0 +1,16 @@
+-- DATOS DE DEMOSTRACIÓN (no son precios, marcas ni inventario oficiales). Ejecutar UNA sola vez.
+INSERT INTO categorias (nombre, descripcion) VALUES ('Herramientas manuales','DEMO'),('Herramientas eléctricas','DEMO'),('Tornillería y fijación','DEMO'),('Cerraduras y herrajes','DEMO'),('Material eléctrico','DEMO'),('Plomería','DEMO'),('Pinturas y accesorios','DEMO'),('Abrasivos y accesorios para carpintería','DEMO');
+INSERT INTO marcas (nombre, descripcion) VALUES ('Marca Demo A','DEMO'),('Marca Demo B','DEMO'),('Marca Demo C','DEMO'),('Marca Demo D','DEMO'),('Marca Demo E','DEMO'),('Marca Demo F','DEMO'),('Marca Demo G','DEMO');
+INSERT INTO productos (sku, nombre, descripcion, id_categoria, id_marca, precio) VALUES
+('DEMO-M1','Martillo de uña 16 oz','Producto de demostración',(SELECT id_categoria FROM categorias WHERE nombre='Herramientas manuales' LIMIT 1),(SELECT id_marca FROM marcas WHERE nombre='Marca Demo A' LIMIT 1),159.00),
+('DEMO-M2','Juego de desarmadores 6 pzas','Producto de demostración',(SELECT id_categoria FROM categorias WHERE nombre='Herramientas manuales' LIMIT 1),(SELECT id_marca FROM marcas WHERE nombre='Marca Demo B' LIMIT 1),219.00),
+('DEMO-E1','Taladro percutor 1/2"','Producto de demostración',(SELECT id_categoria FROM categorias WHERE nombre='Herramientas eléctricas' LIMIT 1),(SELECT id_marca FROM marcas WHERE nombre='Marca Demo C' LIMIT 1),1299.00),
+('DEMO-E2','Esmeriladora angular 4-1/2"','Producto de demostración',(SELECT id_categoria FROM categorias WHERE nombre='Herramientas eléctricas' LIMIT 1),(SELECT id_marca FROM marcas WHERE nombre='Marca Demo C' LIMIT 1),999.00),
+('DEMO-T1','Caja de tornillos 100 pzas','Producto de demostración',(SELECT id_categoria FROM categorias WHERE nombre='Tornillería y fijación' LIMIT 1),(SELECT id_marca FROM marcas WHERE nombre='Marca Demo A' LIMIT 1),89.00),
+('DEMO-C1','Candado de acero 40 mm','Producto de demostración',(SELECT id_categoria FROM categorias WHERE nombre='Cerraduras y herrajes' LIMIT 1),(SELECT id_marca FROM marcas WHERE nombre='Marca Demo D' LIMIT 1),129.00),
+('DEMO-L1','Cable cal. 12 (rollo 100 m)','Producto de demostración',(SELECT id_categoria FROM categorias WHERE nombre='Material eléctrico' LIMIT 1),(SELECT id_marca FROM marcas WHERE nombre='Marca Demo E' LIMIT 1),1099.00),
+('DEMO-P1','Llave mezcladora cromada','Producto de demostración',(SELECT id_categoria FROM categorias WHERE nombre='Plomería' LIMIT 1),(SELECT id_marca FROM marcas WHERE nombre='Marca Demo F' LIMIT 1),459.00),
+('DEMO-PI1','Pintura vinílica blanca 19 L','Producto de demostración',(SELECT id_categoria FROM categorias WHERE nombre='Pinturas y accesorios' LIMIT 1),(SELECT id_marca FROM marcas WHERE nombre='Marca Demo G' LIMIT 1),1190.00),
+('DEMO-A1','Lija de agua grano 220 (5 pzas)','Producto de demostración',(SELECT id_categoria FROM categorias WHERE nombre LIKE 'Abrasivos%' LIMIT 1),(SELECT id_marca FROM marcas WHERE nombre='Marca Demo B' LIMIT 1),59.00);
+INSERT INTO existencias (id_producto, existencia_actual, existencia_minima)
+SELECT id_producto, CASE sku WHEN 'DEMO-M1' THEN 25 WHEN 'DEMO-M2' THEN 12 WHEN 'DEMO-E1' THEN 6 WHEN 'DEMO-E2' THEN 0 WHEN 'DEMO-T1' THEN 100 WHEN 'DEMO-C1' THEN 30 WHEN 'DEMO-L1' THEN 8 WHEN 'DEMO-P1' THEN 10 WHEN 'DEMO-PI1' THEN 14 ELSE 60 END, 2 FROM productos WHERE sku LIKE 'DEMO-%';
