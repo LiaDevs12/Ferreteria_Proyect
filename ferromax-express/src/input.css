@@ -1,0 +1,33 @@
+@tailwind base; @tailwind components; @tailwind utilities;
+
+@layer base {
+  html { scroll-behavior: smooth; }
+  body { @apply bg-white font-sans text-tinta antialiased; }
+  :focus-visible { @apply outline-2 outline-offset-2 outline-brand; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } * { transition: none !important; animation: none !important; } }
+}
+
+@layer components {
+  /* Botón principal: rojo, esquinas casi rectas, texto en mayúsculas pequeñas */
+  .btn { @apply inline-flex items-center justify-center gap-2 rounded-[3px] bg-brand px-4 py-2 text-[13px] font-bold uppercase tracking-wide text-white transition-colors hover:bg-brand-dark active:bg-brand-dark disabled:cursor-not-allowed disabled:bg-gray-400; }
+  .btn-ghost { @apply inline-flex items-center justify-center gap-2 rounded-[3px] border border-gray-400 bg-white/60 px-4 py-2 text-[13px] font-bold uppercase tracking-wide text-tinta transition-colors hover:border-brand hover:text-brand; }
+  .field { @apply w-full rounded-[3px] border border-gray-300 bg-white px-3 py-2; }
+  .card { @apply flex flex-col gap-1 rounded-[4px] bg-white p-3 shadow-tarjeta; }
+
+  .titulo-seccion { @apply text-[17px] font-bold uppercase tracking-wide text-tinta; }
+  .ver-todas { @apply inline-flex items-center gap-1 text-[13px] font-bold text-brand hover:underline; }
+
+  /* Tarjeta de producto */
+  .pcard { @apply flex flex-col rounded-[4px] bg-white p-2.5 shadow-tarjeta; }
+  .pcard-img { @apply grid h-36 place-items-center text-6xl; }
+  .pcard h3 { @apply mt-1 text-[13px] font-bold leading-snug text-tinta; }
+
+  /* Enlace de navegación principal */
+  .nav-link { @apply relative py-2 text-[13px] font-semibold uppercase tracking-wide text-tinta hover:text-brand; }
+  .nav-link[aria-current] { @apply text-brand; }
+  .nav-link[aria-current]::after { content: ''; @apply absolute inset-x-0 -bottom-1 h-0.5 bg-brand; }
+
+  .carrusel { @apply flex gap-3 overflow-x-auto scroll-smooth pb-2; scroll-snap-type: x proximity; scrollbar-width: none; }
+  .carrusel::-webkit-scrollbar { display: none; }
+  .flecha { @apply grid h-9 w-9 shrink-0 place-items-center rounded-full text-tinta transition-colors hover:text-brand; }
+}
