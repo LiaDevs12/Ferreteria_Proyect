@@ -12,7 +12,7 @@ app.use(express.urlencoded({ extended: true }));
 
 app.get('/', (req, res) => {
     res.json({
-        proyecto: 'FerreMax',
+        proyecto: 'FerroMax',
         mensaje: 'API funcionando correctamente',
         tecnologia: 'Node.js y Express'
     });
@@ -26,5 +26,5 @@ app.get('/api/health', (req, res) => {
 });
 
 app.listen(PORT, () => {
-    console.log(`Servidor FerreMax disponible en http://localhost:${PORT}`);
+    console.log(`Servidor FerroMax disponible en http://localhost:${PORT}`);
 });
