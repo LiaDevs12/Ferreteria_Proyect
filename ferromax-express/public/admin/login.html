@@ -1,0 +1,673 @@
+
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>FerroMax | Acceso administrativo</title>
+
+    <link rel="stylesheet" href="admin.css">
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet"
+    >
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            padding: 24px;
+
+            font-family: 'Plus Jakarta Sans', sans-serif;
+
+            background:
+                radial-gradient(
+                    circle at 5% 10%,
+                    rgba(200, 16, 46, .15),
+                    transparent 42%
+                ),
+                radial-gradient(
+                    circle at 95% 90%,
+                    rgba(200, 16, 46, .18),
+                    transparent 42%
+                ),
+                #FFF9FA;
+        }
+
+        /* ==========================================
+           TARJETA PRINCIPAL
+        ========================================== */
+
+        .login-wrap {
+            display: grid !important;
+
+            grid-template-columns: 43% 57%;
+
+            width: 100% !important;
+            max-width: 980px !important;
+
+            min-height: 510px !important;
+            height: auto !important;
+
+            margin: 0 auto;
+            padding: 0 !important;
+
+            overflow: hidden;
+
+            border-radius: 22px;
+
+            background: #FFFFFF !important;
+
+            border: 1px solid rgba(
+                200, 16, 46, .08
+            ) !important;
+
+            box-shadow:
+                0 25px 65px rgba(75, 20, 32, .15) !important;
+
+            align-items: stretch;
+        }
+
+        /* ==========================================
+           PANEL IZQUIERDO ROJO
+        ========================================== */
+
+        .welcome-panel {
+            position: relative;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            padding: 50px 40px;
+
+            background: linear-gradient(
+                145deg,
+                #D51B3A,
+                #C8102E 55%,
+                #A90D26
+            );
+
+            color: #FFFFFF;
+
+            border: none;
+            border-radius: 0;
+
+            overflow: hidden;
+        }
+
+        .welcome-panel::before {
+            content: '';
+
+            position: absolute;
+
+            width: 280px;
+            height: 280px;
+
+            border: 1px solid rgba(
+                255, 255, 255, .15
+            );
+
+            border-radius: 50%;
+
+            top: -130px;
+            left: -100px;
+        }
+
+        .welcome-panel::after {
+            content: '';
+
+            position: absolute;
+
+            width: 220px;
+            height: 220px;
+
+            border: 1px solid rgba(
+                255, 255, 255, .15
+            );
+
+            border-radius: 50%;
+
+            bottom: -100px;
+            right: -100px;
+        }
+
+        .welcome-content {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+        }
+
+        .welcome-label {
+            color: rgba(255, 255, 255, .8);
+
+            font-size: 11px;
+            font-weight: 700;
+
+            letter-spacing: 3px;
+
+            margin-bottom: 24px;
+        }
+
+        .welcome-panel h2 {
+            color: #FFFFFF;
+
+            font-family: 'Manrope', sans-serif;
+            font-size: 32px;
+            font-weight: 800;
+
+            line-height: 1.3;
+            letter-spacing: -1px;
+
+            margin: 0 0 18px;
+        }
+
+        .welcome-panel p {
+            color: rgba(255, 255, 255, .88);
+
+            font-size: 13px;
+            line-height: 1.8;
+
+            margin: 0 0 28px;
+        }
+
+        .welcome-tag {
+            display: inline-flex;
+            justify-content: center;
+
+            padding: 11px 20px;
+
+            border: 1px solid rgba(
+                255, 255, 255, .65
+            );
+
+            border-radius: 30px;
+
+            color: #FFFFFF;
+
+            font-size: 11px;
+            font-weight: 700;
+
+            letter-spacing: .7px;
+        }
+
+        /* ==========================================
+           PANEL DERECHO BLANCO
+        ========================================== */
+
+        .login {
+            display: flex !important;
+            flex-direction: column;
+            justify-content: center;
+
+            width: 100% !important;
+            max-width: none !important;
+
+            min-height: 510px;
+
+            margin: 0 !important;
+
+            padding: 42px 65px !important;
+
+            background: transparent !important;
+
+            border: none !important;
+            border-radius: 0 !important;
+
+            box-shadow: none !important;
+        }
+
+        /* ==========================================
+           LOGOTIPO FERROMAX COMO TEXTO
+        ========================================== */
+
+        .login .brand {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            width: 100%;
+
+            padding: 0 !important;
+            margin: 0 0 20px !important;
+
+            border: none !important;
+            background: transparent !important;
+            box-shadow: none !important;
+        }
+
+        .login .fm-login-logo {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+
+            width: 215px;
+            max-width: 100%;
+            min-height: 78px;
+
+            padding: 13px 14px;
+
+            background: #C8102E;
+
+            border: none;
+            border-radius: 3px;
+
+            text-align: center;
+            box-shadow: none;
+        }
+
+        .login .fm-login-logo-name {
+            display: block;
+
+            color: #FFFFFF;
+
+            font-family:
+                'Plus Jakarta Sans',
+                sans-serif !important;
+
+            font-size: 27px;
+            font-weight: 800;
+
+            letter-spacing: 1.5px;
+            line-height: 1.2;
+
+            white-space: nowrap;
+        }
+
+        .login .fm-login-logo-subtitle {
+            display: block;
+
+            margin-top: 5px;
+
+            color: #FFFFFF;
+
+            font-family:
+                'Plus Jakarta Sans',
+                sans-serif !important;
+
+            font-size: 8px;
+            font-weight: 800;
+
+            letter-spacing: 2px;
+            line-height: 1.5;
+
+            white-space: nowrap;
+        }
+
+        /* ==========================================
+           TÍTULO DE INICIO DE SESIÓN
+        ========================================== */
+
+        .login h1 {
+            color: #29252A;
+
+            font-family: 'Manrope', sans-serif;
+            font-size: 25px;
+            font-weight: 800;
+
+            text-align: center;
+
+            margin: 0 0 10px;
+        }
+
+        .login h1::after {
+            display: none !important;
+            content: none !important;
+        }
+
+        .login .muted {
+            color: #8A858B;
+
+            text-align: center;
+
+            font-size: 12px;
+
+            margin: 0 0 28px;
+        }
+
+        /* ==========================================
+           FORMULARIO
+        ========================================== */
+
+        .login .field {
+            display: block;
+            margin: 0 0 18px;
+        }
+
+        .login .field label {
+            display: block;
+
+            color: #49444B;
+
+            font-size: 12px;
+            font-weight: 700;
+
+            margin-bottom: 9px;
+        }
+
+        .login .field input {
+            width: 100%;
+            height: 47px;
+
+            padding: 0 15px;
+
+            background: #FAFAFB;
+
+            border: 1px solid #E6E2E6;
+            border-radius: 9px;
+
+            outline: none;
+
+            color: #29252A;
+
+            font-size: 13px;
+
+            transition:
+                border-color .2s,
+                box-shadow .2s,
+                background .2s;
+        }
+
+        .login .field input:focus {
+            background: #FFFFFF;
+
+            border-color: #C8102E;
+
+            box-shadow:
+                0 0 0 3px rgba(200, 16, 46, .09);
+        }
+
+        /* ==========================================
+           BOTÓN DE INICIO DE SESIÓN
+        ========================================== */
+
+        .login .btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            width: 100%;
+            min-height: 47px;
+
+            margin-top: 12px;
+
+            border: none;
+            border-radius: 9px;
+
+            background: #C8102E;
+
+            color: #FFFFFF;
+
+            font-size: 13px;
+            font-weight: 700;
+
+            box-shadow:
+                0 7px 18px rgba(200, 16, 46, .18);
+
+            cursor: pointer;
+
+            transition:
+                background .2s,
+                transform .2s;
+        }
+
+        .login .btn:hover {
+            background: #A90D26;
+            transform: translateY(-1px);
+        }
+
+        .login .btn:active {
+            transform: translateY(0);
+        }
+
+        /* ==========================================
+           MENSAJES
+        ========================================== */
+
+        .login .notice {
+            margin-bottom: 15px;
+        }
+
+        .login .footer-text {
+            color: #AAA4AB;
+
+            text-align: center;
+
+            font-size: 10px;
+            line-height: 1.7;
+
+            margin: 26px 0 0;
+        }
+
+        /* ==========================================
+           DISEÑO RESPONSIVE
+        ========================================== */
+
+        @media (max-width: 800px) {
+
+            .login-wrap {
+                grid-template-columns: 1fr;
+
+                max-width: 520px !important;
+            }
+
+            .welcome-panel {
+                min-height: 220px;
+
+                padding: 32px;
+
+                text-align: center;
+            }
+
+            .welcome-panel h2 {
+                font-size: 25px;
+            }
+
+            .welcome-panel p {
+                margin-bottom: 18px;
+            }
+
+            .login {
+                min-height: auto;
+
+                padding: 35px 32px !important;
+            }
+
+        }
+
+        @media (max-width: 480px) {
+
+            body {
+                padding: 14px;
+            }
+
+            .welcome-panel {
+                padding: 30px 24px;
+            }
+
+            .login {
+                padding: 32px 24px !important;
+            }
+
+            .login .fm-login-logo {
+                width: 200px;
+                min-height: 75px;
+            }
+
+            .login .fm-login-logo-name {
+                font-size: 25px;
+            }
+
+            .login .fm-login-logo-subtitle {
+                font-size: 7.5px;
+                letter-spacing: 1.8px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <div class="login-wrap">
+
+        <!-- =====================================
+             PANEL IZQUIERDO
+        ====================================== -->
+
+        <section class="welcome-panel">
+
+            <div class="welcome-content">
+
+                <div class="welcome-label">
+                    FERROMAX
+                </div>
+
+                <h2>
+                    ¡Hola,<br>
+                    bienvenido!
+                </h2>
+
+                <p>
+                    Accede a tu espacio de trabajo
+                    y administra las operaciones
+                    de FerroMax desde un solo lugar.
+                </p>
+
+                <span class="welcome-tag">
+                    PANEL ADMINISTRATIVO
+                </span>
+
+            </div>
+
+        </section>
+
+        <!-- =====================================
+             PANEL DERECHO
+        ====================================== -->
+
+        <main class="login">
+
+            <!-- LOGOTIPO DE TEXTO -->
+
+            <div class="brand">
+
+                <div
+                    class="fm-login-logo"
+                    role="img"
+                    aria-label="FerroMax - Ferretería en línea"
+                >
+
+                    <span class="fm-login-logo-name">
+                        FERROMAX
+                    </span>
+
+                    <span class="fm-login-logo-subtitle">
+                        FERRETERÍA EN LÍNEA
+                    </span>
+
+                </div>
+
+            </div>
+
+            <!-- TÍTULO -->
+
+            <h1>
+                Iniciar sesión
+            </h1>
+
+            <p class="muted">
+                Ingresa con tu cuenta de trabajo.
+            </p>
+
+            <!-- MENSAJES DE ERROR -->
+
+            <div
+                id="msg"
+                class="notice hidden"
+                role="alert"
+            ></div>
+
+            <!-- FORMULARIO -->
+
+            <form id="loginForm">
+
+                <div class="field">
+
+                    <label for="email">
+                        Correo electrónico
+                    </label>
+
+                    <input
+                        id="email"
+                        type="email"
+                        required
+                        autocomplete="username"
+                        placeholder="nombre@ferromax.com"
+                    >
+
+                </div>
+
+                <div class="field">
+
+                    <label for="password">
+                        Contraseña
+                    </label>
+
+                    <input
+                        id="password"
+                        type="password"
+                        required
+                        autocomplete="current-password"
+                        placeholder="Ingresa tu contraseña"
+                    >
+
+                </div>
+
+                <button
+                    class="btn"
+                    type="submit"
+                >
+                    Iniciar sesión
+                </button>
+
+            </form>
+
+            <!-- TEXTO INFERIOR -->
+
+            <p class="footer-text">
+                Acceso exclusivo para personal
+                autorizado de FerroMax.
+            </p>
+
+        </main>
+
+    </div>
+
+    <!-- FUNCIONALIDAD DE INICIO DE SESIÓN -->
+
+    <script src="admin.js"></script>
+
+</body>
+
+</html>

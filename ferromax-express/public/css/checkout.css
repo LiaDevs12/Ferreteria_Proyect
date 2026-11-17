@@ -1,0 +1,928 @@
+
+/* ==========================================
+   FERROMAX - CHECKOUT PROFESIONAL
+========================================== */
+
+#app .fm-pay-page,
+#app .fm-pay-success,
+#app .fm-pay-empty {
+    --checkout-red: #c8102e;
+    --checkout-red-dark: #a50d26;
+    --checkout-text: #20232b;
+    --checkout-muted: #727885;
+    --checkout-border: #e8e9ed;
+    --checkout-surface: #ffffff;
+    --checkout-soft: #f6f7f9;
+
+    font-family: "Segoe UI", Arial, sans-serif;
+    color: var(--checkout-text);
+    box-sizing: border-box;
+}
+
+#app .fm-pay-page *,
+#app .fm-pay-success *,
+#app .fm-pay-empty * {
+    box-sizing: border-box;
+}
+
+/* ==========================================
+   CONTENEDOR PRINCIPAL
+========================================== */
+
+#app .fm-pay-page {
+    width: 100%;
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 25px 0 80px;
+}
+
+/* ==========================================
+   ENCABEZADO
+========================================== */
+
+#app .fm-pay-header {
+    margin-bottom: 38px;
+}
+
+#app .fm-pay-header > span {
+    display: block;
+
+    margin-bottom: 12px;
+
+    color: var(--checkout-red);
+
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 1.8px;
+}
+
+#app .fm-pay-header h1 {
+    margin: 0 0 14px;
+
+    color: var(--checkout-text);
+
+    font-size: clamp(34px, 4vw, 48px);
+    font-weight: 850;
+
+    line-height: 1.15;
+    letter-spacing: -1.3px;
+}
+
+#app .fm-pay-header p {
+    max-width: 680px;
+
+    margin: 0;
+
+    color: var(--checkout-muted);
+
+    font-size: 15px;
+    line-height: 1.8;
+}
+
+/* ==========================================
+   DISTRIBUCIÓN DE COLUMNAS
+========================================== */
+
+#app .fm-pay-layout {
+    display: grid;
+
+    grid-template-columns:
+        minmax(0, 1fr)
+        minmax(300px, 355px);
+
+    gap: 30px;
+
+    align-items: start;
+}
+
+/* ==========================================
+   FORMULARIO PRINCIPAL
+========================================== */
+
+#app .fm-pay-form {
+    display: flex;
+    flex-direction: column;
+
+    gap: 24px;
+
+    width: 100%;
+    min-width: 0;
+    max-width: none;
+
+    margin: 0;
+    padding: 0;
+}
+
+/* ==========================================
+   TARJETAS DE CADA SECCIÓN
+========================================== */
+
+#app .fm-pay-box {
+    padding: 30px;
+
+    background: var(--checkout-surface);
+
+    border: 1px solid var(--checkout-border);
+    border-radius: 16px;
+
+    box-shadow:
+        0 5px 24px rgba(20, 25, 40, 0.045);
+}
+
+#app .fm-pay-box-head {
+    display: flex;
+    align-items: flex-start;
+
+    gap: 17px;
+
+    margin-bottom: 28px;
+    padding-bottom: 23px;
+
+    border-bottom:
+        1px solid var(--checkout-border);
+}
+
+/* NÚMEROS DE SECCIÓN */
+
+#app .fm-pay-box-head > b {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    width: 44px;
+    height: 44px;
+
+    background: var(--checkout-red);
+    color: #ffffff;
+
+    border-radius: 12px;
+
+    font-size: 14px;
+    font-weight: 800;
+}
+
+#app .fm-pay-box-head h2 {
+    margin: 0 0 7px;
+
+    color: var(--checkout-text);
+
+    font-size: 21px;
+    font-weight: 800;
+
+    line-height: 1.3;
+}
+
+#app .fm-pay-box-head p {
+    margin: 0;
+
+    color: var(--checkout-muted);
+
+    font-size: 13px;
+    line-height: 1.7;
+}
+
+/* ==========================================
+   CAMPOS DEL FORMULARIO
+========================================== */
+
+#app .fm-pay-fields {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    column-gap: 18px;
+    row-gap: 4px;
+}
+
+#app .fm-pay-field {
+    display: flex;
+    flex-direction: column;
+
+    gap: 9px;
+
+    min-width: 0;
+
+    margin: 0 0 20px;
+}
+
+#app .fm-pay-field > span {
+    color: var(--checkout-text);
+
+    font-size: 13px;
+    font-weight: 750;
+}
+
+/* INPUTS Y SELECTORES */
+
+#app .fm-pay-field input,
+#app .fm-pay-field select {
+    display: block;
+
+    width: 100%;
+    height: 49px;
+
+    padding: 0 15px;
+
+    border:
+        1px solid var(--checkout-border);
+
+    border-radius: 10px;
+
+    background: var(--checkout-surface);
+    color: var(--checkout-text);
+
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 500;
+
+    outline: none;
+
+    transition:
+        border-color .2s,
+        box-shadow .2s;
+}
+
+#app .fm-pay-field input::placeholder {
+    color: #a2a7b2;
+}
+
+#app .fm-pay-field input:focus,
+#app .fm-pay-field select:focus {
+    border-color: var(--checkout-red);
+
+    box-shadow:
+        0 0 0 3px rgba(200, 16, 46, .10);
+}
+
+/* ==========================================
+   ERRORES DE VALIDACIÓN
+========================================== */
+
+#app .fm-pay-error {
+    display: block;
+
+    color: #da2645;
+
+    font-size: 12px;
+    font-weight: 500;
+
+    line-height: 1.5;
+}
+
+#app .fm-pay-error:empty {
+    display: none;
+}
+
+#app .fm-pay-global-error {
+    padding: 0 15px;
+
+    color: #da2645;
+
+    font-size: 13px;
+    font-weight: 650;
+
+    line-height: 1.7;
+}
+
+#app .fm-pay-global-error:not(:empty) {
+    padding: 15px;
+
+    background: #fff0f3;
+
+    border: 1px solid #f4c5ce;
+    border-radius: 10px;
+}
+
+/* ==========================================
+   APARTADO DE PAGO CON TARJETA
+========================================== */
+
+#app .fm-pay-demo {
+    margin-top: 25px;
+}
+
+#app .fm-pay-demo[hidden] {
+    display: none !important;
+}
+
+/* AVISO DE TARJETA DE PRUEBA */
+
+#app .fm-pay-test-notice {
+    margin-bottom: 25px;
+    padding: 18px 20px;
+
+    background: #fff6f7;
+
+    border: 1px solid #f5d9df;
+    border-left: 4px solid var(--checkout-red);
+
+    border-radius: 10px;
+}
+
+#app .fm-pay-test-notice strong {
+    display: block;
+
+    margin-bottom: 8px;
+
+    color: var(--checkout-red);
+
+    font-size: 11px;
+    font-weight: 850;
+
+    letter-spacing: 1.5px;
+}
+
+#app .fm-pay-test-notice p {
+    margin: 0;
+
+    color: #7b5660;
+
+    font-size: 13px;
+    line-height: 1.8;
+}
+
+/* ==========================================
+   TARJETA BANCARIA ILUSTRATIVA
+========================================== */
+
+#app .fm-pay-card-preview {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    position: relative;
+
+    width: min(100%, 370px);
+    height: 210px;
+
+    margin: 0 0 30px;
+    padding: 28px;
+
+    overflow: hidden;
+
+    background:
+        linear-gradient(
+            135deg,
+            #20232b 0%,
+            #353c49 55%,
+            #181b22 100%
+        );
+
+    color: #ffffff;
+
+    border-radius: 17px;
+
+    box-shadow:
+        0 18px 35px rgba(18, 22, 32, .18);
+}
+
+#app .fm-pay-card-preview::before {
+    content: "";
+
+    position: absolute;
+
+    width: 230px;
+    height: 230px;
+
+    right: -90px;
+    top: -110px;
+
+    border: 35px solid rgba(255,255,255,.055);
+
+    border-radius: 50%;
+}
+
+#app .fm-pay-card-preview::after {
+    content: "";
+
+    position: absolute;
+
+    width: 180px;
+    height: 180px;
+
+    left: -75px;
+    bottom: -120px;
+
+    border: 28px solid rgba(200,16,46,.28);
+
+    border-radius: 50%;
+}
+
+#app .fm-pay-card-preview > span {
+    position: relative;
+    z-index: 1;
+
+    color: #ffffff;
+
+    font-size: 18px;
+    font-weight: 850;
+
+    letter-spacing: 2px;
+}
+
+#app .fm-pay-card-preview strong {
+    position: relative;
+    z-index: 1;
+
+    color: #ffffff;
+
+    font-size: clamp(17px, 2vw, 22px);
+    font-weight: 700;
+
+    letter-spacing: 2px;
+}
+
+#app .fm-pay-card-preview small {
+    position: relative;
+    z-index: 1;
+
+    color: #d7d9df;
+
+    font-size: 11px;
+    font-weight: 700;
+
+    letter-spacing: 1.5px;
+}
+
+/* ==========================================
+   BOTÓN FINALIZAR COMPRA
+========================================== */
+
+#app .fm-pay-submit {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 100%;
+    min-height: 54px;
+
+    padding: 14px 20px;
+
+    background: var(--checkout-red);
+
+    border: 0;
+    border-radius: 11px;
+
+    color: #ffffff !important;
+
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: 800;
+
+    text-align: center;
+    text-decoration: none;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 7px 18px rgba(200,16,46,.14);
+
+    transition:
+        background .2s,
+        transform .2s,
+        box-shadow .2s;
+}
+
+#app .fm-pay-submit:hover {
+    background: var(--checkout-red-dark);
+
+    transform: translateY(-1px);
+
+    box-shadow:
+        0 10px 22px rgba(200,16,46,.22);
+}
+
+#app .fm-pay-submit:disabled {
+    opacity: .65;
+
+    cursor: wait;
+
+    transform: none;
+}
+
+#app .fm-pay-disclaimer {
+    margin: 0;
+
+    color: var(--checkout-muted);
+
+    font-size: 12px;
+    line-height: 1.8;
+
+    text-align: center;
+}
+
+/* ==========================================
+   RESUMEN DE COMPRA
+========================================== */
+
+#app .fm-pay-summary {
+    position: sticky;
+    top: 25px;
+
+    width: 100%;
+
+    padding: 28px;
+
+    background: var(--checkout-surface);
+
+    border:
+        1px solid var(--checkout-border);
+
+    border-top:
+        4px solid var(--checkout-red);
+
+    border-radius: 15px;
+
+    box-shadow:
+        0 6px 25px rgba(20, 25, 40, .06);
+}
+
+#app .fm-pay-summary-label {
+    display: block;
+
+    margin-bottom: 12px;
+
+    color: var(--checkout-red);
+
+    font-size: 11px;
+    font-weight: 850;
+
+    letter-spacing: 1.6px;
+}
+
+#app .fm-pay-summary h2 {
+    margin: 0 0 25px;
+
+    color: var(--checkout-text);
+
+    font-size: 22px;
+    font-weight: 800;
+}
+
+/* PRODUCTOS */
+
+#app .fm-pay-items {
+    display: flex;
+    flex-direction: column;
+
+    gap: 0;
+}
+
+#app .fm-pay-item {
+    display: flex;
+    justify-content: space-between;
+
+    gap: 15px;
+
+    padding: 15px 0;
+
+    border-bottom:
+        1px solid var(--checkout-border);
+}
+
+#app .fm-pay-item span {
+    color: var(--checkout-muted);
+
+    font-size: 13px;
+    line-height: 1.7;
+}
+
+#app .fm-pay-item strong {
+    flex-shrink: 0;
+
+    color: var(--checkout-text);
+
+    font-size: 13px;
+    font-weight: 800;
+}
+
+/* SUBTOTAL Y ENVÍO */
+
+#app .fm-pay-totals {
+    margin-top: 16px;
+}
+
+#app .fm-pay-totals > div {
+    display: flex;
+    justify-content: space-between;
+
+    gap: 15px;
+
+    padding: 11px 0;
+
+    color: var(--checkout-muted);
+
+    font-size: 14px;
+}
+
+#app .fm-pay-totals strong {
+    color: var(--checkout-text);
+    font-weight: 750;
+}
+
+/* TOTAL */
+
+#app .fm-pay-grand-total {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 10px;
+
+    margin-top: 19px;
+    padding-top: 24px;
+
+    border-top:
+        1px solid var(--checkout-border);
+}
+
+#app .fm-pay-grand-total span {
+    color: var(--checkout-text);
+
+    font-size: 17px;
+    font-weight: 800;
+}
+
+#app .fm-pay-grand-total strong {
+    color: var(--checkout-red);
+
+    font-size: 26px;
+    font-weight: 850;
+}
+
+/* VOLVER AL CARRITO */
+
+#app .fm-pay-back {
+    display: block;
+
+    margin-top: 27px;
+
+    color: var(--checkout-red);
+
+    font-size: 13px;
+    font-weight: 800;
+
+    text-align: center;
+    text-decoration: none;
+}
+
+#app .fm-pay-back:hover {
+    text-decoration: underline;
+}
+
+/* ==========================================
+   PANTALLA DE PAGO APROBADO
+========================================== */
+
+#app .fm-pay-success {
+    max-width: 680px;
+
+    margin: 35px auto 90px;
+    padding: 50px;
+
+    background: var(--checkout-surface);
+
+    border:
+        1px solid var(--checkout-border);
+
+    border-radius: 18px;
+
+    box-shadow:
+        0 12px 35px rgba(20,25,40,.06);
+
+    text-align: center;
+}
+
+#app .fm-pay-success-icon {
+    display: grid;
+    place-items: center;
+
+    width: 72px;
+    height: 72px;
+
+    margin: 0 auto 24px;
+
+    background: var(--checkout-red);
+    color: white;
+
+    border-radius: 50%;
+
+    font-size: 35px;
+    font-weight: 800;
+}
+
+#app .fm-pay-success > span {
+    color: var(--checkout-red);
+
+    font-size: 12px;
+    font-weight: 850;
+
+    letter-spacing: 1.5px;
+}
+
+#app .fm-pay-success h1 {
+    margin: 18px 0;
+
+    color: var(--checkout-text);
+
+    font-size: clamp(28px, 4vw, 38px);
+    font-weight: 850;
+}
+
+#app .fm-pay-success > p {
+    color: var(--checkout-muted);
+
+    font-size: 15px;
+    line-height: 1.8;
+}
+
+#app .fm-pay-success-details {
+    margin: 30px 0;
+    padding: 22px;
+
+    background: var(--checkout-soft);
+
+    border-radius: 12px;
+}
+
+#app .fm-pay-success-details > div {
+    display: flex;
+    justify-content: space-between;
+
+    gap: 14px;
+
+    padding: 13px 0;
+
+    border-bottom:
+        1px solid var(--checkout-border);
+
+    text-align: left;
+}
+
+#app .fm-pay-success-details > div:last-child {
+    border-bottom: 0;
+}
+
+#app .fm-pay-success-details span {
+    color: var(--checkout-muted);
+
+    font-size: 13px;
+}
+
+#app .fm-pay-success-details strong {
+    color: var(--checkout-text);
+
+    font-size: 13px;
+    font-weight: 800;
+}
+
+/* ==========================================
+   CARRITO VACÍO / SIN PRODUCTOS
+========================================== */
+
+#app .fm-pay-empty {
+    max-width: 650px;
+
+    margin: 40px auto;
+    padding: 55px 30px;
+
+    background: var(--checkout-surface);
+
+    border:
+        1px solid var(--checkout-border);
+
+    border-radius: 15px;
+
+    text-align: center;
+}
+
+#app .fm-pay-empty h1 {
+    margin-bottom: 15px;
+
+    font-size: 30px;
+    font-weight: 800;
+}
+
+#app .fm-pay-empty p {
+    margin-bottom: 25px;
+
+    color: var(--checkout-muted);
+}
+
+/* ==========================================
+   MODO OSCURO
+========================================== */
+
+html[data-ferromax-tema="oscuro"]
+#app .fm-pay-page,
+html[data-ferromax-tema="oscuro"]
+#app .fm-pay-success,
+html[data-ferromax-tema="oscuro"]
+#app .fm-pay-empty {
+    --checkout-text: #f2f4f8;
+    --checkout-muted: #b4bdca;
+    --checkout-border: #343e4c;
+    --checkout-surface: #171e29;
+    --checkout-soft: #222b38;
+}
+
+html[data-ferromax-tema="oscuro"]
+#app .fm-pay-test-notice {
+    background: #30232a;
+    border-color: #61303d;
+}
+
+html[data-ferromax-tema="oscuro"]
+#app .fm-pay-test-notice p {
+    color: #e3bbc5;
+}
+
+html[data-ferromax-tema="oscuro"]
+#app .fm-pay-global-error:not(:empty) {
+    background: #36232b;
+    border-color: #63313c;
+}
+
+/* ==========================================
+   RESPONSIVE - TABLETS
+========================================== */
+
+@media (max-width: 1024px) {
+
+    #app .fm-pay-layout {
+        grid-template-columns: 1fr;
+    }
+
+    #app .fm-pay-summary {
+        position: static;
+    }
+
+}
+
+/* ==========================================
+   RESPONSIVE - CELULARES
+========================================== */
+
+@media (max-width: 650px) {
+
+    #app .fm-pay-page {
+        padding: 15px 0 55px;
+    }
+
+    #app .fm-pay-header {
+        margin-bottom: 28px;
+    }
+
+    #app .fm-pay-header h1 {
+        font-size: 34px;
+    }
+
+    #app .fm-pay-layout {
+        gap: 22px;
+    }
+
+    #app .fm-pay-box,
+    #app .fm-pay-summary {
+        padding: 22px 18px;
+    }
+
+    #app .fm-pay-box-head {
+        gap: 13px;
+    }
+
+    #app .fm-pay-box-head > b {
+        width: 38px;
+        height: 38px;
+    }
+
+    #app .fm-pay-box-head h2 {
+        font-size: 18px;
+    }
+
+    #app .fm-pay-fields {
+        grid-template-columns: 1fr;
+        row-gap: 0;
+    }
+
+    #app .fm-pay-card-preview {
+        height: 190px;
+        padding: 23px;
+    }
+
+    #app .fm-pay-card-preview strong {
+        font-size: 18px;
+    }
+
+    #app .fm-pay-success {
+        padding: 35px 20px;
+    }
+
+    #app .fm-pay-success-details > div {
+        flex-direction: column;
+        gap: 5px;
+    }
+
+}

@@ -30,7 +30,7 @@ export const emo = t => (EMO.find(([r]) => r.test(String(t || '').toLowerCase())
 // ───────── Categorías ─────────
 // Ruta del backend que devuelve la tabla `categorias` (ajustar si es otra).
 // Se esperan filas con: id_categoria, nombre, id_categoria_padre, activo.
-const CATS_API = '/api/categorias'
+const CATS_API = '/api/categories'
 
 const catHref = nombre => `#/catalogo?cat=${encodeURIComponent(nombre)}`
 const catNode = nombre => ({ nombre, href: catHref(nombre), hijos: [] })
@@ -50,19 +50,46 @@ const CATS = [
 
 // Convierte filas planas (id_categoria_padre) en un árbol: padres con sus subcategorías.
 // Ignora categorías inactivas y las hijas de una categoría inactiva.
+
 export const buildCatTree = rows => {
-  const activa = r => r.activo === undefined || r.activo === true || r.activo === 1 || r.activo === '1'
-  const lista = (rows || []).filter(r => r && r.nombre && activa(r))
-  const idDe = r => r.id_categoria ?? r.id
-  const nodos = new Map(lista.map(r => [idDe(r), catNode(r.nombre)]))
-  const raiz = []
-  lista.forEach(r => {
-    const padre = r.id_categoria_padre ?? null
-    if (padre === null) raiz.push(nodos.get(idDe(r)))
-    else if (nodos.has(padre)) nodos.get(padre).hijos.push(nodos.get(idDe(r)))
-  })
-  return raiz
-}
+    const lista = (rows || []).map(r => ({
+        id: String(r.id_categoria ?? r.id ?? ''),
+        nombre: r.nombre ?? r.name ?? '',
+        padre: r.id_categoria_padre == null
+            ? null
+            : String(r.id_categoria_padre),
+        activo: r.activo === undefined ||
+            r.activo === true ||
+            r.activo === 1 ||
+            r.activo === '1'
+    })).filter(r => r.id && r.nombre && r.activo);
+
+    const nodos = new Map(
+        lista.map(r => [
+            r.id,
+            {
+                nombre: r.nombre,
+                href: `#/catalogo?categoryId=${encodeURIComponent(r.id)}`,
+                hijos: []
+            }
+        ])
+    );
+
+    const raices = [];
+
+    for (const r of lista) {
+        const nodo = nodos.get(r.id);
+
+        if (r.padre !== null && nodos.has(r.padre)) {
+            nodos.get(r.padre).hijos.push(nodo);
+        } else {
+            raices.push(nodo);
+        }
+    }
+
+    return raices;
+};
+
 
 let catTree = CATS
 let catDinamico = false
@@ -79,9 +106,6 @@ export const setCategorias = rows => {
 
 const NAV = [['home', '#/', 'Inicio'], ['catalogo', '#/catalogo', 'Tienda'], ['marcas', '#/marcas', 'Marcas'], ['info/nosotros', '#/info/nosotros', 'Nosotros'], ['info/contacto', '#/info/contacto', 'Contacto']]
 
-// Menú de categorías (diseño minimalista, sin emojis).
-// · Escritorio (md+): lista de padres; al pasar el cursor (o con el teclado) se abre un panel lateral con sus subcategorías.
-// · Móvil: acordeón; el botón de la derecha despliega las subcategorías debajo del padre.
 const renderCatItems = items => [
   ...items.map(({ nombre, href, hijos = [] }) => {
     const sub = hijos.length > 0
@@ -98,9 +122,8 @@ const renderCatItems = items => [
 
 export const header = () => `
 <div class="bg-crema text-[12px] text-gray-700"><div class="mx-auto flex max-w-[1180px] flex-wrap items-center justify-between gap-x-6 gap-y-1 px-4 py-2">
-  <span class="flex items-center gap-1.5"><span class="text-brand">${ic('pin', 'h-4 w-4')}</span>Dirección de la sucursal (pendiente de definir)</span>
-  <span class="hidden items-center gap-1.5 sm:flex"><span class="text-brand">${ic('clock', 'h-4 w-4')}</span>Horario de atención (pendiente de definir)</span>
-  <span class="font-semibold">Sitio de demostración · sin cobros reales</span>
+  <span class="flex items-center gap-1.5"><span class="text-brand">${ic('pin', 'h-4 w-4')}</span>Sucursal Santa Margarita: Av. Las torres #856 <br> Col Santa Margarita 1era sección CP 45140</span>
+  <span class="hidden items-center gap-1.5 sm:flex"><span class="text-brand">${ic('clock', 'h-4 w-4')}</span>Horario de atención <br> Lunes a Viernes 8:45am a 5:20 pm</span>
 </div></div>
 <header class="mx-auto flex max-w-[1180px] flex-wrap items-center gap-x-8 gap-y-3 px-4 py-4">
   <a href="#/" aria-label="Ferromax, ir al inicio" class="flex h-[84px] w-[230px] shrink-0 flex-col items-center justify-center rounded-[3px] bg-brand text-white">
@@ -140,40 +163,214 @@ export const slides = [
   { eyebrow: 'Para el taller', a: 'Todo lo que necesitas', b: 'para trabajar mejor', text: 'Taladros, esmeriladoras, juegos de desarmadores y abrasivos para tu siguiente trabajo.', cta: ['Ver herramientas', '#/catalogo'], alt: ['Ver marcas', '#/marcas'] },
   { eyebrow: 'Para el hogar', a: 'Repara, pinta y mejora', b: 'sin salir de casa', text: 'Plomería, material eléctrico, pinturas y cerraduras. Elige entrega a domicilio o recoge en sucursal.', cta: ['Explorar catálogo', '#/catalogo'], alt: ['Cómo comprar', '#/info/faq'] }
 ]
-export const hero = (i = 0) => { const s = slides[i]; return `
-<div class="relative overflow-hidden bg-gradient-to-r from-crema via-crema to-gray-200">
-  <div class="mx-auto grid min-h-[320px] max-w-[1180px] items-center px-4 md:min-h-[350px] md:grid-cols-[1.25fr_1fr]">
-    <div class="py-10 md:pr-8">
-      <p class="mb-4 flex items-center gap-2 text-[13px] font-bold uppercase tracking-wide text-brand"><span class="h-px w-4 bg-brand"></span>${s.eyebrow}</p>
-      <h1 class="text-[34px] font-extrabold leading-[1.12] text-tinta md:text-[42px]">${s.a}<br><span class="text-brand">${s.b}</span></h1>
-      <p class="mt-5 max-w-md text-[15px] leading-relaxed text-gray-600">${s.text}</p>
-      <div class="mt-8 flex flex-wrap gap-3"><a class="btn h-11 px-6" href="${s.cta[1]}">${s.cta[0]}${ic('arrowR', 'h-4 w-4')}</a><a class="btn-ghost h-11 px-6" href="${s.alt[1]}">${s.alt[0]}</a></div>
+
+/* ==========================================
+   FERROMAX - CONTENIDO DEL BANNER PRINCIPAL
+========================================== */
+
+const heroContenido = (s) => `
+
+    <p class="fm-hero-eyebrow">
+        ${s.eyebrow}
+    </p>
+
+    <h1 class="fm-hero-title">
+        ${s.a}
+
+        <span>
+            ${s.b}
+        </span>
+    </h1>
+
+    <p class="fm-hero-description">
+        ${s.text}
+    </p>
+
+    <div class="fm-hero-actions">
+
+        <a
+            href="${s.cta[1]}"
+            class="btn"
+        >
+            ${s.cta[0]}
+
+            ${ic('arrowR', 'h-4 w-4')}
+        </a>
+
+        <a
+            href="${s.alt[1]}"
+            class="btn-ghost"
+        >
+            ${s.alt[0]}
+        </a>
+
     </div>
-    <div class="hidden h-full md:block">${lock()}</div>
-  </div>
-  <div class="absolute bottom-4 left-1/2 flex -translate-x-1/2 gap-2" role="group" aria-label="Elegir diapositiva">${slides.map((_, j) => `<button data-slide="${j}" aria-label="Diapositiva ${j + 1}" aria-current="${j === i}" class="h-2.5 w-2.5 rounded-full ${j === i ? 'bg-brand' : 'bg-white shadow'}"></button>`).join('')}</div>
-</div>` }
+
+`;
+
+
+/* ==========================================
+   BANNER CON IMAGEN ESTÁTICA
+========================================== */
+
+export const hero = (i = 0) => {
+
+    const index = (
+        (Number(i) || 0) % slides.length +
+        slides.length
+    ) % slides.length;
+
+    return `
+
+        <div class="fm-main-hero">
+
+            <div class="fm-main-hero-inner">
+
+                <div class="fm-main-hero-copy">
+
+                    ${heroContenido(slides[index])}
+
+                </div>
+
+            </div>
+
+            <div
+                class="fm-main-hero-dots"
+                role="group"
+                aria-label="Seleccionar mensaje del banner"
+            >
+
+                ${slides.map((_, j) => `
+
+                    <button
+                        type="button"
+                        class="fm-main-hero-dot"
+                        data-slide="${j}"
+                        aria-label="Mostrar mensaje ${j + 1}"
+                        aria-current="${j === index ? 'true' : 'false'}"
+                    ></button>
+
+                `).join('')}
+
+            </div>
+
+        </div>
+
+    `;
+};
+
+
+/* ==========================================
+   CAMBIAR SOLO EL TEXTO DEL BANNER
+========================================== */
+
+export function cambiarHero(index) {
+
+    const contenido = document.querySelector(
+        '#hero .fm-main-hero-copy'
+    );
+
+    if (!contenido) return;
+
+    const posicion = (
+        (Number(index) || 0) % slides.length +
+        slides.length
+    ) % slides.length;
+
+    // Solo se actualiza el texto y los botones.
+    // La imagen de fondo permanece intacta.
+
+    contenido.innerHTML = heroContenido(
+        slides[posicion]
+    );
+
+    // Actualizar los puntos indicadores.
+
+    document.querySelectorAll(
+        '#hero .fm-main-hero-dot'
+    ).forEach(boton => {
+
+        const activo =
+            Number(boton.dataset.slide) === posicion;
+
+        boton.setAttribute(
+            'aria-current',
+            String(activo)
+        );
+
+    });
+
+}
+
 
 const strip = items => `<section class="bg-crema"><div class="mx-auto grid max-w-[1180px] gap-x-6 gap-y-5 px-4 py-6 sm:grid-cols-2 lg:grid-cols-4">${items.map(([i, t, d]) => `<div class="flex items-center gap-3"><span class="text-brand">${ic(i, 'h-10 w-10')}</span><p class="text-[13px] leading-snug"><b class="block text-[13px]">${t}</b><span class="text-gray-600">${d}</span></p></div>`).join('')}</div></section>`
 export const benefits = () => strip([['truck', 'Entrega o recolección', 'A domicilio o en sucursal'], ['award', 'Variedad de productos', 'Para obra, taller y hogar'], ['shield', 'Compra segura', 'Sin cobros en esta demostración'], ['headset', 'Atención al cliente', 'Te ayudamos a elegir']])
-export const infoStrip = () => strip([['store', 'Visítanos en tienda', 'Dirección pendiente de definir'], ['chat', '¿Tienes dudas?', 'Contacto pendiente de definir'], ['shield', 'Compra 100% segura', 'Tus datos están protegidos'], ['box', 'Envíos', 'Cobertura pendiente de definir']])
 
+/* ==========================================
+   FERROMAX - FRANJA INFORMATIVA Y BANNER
+========================================== */
+
+export const infoStrip = () => `
+
+    ${strip([
+        [
+            'store',
+            'Visítanos en tienda',
+            'Dirección pendiente de definir'
+        ],
+        [
+            'chat',
+            '¿Tienes dudas?',
+            'Contacto pendiente de definir'
+        ],
+        [
+            'shield',
+            'Compra 100% segura',
+            'Tus datos están protegidos'
+        ],
+        [
+            'box',
+            'Envíos',
+            'Cobertura pendiente de definir'
+        ]
+    ])}
+
+<section class="fm-footer-banner">
+    <img
+        src="/img/footer1.png"
+        alt=""
+        class="fm-footer-banner-img"
+        loading="lazy"
+    >
+</section>
+
+`;
 export const footer = () => `
-<footer class="mt-10 border-t border-gray-200 bg-crema">
-  <div class="mx-auto grid max-w-[1180px] gap-8 px-4 py-10 sm:grid-cols-2 lg:grid-cols-[1.3fr_.8fr_1fr_1.1fr_1.3fr]">
+<footer class="border-t border-gray-200 bg-crema">
+
+<div class="fm-footer-main">
     <div><a href="#/" class="inline-flex h-[60px] w-[170px] flex-col items-center justify-center rounded-[3px] bg-brand text-white" aria-label="Ferromax, inicio"><span class="text-[22px] font-black leading-none tracking-wider">FERROMAX</span><span class="mt-1 text-[8px] font-bold uppercase tracking-[.25em]">Ferretería en línea</span></a>
-      <p class="mt-4 max-w-[220px] text-xs leading-relaxed text-gray-600">Tu ferretería en línea para obra, taller y hogar. Catálogo de demostración.</p></div>
+      <p class="mt-4 max-w-[220px] text-xs leading-relaxed text-gray-600">Tu ferretería en línea para obra, taller y hogar.</p></div>
     <div><h2 class="mb-3 text-[13px] font-bold uppercase tracking-wide">Enlaces</h2><ul class="space-y-2 text-xs text-gray-700">${NAV.map(([, h, t]) => `<li><a class="hover:text-brand" href="${h}">${t}</a></li>`).join('')}</ul></div>
-    <div><h2 class="mb-3 text-[13px] font-bold uppercase tracking-wide">Categorías</h2><ul id="fcat" class="space-y-2 text-xs text-gray-700">${CATS.map(c => `<li><a class="hover:text-brand" href="${c.href}">${c.nombre}</a></li>`).join('')}</ul></div>
     <div><h2 class="mb-3 text-[13px] font-bold uppercase tracking-wide">Contacto</h2><ul class="space-y-2.5 text-xs text-gray-700">
-      <li class="flex gap-2"><span class="text-brand">${ic('pin', 'h-4 w-4')}</span>Dirección pendiente de definir</li>
-      <li class="flex gap-2"><span class="text-brand">${ic('phone', 'h-4 w-4')}</span>Teléfono pendiente</li>
-      <li class="flex gap-2"><span class="text-brand">${ic('mail', 'h-4 w-4')}</span>correo@ejemplo.com</li>
-      <li class="flex gap-2"><span class="text-brand">${ic('clock', 'h-4 w-4')}</span>Horario pendiente de definir</li></ul></div>
-    <div class="grid min-h-[140px] place-items-center rounded-[3px] bg-gray-200 p-4 text-center text-xs text-gray-600"><span><span class="mx-auto mb-1 block w-fit text-brand">${ic('pin', 'h-8 w-8')}</span>Mapa de la sucursal<br>(pendiente de la dirección)</span></div>
+      <li class="flex gap-2"><span class="text-brand">${ic('pin', 'h-4 w-4')}</span>Sucursal Santa Margarita: Av. Las torres #856 Col Santa Margarita 1era sección CP 45140</li>
+      <li class="flex gap-2"><span class="text-brand">${ic('phone', 'h-4 w-4')}</span>Teléfono: 3320440073</li>
+      <li class="flex gap-2"><span class="text-brand">${ic('mail', 'h-4 w-4')}</span>contacto@ferromax.com</li>
+      <li class="flex gap-2"><span class="text-brand">${ic('clock', 'h-4 w-4')}</span>Horario de atencion: Lunes a Viernes de 8:45am a 5:20 pm</li></ul></div>
+<div class="fm-footer-map">
+    <iframe
+        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3731.51206698971!2d-103.41451862475155!3d20.730029280845514!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8428af0cb799423b%3A0x3252ea3b6d33465f!2sTODO%20PARA%20EL%20CARPINTERO%20Y%20HERRAJES%20%22MARTINEZ%22!5e0!3m2!1ses-419!2smx!4v1794606716775!5m2!1ses-419!2smx"
+    width="100%"
+        title="Ubicación de nuestra ferretería"
+        loading="lazy"
+        allowfullscreen
+        referrerpolicy="strict-origin-when-cross-origin"
+    ></iframe>
+</div>
+
   </div>
   <div class="border-t border-gray-200"><div class="mx-auto flex max-w-[1180px] flex-wrap items-center justify-between gap-2 px-4 py-4 text-[11px] text-gray-600">
-    <span>© 2026 Ferromax. Sitio de demostración; datos definitivos pendientes del cliente.</span>
+    <span>© 2026 Ferromax. Sitio Oficial</span>
     <span class="flex flex-wrap gap-5"><a class="hover:text-brand" href="#/info/envios">Envíos y devoluciones</a><a class="hover:text-brand" href="#/info/faq">Preguntas frecuentes</a><a class="hover:text-brand" href="#/info/privacidad">Aviso de privacidad</a><a class="hover:text-brand" href="#/info/terminos">Términos y condiciones</a></span></div></div>
 </footer>
 <a href="#/info/contacto" class="fixed bottom-4 right-4 z-20 flex items-center gap-2 rounded-full bg-white py-2 pl-2 pr-5 text-[13px] font-bold shadow-lg ring-1 ring-black/5 hover:text-brand"><span class="grid h-11 w-11 place-items-center rounded-full bg-brand text-white">${ic('chat', 'h-6 w-6')}</span>¿Necesitas ayuda?</a>`
