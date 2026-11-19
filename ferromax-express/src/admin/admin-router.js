@@ -1,5 +1,7 @@
 
 import express from 'express';
+import PDFDocument from 'pdfkit';
+import sharp from 'sharp';
 import crypto from 'node:crypto';
 import fs from 'node:fs/promises';
 import path from 'node:path';
@@ -2678,83 +2680,868 @@ export function createAdminRouter({ pool }) {
        SOLO ADMINISTRADOR
     ====================================== */
 
-    router.get(
-        '/reports/:id/pdf',
-        requireLogin,
-        requireAdmin,
-        wrap(async (req, res) => {
-            const [[report]] = await pool.query(`
-                SELECT
-                    i.*,
-                    u.nombre AS empleado,
-                    p.nombre AS producto,
-                    p.sku
-                FROM incidencias_inventario i
-                JOIN usuarios u
-                    ON u.id_usuario = i.id_usuario
-                LEFT JOIN productos p
-                    ON p.id_producto = i.id_producto
-                WHERE i.id_incidencia = ?
-            `, [req.params.id]);
+/* ======================================
+   DESCARGAR REPORTE PDF
+   SOLO ADMINISTRADOR
+====================================== */
 
-            if (!report) {
-                return errorResponse(
-                    res,
-                    'Reporte no encontrado.',
-                    404
-                );
+/* ======================================
+   PDF DE REPORTE CON FOTOGRAFIAS
+   SOLO ADMINISTRADOR
+====================================== */
+
+router.get(
+    '/reports/:id/pdf',
+    requireLogin,
+    requireAdmin,
+    wrap(async (req, res) => {
+
+        const id = Number(req.params.id);
+
+        if (
+            !Number.isSafeInteger(id) ||
+            id <= 0
+        ) {
+            return res.status(400).json({
+                error: 'Folio inválido.'
+            });
+        }
+
+        /* ==================================
+           CONSULTAR REPORTE
+        ================================== */
+
+        const [[reporte]] = await pool.query(`
+            SELECT
+                i.*,
+                u.nombre AS empleado,
+                u.apellido_paterno AS apellido_empleado,
+                u.correo AS correo_empleado,
+                p.nombre AS producto,
+                p.sku
+
+            FROM incidencias_inventario i
+
+            JOIN usuarios u
+                ON u.id_usuario = i.id_usuario
+
+            LEFT JOIN productos p
+                ON p.id_producto = i.id_producto
+
+            WHERE i.id_incidencia = ?
+        `, [id]);
+
+        if (!reporte) {
+            return res.status(404).json({
+                error: 'Reporte no encontrado.'
+            });
+        }
+
+        /* ==================================
+           CONSULTAR FOTOGRAFIAS
+        ================================== */
+
+        const [evidencias] = await pool.query(`
+            SELECT url_foto
+
+            FROM evidencias_incidencia
+
+            WHERE id_incidencia = ?
+
+            ORDER BY id_evidencia ASC
+        `, [id]);
+
+        /* ==================================
+           CREAR DOCUMENTO
+        ================================== */
+
+        const doc = new PDFDocument({
+
+            size: 'A4',
+
+            margins: {
+                top: 48,
+                bottom: 48,
+                left: 48,
+                right: 48
+            },
+
+            info: {
+                Title: `FerroMax - Reporte ${id}`,
+                Author: 'FerroMax',
+                Subject: 'Reporte de inventario'
             }
 
-            const [photos] = await pool.query(`
-                SELECT url_foto
-                FROM evidencias_incidencia
-                WHERE id_incidencia = ?
-            `, [req.params.id]);
+        });
 
-            const pdf = makePdf([
-                `Folio: ${report.id_incidencia}`,
-                `Fecha: ${report.fecha_reporte}`,
-                `Empleado: ${report.empleado}`,
-                `Producto: ${
-                    report.producto || 'No especificado'
-                } (${
-                    report.sku || 'Sin SKU'
-                })`,
-                `Tipo: ${report.tipo_incidencia}`,
-                `Prioridad: ${report.prioridad}`,
-                `Estado: ${report.estado}`,
-                `Cantidad en sistema: ${
-                    report.cantidad_sistema ?? 'N/D'
-                }`,
-                `Cantidad contada: ${
-                    report.cantidad_contada ?? 'N/D'
-                }`,
-                `Descripcion: ${report.descripcion}`,
-                `Solucion: ${
-                    report.solucion || 'Pendiente'
-                }`,
-                `Evidencias: ${
-                    photos.map(
-                        p => p.url_foto
-                    ).join(', ') || 'Sin fotografías'
-                }`
+        const partes = [];
+
+        const listo = new Promise(
+            (resolve, reject) => {
+
+                doc.on('data', parte => {
+                    partes.push(parte);
+                });
+
+                doc.once('end', () => {
+                    resolve(
+                        Buffer.concat(partes)
+                    );
+                });
+
+                doc.once('error', reject);
+
+            }
+        );
+
+        /* ==================================
+           ENCABEZADO
+        ================================== */
+
+        doc.font('Helvetica-Bold')
+            .fontSize(18)
+            .fillColor('#C8102E')
+            .text(
+                'FERROMAX',
+                { align: 'center' }
+            );
+
+        doc.font('Helvetica')
+            .fontSize(11)
+            .fillColor('#555555')
+            .text(
+                'REPORTE DE INVENTARIO',
+                { align: 'center' }
+            );
+
+        doc.moveDown(1);
+
+        doc.moveTo(48, doc.y)
+            .lineTo(547, doc.y)
+            .strokeColor('#C8102E')
+            .stroke();
+
+        doc.moveDown(1);
+
+        /* ==================================
+           DATOS DEL REPORTE
+        ================================== */
+
+        const valor = dato => {
+
+            if (
+                dato === null ||
+                dato === undefined ||
+                dato === ''
+            ) {
+                return 'N/D';
+            }
+
+            return String(dato);
+        };
+
+        const campo = (titulo, dato) => {
+
+            doc.font('Helvetica-Bold')
+                .fontSize(10)
+                .fillColor('#252525')
+                .text(
+                    `${titulo}: `,
+                    { continued: true }
+                );
+
+            doc.font('Helvetica')
+                .fillColor('#333333')
+                .text(valor(dato));
+
+            doc.moveDown(0.35);
+
+        };
+
+        const fecha = reporte.fecha_reporte
+            ? new Date(
+                reporte.fecha_reporte
+            ).toLocaleString('es-MX', {
+
+                timeZone: 'America/Mexico_City',
+
+                dateStyle: 'medium',
+
+                timeStyle: 'short'
+
+            })
+            : 'N/D';
+
+        const diferencia = (
+            reporte.cantidad_sistema == null ||
+            reporte.cantidad_contada == null
+        )
+            ? 'N/D'
+            : String(
+                Number(reporte.cantidad_contada) -
+                Number(reporte.cantidad_sistema)
+            );
+
+        campo(
+            'Folio',
+            reporte.id_incidencia
+        );
+
+        campo(
+            'Fecha',
+            fecha
+        );
+
+        campo(
+            'Empleado',
+            [
+                reporte.empleado,
+                reporte.apellido_empleado
+            ].filter(Boolean).join(' ')
+        );
+
+        campo(
+            'Correo',
+            reporte.correo_empleado
+        );
+
+        campo(
+            'Producto',
+            reporte.producto || 'No especificado'
+        );
+
+        campo(
+            'SKU',
+            reporte.sku || 'Sin SKU'
+        );
+
+        campo(
+            'Tipo de incidencia',
+            reporte.tipo_incidencia
+        );
+
+        campo(
+            'Prioridad',
+            reporte.prioridad
+        );
+
+        campo(
+            'Estado',
+            reporte.estado
+        );
+
+        campo(
+            'Cantidad del sistema',
+            reporte.cantidad_sistema
+        );
+
+        campo(
+            'Cantidad contada',
+            reporte.cantidad_contada
+        );
+
+        campo(
+            'Diferencia',
+            diferencia
+        );
+
+        campo(
+            'Descripción',
+            reporte.descripcion
+        );
+
+        campo(
+            'Solución administrativa',
+            reporte.solucion || 'Pendiente'
+        );
+
+        /* ==================================
+           APARTADO DE EVIDENCIAS
+        ================================== */
+
+        doc.moveDown(0.6);
+
+        doc.font('Helvetica-Bold')
+            .fontSize(13)
+            .fillColor('#C8102E')
+            .text(
+                `EVIDENCIAS FOTOGRÁFICAS (${evidencias.length})`
+            );
+
+        doc.moveDown(0.5);
+
+        if (!evidencias.length) {
+
+            doc.font('Helvetica')
+                .fontSize(10)
+                .fillColor('#555555')
+                .text(
+                    'Este reporte no tiene fotografías adjuntas.'
+                );
+
+        }
+
+        /* ==================================
+           UBICACION DE LAS FOTOGRAFIAS
+        ================================== */
+
+        const carpeta = path.resolve(
+            'public/uploads/reports'
+        );
+
+        /* ==================================
+           INSERTAR IMAGENES EN EL PDF
+        ================================== */
+
+        for (
+            let indice = 0;
+            indice < evidencias.length;
+            indice++
+        ) {
+
+            const foto = evidencias[indice];
+
+            const url = String(
+                foto.url_foto || ''
+            ).trim();
+
+            const tituloFoto =
+                `Evidencia ${indice + 1}`;
+
+            /*
+               Solamente utilizar archivos
+               guardados por FerroMax.
+            */
+
+            if (
+                !/^\/uploads\/reports\/[a-zA-Z0-9_.-]+\.(?:jpe?g|png|webp)$/i.test(
+                    url
+                )
+            ) {
+
+                campo(
+                    tituloFoto,
+                    'Imagen no disponible.'
+                );
+
+                continue;
+            }
+
+            const rutaArchivo = path.resolve(
+                'public',
+                url.slice(1)
+            );
+
+            if (
+                !rutaArchivo.startsWith(
+                    carpeta + path.sep
+                )
+            ) {
+
+                campo(
+                    tituloFoto,
+                    'Imagen no disponible.'
+                );
+
+                continue;
+            }
+
+            try {
+
+                /* ==========================
+                   LEER FOTOGRAFIA
+                ========================== */
+
+                const bytes = await fs.readFile(
+                    rutaArchivo
+                );
+
+                if (
+                    bytes.length > MAX_FOTO_BYTES
+                ) {
+                    throw new Error(
+                        'La imagen supera el tamaño permitido.'
+                    );
+                }
+
+                let imagen = bytes;
+
+                /* ==========================
+                   DETECTAR FORMATO
+                ========================== */
+
+                const metadata = await sharp(
+                    bytes,
+                    {
+                        limitInputPixels: 30000000
+                    }
+                ).metadata();
+
+                if (
+                    ![
+                        'jpeg',
+                        'png',
+                        'webp'
+                    ].includes(metadata.format)
+                ) {
+
+                    throw new Error(
+                        'Formato de imagen no compatible.'
+                    );
+
+                }
+
+                /* ==========================
+                   CONVERTIR WEBP A PNG
+                ========================== */
+
+                if (
+                    metadata.format === 'webp'
+                ) {
+
+                    imagen = await sharp(
+                        bytes,
+                        {
+                            limitInputPixels: 30000000
+                        }
+                    )
+                        .png()
+                        .toBuffer();
+
+                }
+
+                /* ==========================
+                   CALCULAR TAMAÑO
+                ========================== */
+
+                const anchoMaximo =
+                    doc.page.width - 96;
+
+                const altoMaximo = 320;
+
+                const factor = Math.min(
+
+                    anchoMaximo / metadata.width,
+
+                    altoMaximo / metadata.height,
+
+                    1
+
+                );
+
+                const ancho = Math.max(
+                    1,
+                    metadata.width * factor
+                );
+
+                const alto = Math.max(
+                    1,
+                    metadata.height * factor
+                );
+
+                /* ==========================
+                   CONTROL DE PAGINAS
+                ========================== */
+
+                if (
+                    doc.y + alto + 45 >
+                    doc.page.height - 48
+                ) {
+
+                    doc.addPage();
+
+                }
+
+                /* ==========================
+                   TITULO DE EVIDENCIA
+                ========================== */
+
+                doc.font('Helvetica-Bold')
+                    .fontSize(10)
+                    .fillColor('#222222')
+                    .text(tituloFoto);
+
+                /* ==========================
+                   COORDENADAS DE IMAGEN
+                ========================== */
+
+                const y = doc.y + 8;
+
+                const x =
+                    (doc.page.width - ancho) / 2;
+
+                /* ==========================
+                   DIBUJAR IMAGEN REAL
+                ========================== */
+
+                doc.image(
+                    imagen,
+                    x,
+                    y,
+                    {
+                        width: ancho,
+                        height: alto
+                    }
+                );
+
+                /* ==========================
+                   CONTINUAR DOCUMENTO
+                ========================== */
+
+                doc.y =
+                    y + alto + 18;
+
+            } catch (error) {
+
+                console.error(
+                    `No se pudo adjuntar la evidencia ${
+                        indice + 1
+                    } del reporte ${id}:`,
+                    error.message
+                );
+
+                campo(
+                    tituloFoto,
+                    'Fotografía no disponible en el servidor.'
+                );
+
+            }
+
+        }
+
+        /* ==================================
+           FINALIZAR PDF
+        ================================== */
+
+        doc.end();
+
+        const pdf = await listo;
+
+        /* ==================================
+           DESCARGAR PDF
+        ================================== */
+
+        res.setHeader(
+            'Content-Type',
+            'application/pdf'
+        );
+
+        res.setHeader(
+            'Content-Disposition',
+            `attachment; filename="FerroMax-reporte-${id}.pdf"`
+        );
+
+        res.setHeader(
+            'Content-Length',
+            String(pdf.length)
+        );
+
+        res.setHeader(
+            'Cache-Control',
+            'no-store'
+        );
+
+        res.setHeader(
+            'X-Content-Type-Options',
+            'nosniff'
+        );
+
+        return res.status(200).end(pdf);
+
+    })
+);
+    /* ======================================
+   INVENTARIO WEB
+   CONSULTAR PRODUCTOS Y CREAR REPORTES
+====================================== */
+
+// CONSULTAR PRODUCTOS SIN PERMITIR MODIFICACIONES
+router.get(
+    '/inventory/products',
+    requireLogin,
+    requireInventario,
+    wrap(async (req, res) => {
+
+        const [rows] = await pool.query(`
+            SELECT
+                p.id_producto AS id,
+                p.sku,
+                p.nombre,
+                p.unidad_venta AS unidad,
+                p.activo,
+                c.nombre AS categoria,
+
+                COALESCE((
+                    SELECT SUM(e.existencia_actual)
+                    FROM existencias e
+                    WHERE e.id_producto = p.id_producto
+                ), 0) AS stock,
+
+                (
+                    SELECT i.url_imagen
+                    FROM imagenes_producto i
+                    WHERE i.id_producto = p.id_producto
+                    ORDER BY
+                        i.es_principal DESC,
+                        i.orden_visual,
+                        i.id_imagen
+                    LIMIT 1
+                ) AS imagen
+
+            FROM productos p
+
+            LEFT JOIN categorias c
+                ON c.id_categoria = p.id_categoria
+
+            ORDER BY p.nombre ASC
+        `);
+
+        res.json(rows);
+    })
+);
+
+
+// CONSULTAR LOS REPORTES DEL EMPLEADO
+router.get(
+    '/inventory/my-reports',
+    requireLogin,
+    requireInventario,
+    wrap(async (req, res) => {
+
+        const [rows] = await pool.query(`
+            SELECT
+                i.id_incidencia AS id,
+                i.tipo_incidencia AS tipo,
+                i.prioridad,
+                i.estado,
+                i.cantidad_sistema AS cantidadSistema,
+                i.cantidad_contada AS cantidadContada,
+                i.descripcion,
+                i.fecha_reporte AS fecha,
+                p.nombre AS producto,
+                p.sku
+
+            FROM incidencias_inventario i
+
+            LEFT JOIN productos p
+                ON p.id_producto = i.id_producto
+
+            WHERE i.id_usuario = ?
+
+            ORDER BY
+                i.fecha_reporte DESC,
+                i.id_incidencia DESC
+
+            LIMIT 150
+        `, [req.s.user.id]);
+
+        res.json(rows);
+    })
+);
+
+
+// CREAR Y ENVIAR REPORTE AL ADMINISTRADOR
+router.post(
+    '/inventory/reports',
+    requireLogin,
+    requireInventario,
+    wrap(async (req, res) => {
+
+        if (req.s.user.rol !== 'INVENTARIO') {
+            return res.status(403).json({
+                error: 'Solo el personal de inventario puede enviar este formulario.'
+            });
+        }
+
+        const body = req.body || {};
+
+        const idProducto = Number(body.productoId);
+        const tipo = clean(body.tipo).toUpperCase();
+        const prioridad = clean(
+            body.prioridad || 'MEDIA'
+        ).toUpperCase();
+
+        const descripcion = clean(body.descripcion);
+        const foto = body.foto || null;
+
+        const tipos = [
+            'FALTANTE',
+            'SOBRANTE',
+            'PRODUCTO_DANADO',
+            'ERROR_STOCK',
+            'PRODUCTO_EQUIVOCADO',
+            'OTRO'
+        ];
+
+        const prioridades = [
+            'BAJA',
+            'MEDIA',
+            'ALTA',
+            'CRITICA'
+        ];
+
+        if (
+            !Number.isSafeInteger(idProducto) ||
+            idProducto <= 0
+        ) {
+            return res.status(400).json({
+                error: 'Selecciona un producto válido.'
+            });
+        }
+
+        if (
+            !tipos.includes(tipo) ||
+            !prioridades.includes(prioridad)
+        ) {
+            return res.status(400).json({
+                error: 'Tipo o prioridad inválidos.'
+            });
+        }
+
+        if (!validProductStock(body.cantidadContada)) {
+            return res.status(400).json({
+                error: 'Introduce una cantidad contada válida.'
+            });
+        }
+
+        if (
+            descripcion.length < 10 ||
+            descripcion.length > 2000
+        ) {
+            return res.status(400).json({
+                error: 'La descripción debe contener entre 10 y 2000 caracteres.'
+            });
+        }
+
+        if (foto !== null) {
+            const match =
+                typeof foto === 'string'
+                    ? FOTO_RE.exec(foto)
+                    : null;
+
+            if (
+                !match ||
+                Buffer.byteLength(
+                    match[2],
+                    'base64'
+                ) > MAX_FOTO_BYTES
+            ) {
+                return res.status(400).json({
+                    error: 'La fotografía debe ser JPG, PNG o WEBP y pesar máximo 5 MB.'
+                });
+            }
+        }
+
+        // Consultar el stock real desde la base de datos.
+        // No se confía en una cantidad enviada desde el navegador.
+        const [[producto]] = await pool.query(`
+            SELECT
+                p.id_producto AS id,
+
+                COALESCE((
+                    SELECT SUM(e.existencia_actual)
+                    FROM existencias e
+                    WHERE e.id_producto = p.id_producto
+                ), 0) AS stock
+
+            FROM productos p
+            WHERE p.id_producto = ?
+        `, [idProducto]);
+
+        if (!producto) {
+            return res.status(404).json({
+                error: 'El producto no existe.'
+            });
+        }
+
+        const conexion = await pool.getConnection();
+
+        let fotoGuardada = null;
+
+        try {
+            await conexion.beginTransaction();
+
+            // Guardar incidencia usando la tabla existente.
+            const [result] = await conexion.query(`
+                INSERT INTO incidencias_inventario (
+                    id_usuario,
+                    id_producto,
+                    tipo_incidencia,
+                    cantidad_sistema,
+                    cantidad_contada,
+                    descripcion,
+                    prioridad
+                )
+
+                VALUES (?, ?, ?, ?, ?, ?, ?)
+            `, [
+                req.s.user.id,
+                idProducto,
+                tipo,
+                Number(producto.stock),
+                Number(body.cantidadContada),
+                descripcion,
+                prioridad
             ]);
 
-            res.setHeader(
-                'Content-Type',
-                'application/pdf'
-            );
+            // Guardar evidencia opcional.
+            if (foto !== null) {
 
-            res.setHeader(
-                'Content-Disposition',
-                `attachment; filename="FerreMax-reporte-${
-                    report.id_incidencia
-                }.pdf"`
-            );
+                fotoGuardada = await saveImage(
+                    foto,
+                    'reports'
+                );
 
-            res.send(pdf);
-        })
-    );
+                await conexion.query(`
+                    INSERT INTO evidencias_incidencia (
+                        id_incidencia,
+                        url_foto,
+                        nombre_archivo,
+                        tipo_archivo
+                    )
+
+                    VALUES (?, ?, ?, ?)
+                `, [
+                    result.insertId,
+                    fotoGuardada,
+                    path.basename(fotoGuardada),
+                    'image'
+                ]);
+            }
+
+            await conexion.commit();
+
+            return res.status(201).json({
+                id: result.insertId,
+                estado: 'PENDIENTE',
+                message: 'Reporte enviado al administrador.'
+            });
+
+        } catch (error) {
+
+            await conexion.rollback().catch(() => {});
+
+            if (
+                fotoGuardada &&
+                /^\/uploads\/reports\/[\w.-]+$/.test(
+                    fotoGuardada
+                )
+            ) {
+                await fs.unlink(
+                    path.resolve(
+                        'public',
+                        fotoGuardada.slice(1)
+                    )
+                ).catch(() => {});
+            }
+
+            throw error;
+
+        } finally {
+            conexion.release();
+        }
+    })
+);
 
     /* ======================================
        LOGIN DE LA APP MÓVIL

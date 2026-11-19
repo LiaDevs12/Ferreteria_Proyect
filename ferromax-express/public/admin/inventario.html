@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Control de inventario | FerroMax</title>
+
+    <link rel="stylesheet" href="admin.css">
+
+    <style>
+        /* Estilos exclusivos del contenido de inventario.
+           La estructura general utiliza admin.css. */
+
+        #ferromaxInventory {
+            max-width: 1450px;
+            margin: 0 auto;
+        }
+
+        #ferromaxInventory .fm-inv-estadisticas {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            margin-bottom: 25px;
+        }
+
+        #ferromaxInventory .fm-inv-seccion {
+            scroll-margin-top: 25px;
+        }
+
+        #ferromaxInventory .fm-inv-ayuda {
+            color: var(--muted, #77737b);
+            font-size: 13px;
+            line-height: 1.7;
+            margin: 0 0 22px;
+        }
+
+        #ferromaxInventory .fm-inv-buscador {
+            max-width: 520px;
+            margin-bottom: 22px;
+        }
+
+        #ferromaxInventory .fm-inv-producto {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-width: 180px;
+        }
+
+        #ferromaxInventory .fm-inv-producto img,
+        #ferromaxInventory .fm-inv-placeholder {
+            width: 46px;
+            height: 46px;
+            flex-shrink: 0;
+            object-fit: contain;
+            border: 1px solid var(--line, #e9e9ed);
+            background: #fafafa;
+            display: grid;
+            place-items: center;
+        }
+
+        #ferromaxInventory .fm-inv-producto strong {
+            font-size: 12px;
+            white-space: normal;
+        }
+
+        #ferromaxInventory .fm-inv-contador {
+            margin: 15px 0 0;
+        }
+
+        #ferromaxInventory .fm-inv-diferencia {
+            margin: 20px 0;
+            padding: 14px 17px;
+            background: var(--wine-soft, #fcecef);
+            border-left: 3px solid var(--wine, #c8102e);
+            font-weight: 700;
+            font-size: 13px;
+        }
+
+        #ferromaxInventory .fm-inv-vacio {
+            padding: 28px;
+            text-align: center;
+            color: var(--muted, #77737b);
+        }
+
+        #ferromaxInventory .fm-inv-muted {
+            display: block;
+            margin-top: 5px;
+            color: var(--muted, #77737b);
+        }
+
+        #ferromaxInventory .fm-inv-ok {
+            color: #166534;
+            background: #edf9f0;
+            border-color: #b7e1c1;
+        }
+
+        #ferromaxInventory .notice[hidden] {
+            display: none;
+        }
+
+        @media (max-width: 900px) {
+            #ferromaxInventory .fm-inv-estadisticas {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 600px) {
+            #ferromaxInventory .fm-inv-estadisticas,
+            #ferromaxInventory .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            #ferromaxInventory .field.full {
+                grid-column: auto;
+            }
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <!--
+        La estructura del panel se genera
+        mediante la función layout() original.
+    -->
+
+    <script
+        type="module"
+        src="js/inventario.js"
+    ></script>
+
+</body>
+</html>
