@@ -1,0 +1,53 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FerroMax | Administración de categorías</title>
+    <link rel="stylesheet" href="admin.css">
+</head>
+
+<body>
+    <main id="estadoPagina" style="padding:30px;font-family:Arial,sans-serif">
+        Cargando administración de categorías...
+    </main>
+
+    <script type="module">
+        try {
+            const { manageCategories } = await import(
+                './js/catalogo-editor.js'
+            );
+
+            await manageCategories();
+
+            document.getElementById('estadoPagina')?.remove();
+
+        } catch (error) {
+            console.error('Error al abrir Categorías:', error);
+
+            const elemento =
+                document.getElementById('estadoPagina') ||
+                document.createElement('main');
+
+            elemento.style.cssText = `
+                margin:30px;
+                padding:25px;
+                border:1px solid #c8102e;
+                background:#fff5f6;
+                color:#9b1027;
+                font-family:Arial,sans-serif;
+                white-space:pre-wrap;
+            `;
+
+            elemento.textContent =
+                'No se pudo cargar Categorías.\n\n' +
+                error.message;
+
+            if (!elemento.isConnected) {
+                document.body.appendChild(elemento);
+            }
+        }
+    </script>
+</body>
+</html>

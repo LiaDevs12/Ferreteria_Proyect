@@ -1,0 +1,698 @@
+
+/* ==========================================
+   FERROMAX - ACCESO DE CLIENTES
+========================================== */
+
+#app .fm-auth-page {
+    width: 100%;
+    padding: 12px 0 34px;
+    color: #1d2028;
+    font-family: inherit;
+}
+
+#app .fm-auth-shell {
+    display: grid;
+    grid-template-columns:
+        minmax(0, .95fr)
+        minmax(0, 1.05fr);
+
+    width: 100%;
+    min-height: 610px;
+    margin-inline: auto;
+    overflow: hidden;
+
+    border: 1px solid #ede6e8;
+    border-radius: 24px;
+
+    background: #fff;
+
+    box-shadow: 0 25px 70px rgba(41, 16, 24, .09);
+}
+
+/* PANEL ROJO */
+
+#app .fm-auth-brand {
+    position: relative;
+    isolation: isolate;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    min-height: 100%;
+    padding: clamp(28px, 3.7vw, 50px);
+    overflow: hidden;
+
+    background: linear-gradient(
+        140deg,
+        #d10c30 0%,
+        #ac0e29 46%,
+        #630b1d 100%
+    );
+
+    color: #fff;
+}
+
+#app .fm-auth-brand::before,
+#app .fm-auth-brand::after {
+    content: "";
+    position: absolute;
+    z-index: -1;
+
+    width: 390px;
+    aspect-ratio: 1;
+    border-radius: 50%;
+
+    border: 1px solid rgba(255,255,255,.13);
+    pointer-events: none;
+}
+
+#app .fm-auth-brand::before {
+    top: -140px;
+    right: -220px;
+
+    box-shadow:
+        0 0 0 64px rgba(255,255,255,.025),
+        0 0 0 135px rgba(255,255,255,.018);
+}
+
+#app .fm-auth-brand::after {
+    bottom: -280px;
+    left: -195px;
+
+    box-shadow:
+        0 0 0 65px rgba(255,255,255,.025);
+}
+
+/* LOGOTIPO */
+
+#app .fm-auth-brand-logo {
+    display: inline-flex;
+    align-items: flex-start;
+    flex-direction: column;
+    align-self: flex-start;
+
+    gap: 2px;
+
+    color: #fff;
+    font-size: clamp(25px, 3vw, 34px);
+    font-weight: 900;
+    letter-spacing: .04em;
+    line-height: 1.2;
+    text-decoration: none;
+}
+
+#app .fm-auth-brand-logo span {
+    margin-left: 3px;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: .26em;
+}
+
+/* MENSAJE DE BIENVENIDA */
+
+#app .fm-auth-brand-message {
+    position: relative;
+    padding: 50px 0 36px;
+}
+
+#app .fm-auth-brand-kicker {
+    display: inline-block;
+    padding: 7px 11px;
+
+    border: 1px solid rgba(255,255,255,.3);
+    border-radius: 999px;
+
+    color: #fff;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: .14em;
+}
+
+#app .fm-auth-brand-message h2 {
+    margin: 22px 0 16px;
+    max-width: 410px;
+
+    color: #fff;
+    font-size: clamp(28px, 3.7vw, 45px);
+    font-weight: 850;
+    line-height: 1.16;
+    letter-spacing: -.035em;
+}
+
+#app .fm-auth-brand-message > p {
+    max-width: 355px;
+
+    color: rgba(255,255,255,.88);
+    font-size: 14px;
+    line-height: 1.8;
+}
+
+/* BENEFICIOS */
+
+#app .fm-auth-benefits {
+    display: grid;
+    gap: 17px;
+    margin-top: 33px;
+}
+
+#app .fm-auth-benefits > div {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+#app .fm-auth-benefits > div > span {
+    flex: 0 0 35px;
+
+    display: grid;
+    place-items: center;
+
+    width: 35px;
+    height: 35px;
+
+    border: 1px solid rgba(255,255,255,.24);
+    border-radius: 10px;
+
+    background: rgba(255,255,255,.12);
+}
+
+#app .fm-auth-benefits svg,
+#app .fm-auth-session-info svg,
+#app .fm-auth-primary svg {
+    width: 19px;
+    height: 19px;
+}
+
+#app .fm-auth-benefits p {
+    margin: 0;
+    color: #fff;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+#app .fm-auth-brand-foot {
+    margin: 0;
+    color: rgba(255,255,255,.65);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .12em;
+}
+
+/* PANEL BLANCO */
+
+#app .fm-auth-main {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    min-width: 0;
+    padding: clamp(26px, 4.3vw, 58px);
+}
+
+#app .fm-auth-eyebrow {
+    color: #c8102e;
+    font-size: 10px;
+    font-weight: 850;
+    letter-spacing: .18em;
+}
+
+#app .fm-auth-main h1 {
+    margin: 12px 0 8px;
+
+    color: #15191e;
+    font-size: clamp(27px, 3vw, 36px);
+    font-weight: 850;
+    letter-spacing: -.04em;
+    line-height: 1.2;
+}
+
+#app .fm-auth-subtitle {
+    margin: 0 0 28px;
+
+    color: #767983;
+    font-size: 14px;
+    line-height: 1.65;
+}
+
+/* PESTAÑAS */
+
+#app .fm-auth-switcher {
+    position: relative;
+}
+
+#app .fm-auth-radio {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+}
+
+#app .fm-auth-tabs {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+
+    gap: 6px;
+    padding: 5px;
+    margin-bottom: 24px;
+
+    border: 1px solid #ececef;
+    border-radius: 12px;
+    background: #f6f6f8;
+}
+
+#app .fm-auth-tabs label {
+    display: grid;
+    place-items: center;
+
+    padding: 12px 5px;
+    border-radius: 9px;
+
+    color: #6c707b;
+    font-size: 13px;
+    font-weight: 800;
+    text-align: center;
+    cursor: pointer;
+
+    transition:
+        background .2s,
+        color .2s,
+        box-shadow .2s;
+}
+
+#app #fm-auth-tab-login:checked
+~ .fm-auth-tabs label[for="fm-auth-tab-login"],
+
+#app #fm-auth-tab-register:checked
+~ .fm-auth-tabs label[for="fm-auth-tab-register"] {
+    background: #fff;
+    color: #bd0e2d;
+
+    box-shadow:
+        0 2px 8px rgba(41,16,24,.09);
+}
+
+#app #fm-auth-tab-login:focus-visible
+~ .fm-auth-tabs label[for="fm-auth-tab-login"],
+
+#app #fm-auth-tab-register:focus-visible
+~ .fm-auth-tabs label[for="fm-auth-tab-register"] {
+    outline: 3px solid #f1a2b1;
+    outline-offset: 2px;
+}
+
+/* MOSTRAR SOLAMENTE EL FORMULARIO SELECCIONADO */
+
+#app #fm-auth-tab-login:not(:checked)
+~ .fm-auth-form-login,
+
+#app #fm-auth-tab-register:not(:checked)
+~ .fm-auth-form-register {
+    display: none;
+}
+
+/* FORMULARIOS */
+
+#app .fm-auth-form {
+    display: grid;
+    gap: 18px;
+}
+
+#app .fm-auth-fields-row {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+}
+
+#app .fm-auth-field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 0;
+}
+
+#app .fm-auth-field label {
+    color: #262831;
+    font-size: 12px;
+    font-weight: 800;
+}
+
+#app .fm-auth-input {
+    width: 100%;
+    min-width: 0;
+    height: 47px;
+    padding: 0 13px;
+
+    border: 1px solid #dfe0e6;
+    border-radius: 10px;
+    outline: none;
+
+    background: #fafafb;
+    color: #20242d;
+
+    font: inherit;
+    font-size: 13px;
+
+    transition:
+        border-color .2s,
+        box-shadow .2s,
+        background .2s;
+}
+
+#app .fm-auth-input::placeholder {
+    color: #a2a4ad;
+}
+
+#app .fm-auth-input:focus {
+    border-color: #c8102e;
+    background: #fff;
+
+    box-shadow:
+        0 0 0 3px rgba(200,16,46,.11);
+}
+
+/* MOSTRAR CONTRASEÑA */
+
+#app .fm-auth-show-pass {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    margin: -10px 0 -5px;
+
+    color: #707480;
+    font-size: 11px;
+    cursor: pointer;
+}
+
+#app .fm-auth-show-pass input {
+    accent-color: #c8102e;
+    cursor: pointer;
+}
+
+#app .fm-auth-field-note {
+    margin: -12px 0 -2px;
+    color: #868993;
+    font-size: 11px;
+}
+
+/* BOTÓN PRINCIPAL */
+
+#app .fm-auth-primary {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+
+    width: 100%;
+    min-height: 49px;
+    margin-top: 4px;
+    padding: 12px 16px;
+
+    border: none;
+    border-radius: 10px;
+
+    background: #c8102e;
+    color: #fff;
+
+    font: inherit;
+    font-size: 13px;
+    font-weight: 850;
+    cursor: pointer;
+    text-decoration: none;
+
+    transition:
+        transform .2s,
+        background .2s;
+}
+
+#app .fm-auth-primary:hover:not(:disabled) {
+    background: #a50928;
+    transform: translateY(-1px);
+}
+
+#app .fm-auth-primary:disabled {
+    opacity: .6;
+    cursor: not-allowed;
+}
+
+/* ERRORES */
+
+#app .fm-auth-error {
+    margin: 14px 0 0;
+    padding: 12px 14px;
+
+    border: 1px solid #f0c9d0;
+    border-radius: 9px;
+
+    background: #fff1f3;
+    color: #ab1430;
+
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+#app .fm-auth-error:empty {
+    display: none;
+}
+
+/* GOOGLE Y ACCESO DE PRUEBA */
+
+#app .fm-auth-alternatives {
+    margin-top: 23px;
+    text-align: center;
+}
+
+#app .fm-auth-divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    color: #999da5;
+    font-size: 11px;
+}
+
+#app .fm-auth-divider::before,
+#app .fm-auth-divider::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: #ececef;
+}
+
+#app .fm-auth-google {
+    display: flex;
+    justify-content: center;
+
+    margin-top: 15px;
+    min-height: 40px;
+}
+
+#app .fm-auth-demo {
+    width: 100%;
+    min-height: 43px;
+    margin-top: 15px;
+    padding: 10px;
+
+    border: 1px solid #e0e0e6;
+    border-radius: 10px;
+
+    background: #fff;
+    color: #666b75;
+
+    font: inherit;
+    font-size: 12px;
+    font-weight: 750;
+    cursor: pointer;
+}
+
+#app .fm-auth-demo:hover {
+    background: #f9f8f9;
+    border-color: #bfc0c6;
+    color: #25272e;
+}
+
+#app .fm-auth-terms {
+    max-width: 390px;
+    margin: 17px auto 0;
+
+    color: #989ba3;
+    text-align: center;
+    font-size: 10.5px;
+    line-height: 1.7;
+}
+
+/* ==========================================
+   VISTA DE CUENTA INICIADA
+========================================== */
+
+#app .fm-auth-avatar {
+    display: grid;
+    place-items: center;
+
+    width: 70px;
+    height: 70px;
+    margin-top: 22px;
+
+    border-radius: 20px;
+
+    background: #fff0f3;
+    color: #c8102e;
+
+    font-size: 29px;
+    font-weight: 900;
+}
+
+#app .fm-auth-session-info {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    padding: 16px;
+    margin: 8px 0 18px;
+
+    border: 1px solid #ededf0;
+    border-radius: 12px;
+
+    background: #fafafb;
+}
+
+#app .fm-auth-session-info span {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+
+    color: #868894;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+#app .fm-auth-session-info strong {
+    color: #232630;
+    font-size: 14px;
+    overflow-wrap: anywhere;
+}
+
+#app .fm-auth-demo-pill {
+    color: #8a6270;
+    font-size: 12px;
+}
+
+#app .fm-auth-back-link {
+    display: block;
+    margin-top: 17px;
+
+    color: #be1031;
+    font-size: 13px;
+    font-weight: 750;
+    text-align: center;
+    text-decoration: none;
+}
+
+#app .fm-auth-back-link:hover {
+    text-decoration: underline;
+}
+
+#app .fm-auth-logout {
+    align-self: center;
+
+    padding: 10px 15px;
+    margin-top: 28px;
+
+    border: none;
+    background: transparent;
+
+    color: #777b86;
+    font: inherit;
+    font-size: 12px;
+    font-weight: 750;
+    cursor: pointer;
+}
+
+#app .fm-auth-logout:hover {
+    color: #c8102e;
+    text-decoration: underline;
+}
+
+/* ==========================================
+   TABLETS
+========================================== */
+
+@media (max-width: 830px) {
+
+    #app .fm-auth-shell {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    #app .fm-auth-brand {
+        min-height: 180px;
+        padding: 25px;
+    }
+
+    #app .fm-auth-brand-message {
+        padding: 15px 0 0;
+    }
+
+    #app .fm-auth-brand-message h2 {
+        max-width: none;
+        margin: 12px 0;
+        font-size: 28px;
+    }
+
+    #app .fm-auth-brand-message > p {
+        max-width: 520px;
+        margin: 0;
+    }
+
+    #app .fm-auth-benefits,
+    #app .fm-auth-brand-foot {
+        display: none;
+    }
+
+    #app .fm-auth-main {
+        padding: 32px;
+    }
+}
+
+/* ==========================================
+   CELULARES
+========================================== */
+
+@media (max-width: 480px) {
+
+    #app .fm-auth-page {
+        padding: 0 0 20px;
+    }
+
+    #app .fm-auth-shell {
+        border-radius: 15px;
+    }
+
+    #app .fm-auth-brand {
+        padding: 22px;
+    }
+
+    #app .fm-auth-brand-message h2 {
+        font-size: 24px;
+    }
+
+    #app .fm-auth-brand-message > p {
+        font-size: 12px;
+    }
+
+    #app .fm-auth-main {
+        padding: 26px 20px;
+    }
+
+    #app .fm-auth-fields-row {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    #app .fm-auth-primary,
+    #app .fm-auth-tabs label,
+    #app .fm-auth-input {
+        transition: none;
+    }
+}

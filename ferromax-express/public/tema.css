@@ -1,0 +1,28 @@
+
+/* ==========================================
+   FERROMAX - DISEÑO GLOBAL CUADRADO
+   APLICA A TIENDA WEB Y ADMINISTRADOR
+========================================== */
+
+/* ELIMINAR TODOS LOS BORDES REDONDEADOS */
+
+html[data-ferromax-tema] *,
+html[data-ferromax-tema] *::before,
+html[data-ferromax-tema] *::after {
+    border-radius: 0 !important;
+}
+
+/* ASEGURAR BORDES CUADRADOS EN LA WEB */
+
+html[data-ferromax-tema] #app *,
+html[data-ferromax-tema] #hdr *,
+html[data-ferromax-tema] #ftr * {
+    border-radius: 0 !important;
+}
+
+/* ASEGURAR BORDES CUADRADOS EN EL ADMINISTRADOR */
+
+html[data-ferromax-tema] .shell *,
+html[data-ferromax-tema] .login-wrap * {
+    border-radius: 0 !important;
+}

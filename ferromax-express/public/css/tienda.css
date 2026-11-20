@@ -1,0 +1,6809 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+:root {
+            --fm-red: #c8102e;
+            --fm-rail: 265px;
+            --fm-gap: 28px;
+            --fm-pad: 24px;
+        }
+
+/* ==========================================
+   TIPOGRAFÍA GLOBAL - FERROMAX WEB
+========================================== */
+
+html,
+body {
+    font-family: 'Plus Jakarta Sans', sans-serif !important;
+}
+
+body,
+h1, h2, h3, h4, h5, h6,
+p, a, span, strong, small,
+label, button, input, select,
+textarea, th, td, li {
+    font-family: 'Plus Jakarta Sans', sans-serif !important;
+}
+
+button,
+input,
+select,
+textarea {
+    font-family: 'Plus Jakarta Sans', sans-serif !important;
+}
+
+
+/* ==========================================
+   FERROMAX - DISEÑO GLOBAL CUADRADO
+   APLICA A TIENDA WEB Y ADMINISTRADOR
+========================================== */
+
+/* ELIMINAR TODOS LOS BORDES REDONDEADOS */
+
+html[data-ferromax-tema] *,
+html[data-ferromax-tema] *::before,
+html[data-ferromax-tema] *::after {
+    border-radius: 0 !important;
+}
+
+/* ASEGURAR BORDES CUADRADOS EN LA WEB */
+
+html[data-ferromax-tema] #app *,
+html[data-ferromax-tema] #hdr *,
+html[data-ferromax-tema] #ftr * {
+    border-radius: 0 !important;
+}
+
+/* ASEGURAR BORDES CUADRADOS EN EL ADMINISTRADOR */
+
+html[data-ferromax-tema] .shell *,
+html[data-ferromax-tema] .login-wrap * {
+    border-radius: 0 !important;
+}
+
+
+/* MAPA DE UBICACIÓN - FERROMAX */
+
+.fm-footer-map {
+    width: 100%;
+    overflow: hidden;
+    border: 1px solid #e5e5e5;
+    background: #f5f5f5;
+}
+
+.fm-footer-map iframe {
+    display: block;
+    width: 100%;
+    height: 350px;
+    border: 0;
+}
+
+@media (max-width: 600px) {
+    .fm-footer-map iframe {
+        height: 280px;
+    }
+}
+/* ==========================================
+   FERROMAX - CARRUSEL DE MARCAS
+========================================== */
+
+#app .fm-brands-home {
+    width: 100%;
+    padding: 32px 24px 38px;
+    margin: 36px 0;
+    background: #f5f6f7;
+    text-align: center;
+}
+
+#app .fm-brands-title {
+    margin: 0 auto 26px;
+    color: #151b29;
+    font-size: clamp(23px, 2.5vw, 32px);
+    font-weight: 900;
+    line-height: 1.3;
+    text-align: center;
+}
+
+/* ==========================================
+   CARRUSEL DE PRODUCTOS RECIENTES
+========================================== */
+
+#app .fm-product-carousel {
+    width: 100%;
+    max-width: 1180px;
+    margin: 0 auto;
+}
+
+/* CONTENEDOR DEL CARRUSEL */
+
+#app .fm-product-carousel .fm-carousel {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+}
+
+/* CONTENEDOR DE PRODUCTOS */
+
+#app .fm-product-carousel .fm-track {
+    display: flex;
+    justify-content: safe center;
+    align-items: stretch;
+    gap: 16px;
+
+    flex: 1;
+    min-width: 0;
+
+    overflow-x: auto;
+    overflow-y: hidden;
+
+    padding: 12px 2px 18px;
+
+    scroll-behavior: smooth;
+    scroll-snap-type: x mandatory;
+
+    scrollbar-width: none;
+}
+
+/* OCULTAR BARRA DE DESPLAZAMIENTO */
+
+#app .fm-product-carousel .fm-track::-webkit-scrollbar {
+    display: none;
+}
+
+/* CUATRO PRODUCTOS COMPLETOS */
+
+#app .fm-product-carousel .fm-track > div {
+    flex: 0 0 calc((100% - 48px) / 4) !important;
+
+    width: calc((100% - 48px) / 4);
+
+    min-width: 0;
+
+    display: flex;
+
+    scroll-snap-align: start;
+    box-sizing: border-box;
+}
+
+/* TARJETAS */
+
+#app .fm-product-carousel .fm-card {
+    width: 100%;
+    height: 100%;
+    min-width: 0;
+}
+
+/* FLECHAS DEL CARRUSEL */
+
+#app .fm-product-carousel .fm-carousel > button {
+    flex: 0 0 40px;
+
+    width: 40px;
+    height: 42px;
+
+    border: 1px solid #e9dfe2;
+    border-radius: 10px;
+
+    background: #ffffff;
+    color: #c8102e;
+
+    display: grid;
+    place-items: center;
+
+    cursor: pointer;
+}
+
+#app .fm-product-carousel .fm-carousel > button:hover {
+    background: #c8102e;
+    border-color: #c8102e;
+    color: #ffffff;
+}
+
+/* ==========================================
+   TABLETS HORIZONTALES
+   TRES PRODUCTOS
+========================================== */
+
+@media (max-width: 1100px) {
+
+    #app .fm-product-carousel .fm-track > div {
+        flex-basis: calc((100% - 32px) / 3) !important;
+    }
+
+}
+
+/* ==========================================
+   TABLETS
+   DOS PRODUCTOS
+========================================== */
+
+@media (max-width: 800px) {
+
+    #app .fm-product-carousel .fm-track > div {
+        flex-basis: calc((100% - 16px) / 2) !important;
+    }
+
+}
+
+/* ==========================================
+   CELULARES
+   UN PRODUCTO
+========================================== */
+
+@media (max-width: 560px) {
+
+    #app .fm-product-carousel .fm-carousel {
+        gap: 6px;
+    }
+
+    #app .fm-product-carousel .fm-track > div {
+        flex-basis: 100% !important;
+    }
+
+    #app .fm-product-carousel .fm-carousel > button {
+        flex-basis: 32px;
+
+        width: 32px;
+        height: 36px;
+    }
+
+}
+
+#app .fm-brand-track {
+    display: flex;
+    flex: 1;
+    gap: 17px;
+    min-width: 0;
+    padding: 9px 3px 20px;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+}
+
+#app .fm-brand-track::-webkit-scrollbar {
+    display: none;
+}
+
+#app .fm-brand-slide {
+    flex: 0 0 calc((100% - 85px) / 6);
+    min-width: 0;
+    scroll-snap-align: start;
+}
+
+/* TARJETAS DE LOGOTIPOS */
+
+#app .fm-brand-card {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 92px;
+    padding: 14px;
+    background: #ffffff;
+    border: 1px solid #e2e2e2;
+    border-radius: 13px;
+    box-shadow: 0 7px 14px rgba(0,0,0,.18);
+    text-decoration: none;
+    overflow: hidden;
+    transition:
+        transform .25s ease,
+        box-shadow .25s ease,
+        border-color .25s ease;
+}
+
+#app .fm-brand-card:hover {
+    transform: translateY(-5px);
+    border-color: #c8102e;
+    box-shadow: 0 11px 22px rgba(0,0,0,.20);
+}
+
+/* LOGOTIPO */
+
+#app .fm-brand-card img {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    display: block;
+    width: 100%;
+    height: 100%;
+    padding: 13px;
+    background: #fff;
+    object-fit: contain;
+    object-position: center;
+    transform: none;
+}
+
+/* NOMBRE ALTERNATIVO SIN IMAGEN */
+
+#app .fm-brand-fallback {
+    display: block;
+    color: #c8102e;
+    font-size: 18px;
+    font-weight: 900;
+    text-align: center;
+    text-transform: uppercase;
+    overflow-wrap: anywhere;
+}
+
+/* FLECHAS */
+
+#app .fm-brand-arrow {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 0;
+    width: 32px;
+    height: 44px;
+    border: 0;
+    border-radius: 8px;
+    background: #fff;
+    color: #c8102e;
+    font-size: 22px;
+    cursor: pointer;
+    box-shadow: 0 3px 9px rgba(0,0,0,.08);
+}
+
+#app .fm-brand-arrow:hover {
+    background: #c8102e;
+    color: #fff;
+}
+
+#app .fm-brand-arrow[hidden] {
+    display: none !important;
+}
+
+/* BOTÓN VER TODAS LAS MARCAS */
+
+#app .fm-brands-see-all {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 42px;
+    margin-top: 3px;
+    padding: 0 26px;
+    border-radius: 8px;
+    background: #e3292b;
+    color: white;
+    font-size: 14px;
+    font-weight: 800;
+    text-decoration: none;
+    transition: background .2s ease;
+}
+
+#app .fm-brands-see-all:hover {
+    background: #bd1028;
+}
+
+/* ==========================================
+   PÁGINA DE TODAS LAS MARCAS
+========================================== */
+
+#app .fm-brands-page {
+    width: 100%;
+    max-width: 1350px;
+    margin: 0 auto;
+    padding: 30px 15px 70px;
+}
+
+#app .fm-brands-page-header {
+    text-align: center;
+    margin-bottom: 32px;
+}
+
+#app .fm-brands-label {
+    color: #c8102e;
+    font-size: 12px;
+    font-weight: 900;
+    letter-spacing: 2px;
+}
+
+#app .fm-brands-page-header h1 {
+    margin: 10px 0;
+    color: #171d29;
+    font-size: clamp(26px, 3vw, 36px);
+    font-weight: 900;
+}
+
+#app .fm-brands-page-header p {
+    color: #777;
+    font-size: 15px;
+}
+
+#app .fm-brands-grid {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 22px;
+}
+
+#app .fm-brands-grid .fm-brand-card {
+    height: 110px;
+}
+
+#app .fm-brands-empty {
+    padding: 25px;
+    text-align: center;
+    color: #777;
+}
+
+/* ==========================================
+   DISEÑO RESPONSIVE
+========================================== */
+
+@media (max-width: 1100px) {
+
+    #app .fm-brand-slide {
+        flex-basis: calc((100% - 51px) / 4);
+    }
+
+    #app .fm-brands-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 700px) {
+
+    #app .fm-brands-home {
+        padding: 26px 12px;
+    }
+
+    #app .fm-brand-slide {
+        flex-basis: calc((100% - 17px) / 2);
+    }
+
+    #app .fm-brand-track {
+        gap: 17px;
+    }
+
+    #app .fm-brand-card {
+        height: 85px;
+    }
+
+    #app .fm-brand-arrow {
+        width: 25px;
+    }
+
+    #app .fm-brands-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 14px;
+    }
+
+    #app .fm-brands-grid .fm-brand-card {
+        height: 95px;
+    }
+}
+
+
+/* ==========================================
+   FERROMAX
+   GALERÍA FIJA EN DETALLE DEL PRODUCTO
+========================================== */
+
+@media (min-width: 1101px) {
+
+    /* CONTENEDOR DE LA FICHA */
+
+    #app.fm-product-page .fm-pdp {
+        display: grid;
+
+        grid-template-columns:
+            minmax(0, 1.14fr)
+            minmax(345px, .86fr);
+
+        align-items: start;
+
+        gap: clamp(26px, 4vw, 65px);
+    }
+
+    /* GALERÍA COMPLETA FIJA */
+
+    #app.fm-product-page .fm-gallery {
+        position: sticky !important;
+
+        top: 20px;
+
+        align-self: start;
+
+        display: grid;
+
+        grid-template-columns:
+            80px
+            minmax(0, 1fr);
+
+        gap: 14px;
+
+        width: 100%;
+
+        max-height: calc(100dvh - 40px);
+
+        z-index: 5;
+    }
+
+    /* MINIATURAS DE LA IZQUIERDA */
+
+    #app.fm-product-page .fm-thumbs {
+        display: flex;
+
+        flex-direction: column;
+
+        gap: 10px;
+
+        align-items: center;
+
+        max-height: calc(100dvh - 40px);
+
+        overflow-y: auto;
+        overflow-x: hidden;
+
+        scrollbar-width: thin;
+
+        scrollbar-color:
+            #c8102e #f5f1f2;
+    }
+
+    /* FOTOGRAFÍAS PEQUEÑAS */
+
+    #app.fm-product-page .fm-thumb {
+        width: 78px;
+        height: 78px;
+
+        min-height: 78px;
+        flex-shrink: 0;
+    }
+
+    /* FOTOGRAFÍA PRINCIPAL */
+
+    #app.fm-product-page .fm-photo-main {
+        width: 100%;
+
+        height: clamp(
+            280px,
+            calc(100dvh - 160px),
+            545px
+        );
+
+        overflow: hidden;
+
+        border-radius: 17px;
+    }
+
+    /* IMAGEN DENTRO DEL CONTENEDOR */
+
+    #app.fm-product-page .fm-photo-img {
+        width: 100%;
+        height: 100%;
+
+        object-fit: contain;
+    }
+
+    /* INFORMACIÓN QUE SÍ SE DESPLAZA */
+
+    #app.fm-product-page .fm-product-info {
+        min-width: 0;
+        align-self: start;
+    }
+}
+
+/* ==========================================
+   TABLET Y CELULARES
+========================================== */
+
+@media (max-width: 1100px) {
+
+    #app.fm-product-page .fm-gallery {
+        position: static !important;
+
+        top: auto;
+
+        max-height: none;
+
+        z-index: auto;
+    }
+
+    #app.fm-product-page .fm-thumbs {
+        max-height: none;
+        overflow: visible;
+    }
+}
+
+
+/* ==========================================
+   FERROMAX
+   CATEGORÍAS PRINCIPALES - DISEÑO CORREGIDO
+========================================== */
+
+/* CONTENEDOR DE CATEGORÍAS */
+
+#app .fm-home-cats {
+    display: grid !important;
+
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr)) !important;
+
+    gap: 22px !important;
+
+    align-items: stretch;
+
+    width: 100%;
+
+    margin-top: 22px;
+}
+
+/* TARJETAS */
+
+#app .fm-home-cats .fm-cat-tile {
+    display: grid !important;
+
+    grid-template-rows: 165px auto 1fr;
+
+    min-width: 0;
+
+    min-height: 265px;
+
+    padding: 0 !important;
+
+    overflow: hidden !important;
+
+    background: #ffffff;
+
+    border: 1px solid #e9dfe3;
+
+    border-radius: 15px;
+
+    text-decoration: none;
+
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.035);
+
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease,
+        border-color 0.25s ease;
+}
+
+/* EFECTO AL PASAR EL CURSOR */
+
+#app .fm-home-cats .fm-cat-tile:hover {
+    transform: translateY(-5px);
+
+    border-color: #c8102e;
+
+    box-shadow:
+        0 12px 26px rgba(120, 20, 40, 0.10);
+}
+
+/* CONTENEDOR DE LA IMAGEN */
+
+#app .fm-home-cats .fm-cat-tile > div:first-child {
+    display: flex !important;
+
+    align-items: center !important;
+
+    justify-content: center !important;
+
+    width: 100% !important;
+
+    height: 165px !important;
+
+    min-height: 0 !important;
+
+    padding: 18px !important;
+
+    margin: 0 !important;
+
+    overflow: hidden !important;
+
+    box-sizing: border-box;
+
+    background: #faf7f8;
+
+    border-bottom: 1px solid #f0e9ec;
+
+    font-size: 43px;
+}
+
+/* IMÁGENES DE LAS CATEGORÍAS */
+
+#app .fm-home-cats .fm-cat-tile > div:first-child img {
+    display: block !important;
+
+    position: static !important;
+
+    width: 100% !important;
+
+    height: 100% !important;
+
+    max-width: 100% !important;
+
+    max-height: 100% !important;
+
+    margin: 0 auto !important;
+
+    padding: 0 !important;
+
+    object-fit: contain !important;
+
+    object-position: center !important;
+
+    transform: none !important;
+}
+
+/* NOMBRE DE LA CATEGORÍA */
+
+#app .fm-home-cats .fm-cat-tile strong {
+    display: block;
+
+    width: 100%;
+
+    min-width: 0;
+
+    margin: 0 !important;
+
+    padding: 17px 18px 8px !important;
+
+    color: #252025;
+
+    font-size: 16px !important;
+
+    font-weight: 800;
+
+    line-height: 1.45;
+
+    overflow-wrap: break-word;
+
+    box-sizing: border-box;
+}
+
+/* ENLACE VER PRODUCTOS */
+
+#app .fm-home-cats .fm-cat-tile small {
+    display: block;
+
+    align-self: end;
+
+    margin: 0 !important;
+
+    padding: 6px 18px 18px !important;
+
+    color: #c8102e;
+
+    font-size: 13px !important;
+
+    font-weight: 700;
+
+    line-height: 1.4;
+}
+
+/* EFECTO DEL ENLACE */
+
+#app .fm-home-cats .fm-cat-tile:hover small {
+    color: #910a24;
+}
+
+/* ==========================================
+   RESPONSIVE - TABLETS
+========================================== */
+
+@media (max-width: 900px) {
+
+    #app .fm-home-cats {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr)) !important;
+
+        gap: 18px !important;
+    }
+
+}
+
+/* ==========================================
+   RESPONSIVE - CELULARES
+========================================== */
+
+@media (max-width: 520px) {
+
+    #app .fm-home-cats {
+        grid-template-columns:
+            1fr !important;
+
+        gap: 16px !important;
+    }
+
+    #app .fm-home-cats .fm-cat-tile {
+        min-height: 245px;
+    }
+
+    #app .fm-home-cats .fm-cat-tile > div:first-child {
+        height: 150px !important;
+    }
+
+    #app .fm-home-cats .fm-cat-tile {
+        grid-template-rows: 150px auto 1fr;
+    }
+
+    #app .fm-home-cats .fm-cat-tile strong {
+        font-size: 15px !important;
+    }
+
+}
+
+/* ==========================================
+   FERROMAX - BANNER ENTRE SECCIONES
+========================================== */
+
+/* ==========================================
+   FERROMAX - BANNER ENTRE SECCIONES
+========================================== */
+
+#app .fm-home-banner {
+    position: relative;
+
+    width: 100%;
+    height: 420px;
+
+    margin: 22px 0 28px;
+
+    overflow: hidden;
+    isolation: isolate;
+
+    background: #111;
+}
+
+/* IMAGEN */
+
+#app .fm-home-banner-img {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+
+    width: 100%;
+    height: 100%;
+
+    display: block;
+
+    object-fit: cover;
+    object-position: center center;
+}
+
+/* CAPA OSCURA */
+
+#app .fm-home-banner-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+
+    background:
+        linear-gradient(
+            90deg,
+            rgba(0, 0, 0, 0.70) 0%,
+            rgba(0, 0, 0, 0.48) 35%,
+            rgba(0, 0, 0, 0.20) 60%,
+            rgba(0, 0, 0, 0.10) 100%
+        );
+}
+
+/* CONTENIDO */
+
+#app .fm-home-banner-content {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+
+    padding: 0 60px;
+}
+
+/* TEXTO */
+
+#app .fm-home-banner-content h2 {
+    max-width: 500px;
+    margin: 0;
+
+    color: #ffffff;
+
+    font-size: clamp(28px, 3vw, 46px);
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: -0.03em;
+
+    text-wrap: balance;
+}
+
+#app .fm-home-banner-content h2 strong {
+    display: block;
+    margin-top: 8px;
+
+    color: #ffffff;
+    font-weight: 800;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 900px) {
+    #app .fm-home-banner {
+        height: 340px;
+        margin: 18px 0 24px;
+    }
+
+    #app .fm-home-banner-content {
+        padding: 0 38px;
+    }
+
+    #app .fm-home-banner-content h2 {
+        max-width: 420px;
+    }
+}
+
+@media (max-width: 600px) {
+    #app .fm-home-banner {
+        height: 260px;
+        margin: 16px 0 20px;
+    }
+
+    #app .fm-home-banner-content {
+        padding: 0 22px;
+    }
+
+    #app .fm-home-banner-content h2 {
+        max-width: 280px;
+        font-size: 24px;
+        line-height: 1.2;
+    }
+
+    #app .fm-home-banner-content h2 strong {
+        margin-top: 6px;
+    }
+}
+
+
+/* ==========================================
+   FERROMAX - PÁGINA NOSOTROS
+========================================== */
+
+/* COLORES */
+
+#app .fm-about {
+    --about-text: #20232b;
+    --about-muted: #606672;
+    --about-red: #c8102e;
+    --about-bg: #ffffff;
+    --about-soft: #faf7f7;
+    --about-border: #e9e1e4;
+
+    width: 100%;
+    margin: 0 auto;
+    padding: 15px 0 65px;
+
+    color: var(--about-text);
+}
+
+/* SOPORTE PARA TEMA OSCURO */
+
+html[data-ferromax-tema="oscuro"]
+#app .fm-about {
+    --about-text: #f3f4f7;
+    --about-muted: #b5bdca;
+    --about-red: #f04764;
+    --about-bg: #171d28;
+    --about-soft: #202838;
+    --about-border: #354051;
+}
+
+/* TIPOGRAFÍA */
+
+#app .fm-about p {
+    margin: 0 0 18px;
+
+    color: var(--about-muted) !important;
+
+    font-size: 15px;
+    line-height: 1.9;
+}
+
+#app .fm-about p strong {
+    color: var(--about-text);
+    font-weight: 800;
+}
+
+#app .fm-about-eyebrow {
+    display: block;
+
+    margin-bottom: 15px;
+
+    color: var(--about-red);
+
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 2px;
+}
+
+/* TÍTULO NOSOTROS */
+
+#app .fm-about-title {
+    margin: 0;
+
+    color: var(--about-text) !important;
+
+    font-size: clamp(38px, 4.5vw, 58px);
+    font-weight: 800;
+    line-height: 1.15;
+    letter-spacing: -1.8px;
+}
+
+/* LÍNEA ROJA DECORATIVA */
+
+#app .fm-about-line {
+    display: block;
+
+    width: 65px;
+    height: 4px;
+
+    margin: 24px 0 28px;
+
+    background: var(--about-red);
+}
+
+/* PÁRRAFO DESTACADO */
+
+#app .fm-about .fm-about-lead {
+    color: var(--about-text) !important;
+
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 1.75;
+}
+
+/* ==========================================
+   SECCIÓN PRINCIPAL
+========================================== */
+
+#app .fm-about-intro {
+    display: grid;
+
+    grid-template-columns:
+        minmax(0, 1fr)
+        minmax(0, 1fr);
+
+    align-items: center;
+    gap: 55px;
+
+    width: 100%;
+    margin-bottom: 90px;
+}
+
+#app .fm-about-intro-text {
+    min-width: 0;
+}
+
+/* ==========================================
+   FOTOGRAFÍAS
+========================================== */
+
+#app .fm-about-photo {
+    position: relative;
+
+    width: 100%;
+    height: 420px;
+
+    overflow: hidden;
+
+    background: var(--about-soft);
+    border: 1px solid var(--about-border);
+
+    box-shadow:
+        0 12px 35px rgba(20, 15, 20, 0.08);
+}
+
+/* ESPACIO PARA FOTOGRAFÍAS PENDIENTES */
+
+#app .fm-about-photo-placeholder {
+    position: absolute;
+    inset: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 25px;
+
+    background: linear-gradient(
+        135deg,
+        var(--about-soft),
+        var(--about-bg)
+    );
+
+    color: var(--about-muted);
+
+    text-align: center;
+
+    font-size: 15px;
+    font-weight: 700;
+}
+
+/* IMAGEN REAL */
+
+#app .fm-about-photo img {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+
+    display: block;
+
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+    object-position: center;
+
+    transition: transform .45s ease;
+}
+
+/* EFECTO AL PASAR EL CURSOR */
+
+@media (hover: hover) {
+
+    #app .fm-about-photo:hover img {
+        transform: scale(1.04);
+    }
+
+}
+
+/* ==========================================
+   VISIÓN Y MISIÓN
+========================================== */
+
+#app .fm-about-split {
+    display: grid;
+
+    grid-template-columns:
+        minmax(0, 1fr)
+        minmax(0, 1fr);
+
+    align-items: center;
+    gap: 65px;
+
+    margin-bottom: 100px;
+}
+
+#app .fm-about-text {
+    min-width: 0;
+}
+
+#app .fm-about-text h2 {
+    margin: 0;
+
+    color: var(--about-text) !important;
+
+    font-size: clamp(32px, 3.5vw, 44px);
+    font-weight: 800;
+    line-height: 1.2;
+    letter-spacing: -1px;
+}
+
+#app .fm-about-text h2 span {
+    color: var(--about-red) !important;
+}
+
+/* FOTOGRAFÍAS DE VISIÓN Y MISIÓN */
+
+#app .fm-about-split .fm-about-photo {
+    height: 390px;
+}
+
+/* SEPARACIÓN ENTRE SECCIONES */
+
+#app .fm-about-vision {
+    padding: 20px 0;
+}
+
+#app .fm-about-mision {
+    padding: 20px 0;
+}
+
+/* ==========================================
+   SECCIÓN DE VALORES
+========================================== */
+
+#app .fm-about-values {
+    padding: 65px 0 20px;
+
+    border-top: 1px solid var(--about-border);
+}
+
+#app .fm-about-values-header {
+    max-width: 680px;
+
+    margin: 0 auto 45px;
+    text-align: center;
+}
+
+#app .fm-about-values-header h2 {
+    margin: 0;
+
+    color: var(--about-text) !important;
+
+    font-size: clamp(32px, 3.5vw, 44px);
+    font-weight: 800;
+    letter-spacing: -1px;
+}
+
+#app .fm-about-values-header h2 span {
+    color: var(--about-red) !important;
+}
+
+#app .fm-about-values-header .fm-about-line {
+    margin: 20px auto 25px;
+}
+
+#app .fm-about-values-header p {
+    max-width: 580px;
+    margin: 0 auto;
+
+    font-size: 15px;
+    line-height: 1.8;
+}
+
+/* ==========================================
+   TARJETAS DE VALORES
+========================================== */
+
+#app .fm-about-values-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+
+    gap: 22px;
+}
+
+#app .fm-about-value-card {
+    position: relative;
+
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+
+    min-height: 250px;
+
+    padding: 30px 25px;
+
+    background: var(--about-bg) !important;
+
+    border: 1px solid var(--about-border);
+
+    box-shadow:
+        0 7px 22px rgba(20, 15, 20, 0.035);
+
+    transition:
+        transform .25s ease,
+        border-color .25s ease,
+        box-shadow .25s ease;
+}
+
+#app .fm-about-value-card:hover {
+    transform: translateY(-5px);
+
+    border-color: var(--about-red);
+
+    box-shadow:
+        0 15px 30px rgba(20, 15, 20, 0.09);
+}
+
+/* ICONOS */
+
+#app .fm-about-value-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 62px;
+    height: 62px;
+
+    margin-bottom: 22px;
+
+    background: var(--about-soft);
+
+    border: 1px solid var(--about-border);
+
+    color: var(--about-red);
+}
+
+#app .fm-about-value-icon svg {
+    width: 30px;
+    height: 30px;
+
+    stroke: currentColor;
+}
+
+/* TÍTULOS */
+
+#app .fm-about-value-card h3 {
+    margin: 0 0 12px;
+
+    color: var(--about-text) !important;
+
+    font-size: 19px;
+    font-weight: 800;
+}
+
+/* DESCRIPCIÓN */
+
+#app .fm-about-value-card p {
+    margin: 0;
+
+    color: var(--about-muted) !important;
+
+    font-size: 14px;
+    line-height: 1.8;
+}
+
+/* ==========================================
+   TABLETS
+========================================== */
+
+@media (max-width: 950px) {
+
+    #app .fm-about-intro,
+    #app .fm-about-split {
+        gap: 30px;
+    }
+
+    #app .fm-about-photo {
+        height: 340px;
+    }
+
+    #app .fm-about-split .fm-about-photo {
+        height: 330px;
+    }
+
+    #app .fm-about-values-grid {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+}
+
+/* ==========================================
+   CELULARES
+========================================== */
+
+@media (max-width: 650px) {
+
+    #app .fm-about {
+        padding: 0 0 40px;
+    }
+
+    #app .fm-about-intro,
+    #app .fm-about-split {
+        grid-template-columns: 1fr;
+
+        gap: 25px;
+        margin-bottom: 60px;
+    }
+
+    #app .fm-about-intro {
+        margin-bottom: 70px;
+    }
+
+    #app .fm-about-photo,
+    #app .fm-about-split .fm-about-photo {
+        height: 280px;
+    }
+
+    /* EN MÓVIL MOSTRAR TEXTO ANTES DE IMAGEN */
+
+    #app .fm-about-mision .fm-about-text {
+        order: -1;
+    }
+
+    #app .fm-about-title {
+        font-size: 39px;
+    }
+
+    #app .fm-about-text h2 {
+        font-size: 32px;
+    }
+
+    #app .fm-about p {
+        font-size: 14px;
+        line-height: 1.8;
+    }
+
+    #app .fm-about .fm-about-lead {
+        font-size: 16px;
+    }
+
+    #app .fm-about-values {
+        padding-top: 45px;
+    }
+
+    #app .fm-about-values-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    #app .fm-about-value-card {
+        min-height: auto;
+        padding: 25px 22px;
+    }
+
+}
+
+/* ACCESIBILIDAD */
+
+@media (prefers-reduced-motion: reduce) {
+
+    #app .fm-about-photo img,
+    #app .fm-about-value-card {
+        transition: none;
+    }
+
+}
+
+
+/* ==========================================
+   FERROMAX - HERO PRINCIPAL CON FOTO FIJA
+========================================== */
+
+#app .fm-main-hero {
+    position: relative;
+
+    width: 100%;
+    min-height: 440px;
+
+    display: flex;
+    align-items: center;
+
+    background-image: url('/img/banner_inicio.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+
+    overflow: hidden;
+    isolation: isolate;
+}
+
+/* CAPA CLARA PARA FACILITAR LA LECTURA */
+
+#app .fm-main-hero::before {
+    content: "";
+
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+
+    background: linear-gradient(
+        90deg,
+        rgba(250, 248, 248, 0.97) 0%,
+        rgba(250, 248, 248, 0.92) 30%,
+        rgba(250, 248, 248, 0.72) 48%,
+        rgba(250, 248, 248, 0.20) 78%,
+        rgba(250, 248, 248, 0.05) 100%
+    );
+
+    pointer-events: none;
+}
+
+/* CONTENEDOR DEL TEXTO */
+
+#app .fm-main-hero-inner {
+    position: relative;
+    z-index: 1;
+
+    width: 100%;
+    max-width: 1180px;
+    min-height: 440px;
+
+    margin: 0 auto;
+    padding: 65px 24px;
+
+    display: flex;
+    align-items: center;
+}
+
+/* BLOQUE DE TEXTO */
+
+#app .fm-main-hero-copy {
+    width: 100%;
+    max-width: 550px;
+
+    animation: fmHeroEntrada .45s ease both;
+}
+
+/* SUBTÍTULO */
+
+#app .fm-hero-eyebrow {
+    margin: 0 0 20px;
+
+    color: #c8102e !important;
+
+    font-size: 13px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* TÍTULO PRINCIPAL */
+
+#app .fm-main-hero .fm-hero-title {
+    margin: 0 0 20px;
+
+    color: #20232b !important;
+
+    font-size: clamp(34px, 4vw, 52px);
+    font-weight: 800;
+    line-height: 1.12;
+    letter-spacing: -1.5px;
+}
+
+/* SEGUNDA PARTE DEL TÍTULO */
+
+#app .fm-main-hero .fm-hero-title span {
+    display: block;
+
+    color: #c8102e !important;
+}
+
+/* DESCRIPCIÓN */
+
+#app .fm-hero-description {
+    max-width: 480px;
+
+    margin: 0 0 30px;
+
+    color: #454954 !important;
+
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.75;
+}
+
+/* BOTONES */
+
+#app .fm-hero-actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+#app .fm-hero-actions .btn,
+#app .fm-hero-actions .btn-ghost {
+    min-height: 45px;
+    padding: 12px 22px;
+
+    font-size: 12px;
+    font-weight: 800;
+    text-decoration: none;
+}
+
+#app .fm-hero-actions .btn {
+    background: #c8102e;
+    color: #ffffff;
+}
+
+#app .fm-hero-actions .btn:hover {
+    background: #a50d26;
+}
+
+#app .fm-hero-actions .btn-ghost {
+    background: #ffffff;
+    color: #20232b;
+
+    border: 1px solid #aeb1ba;
+}
+
+#app .fm-hero-actions .btn-ghost:hover {
+    border-color: #c8102e;
+    color: #c8102e;
+}
+
+/* ==========================================
+   PUNTOS DEL CARRUSEL
+========================================== */
+
+#app .fm-main-hero-dots {
+    position: absolute;
+
+    bottom: 21px;
+    left: 50%;
+    z-index: 2;
+
+    transform: translateX(-50%);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+#app .fm-main-hero-dot {
+    width: 11px;
+    height: 11px;
+
+    padding: 0;
+
+    border: 1px solid #c8102e;
+    border-radius: 50% !important;
+
+    background: rgba(255, 255, 255, .85);
+
+    cursor: pointer;
+
+    transition:
+        background .2s ease,
+        transform .2s ease;
+}
+
+#app .fm-main-hero-dot[aria-current="true"] {
+    background: #c8102e;
+    transform: scale(1.15);
+}
+
+#app .fm-main-hero-dot:focus-visible {
+    outline: 2px solid #c8102e;
+    outline-offset: 4px;
+}
+
+/* ==========================================
+   TRANSICIÓN DE LOS TEXTOS
+========================================== */
+
+@keyframes fmHeroEntrada {
+
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ==========================================
+   TABLETS
+========================================== */
+
+@media (max-width: 900px) {
+
+    #app .fm-main-hero,
+    #app .fm-main-hero-inner {
+        min-height: 400px;
+    }
+
+    #app .fm-main-hero-inner {
+        padding: 55px 28px;
+    }
+
+    #app .fm-main-hero-copy {
+        max-width: 480px;
+    }
+
+}
+
+/* ==========================================
+   CELULARES
+========================================== */
+
+@media (max-width: 600px) {
+
+    #app .fm-main-hero,
+    #app .fm-main-hero-inner {
+        min-height: 440px;
+    }
+
+    #app .fm-main-hero {
+        background-position: 60% center;
+    }
+
+    #app .fm-main-hero::before {
+        background: rgba(250, 248, 248, .88);
+    }
+
+    #app .fm-main-hero-inner {
+        padding: 55px 20px 70px;
+    }
+
+    #app .fm-main-hero .fm-hero-title {
+        font-size: 34px;
+        letter-spacing: -1px;
+    }
+
+    #app .fm-hero-description {
+        font-size: 14px;
+        line-height: 1.65;
+    }
+
+    #app .fm-hero-actions {
+        gap: 10px;
+    }
+
+}
+
+/* ACCESIBILIDAD */
+
+@media (prefers-reduced-motion: reduce) {
+
+    #app .fm-main-hero-copy {
+        animation: none;
+    }
+
+}
+
+
+/* ==========================================
+   BARRA LATERAL FIJA DEL CATÁLOGO
+========================================== */
+
+@media (min-width: 960px) {
+
+    #app.fm-catalog-page .fm-catalog-layout #ff {
+        position: sticky !important;
+
+        top: 20px;
+
+        align-self: start;
+
+        max-height: calc(100vh - 40px);
+        max-height: calc(100dvh - 40px);
+
+        overflow-y: auto;
+        overflow-x: hidden;
+
+        overscroll-behavior: contain;
+
+        scrollbar-width: thin;
+        scrollbar-color: #c8102e #f5f1f2;
+
+        z-index: 10;
+    }
+
+    #app.fm-catalog-page .fm-catalog-layout {
+        align-items: start;
+    }
+
+    #app.fm-catalog-page .fm-catalog-layout #ff::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    #app.fm-catalog-page .fm-catalog-layout #ff::-webkit-scrollbar-track {
+        background: #f5f1f2;
+        border-radius: 10px;
+    }
+
+    #app.fm-catalog-page .fm-catalog-layout #ff::-webkit-scrollbar-thumb {
+        background: #c8102e;
+        border-radius: 10px;
+    }
+}
+
+/* EN CELULARES NO QUEDA FIJA */
+
+@media (max-width: 959px) {
+
+    #app.fm-catalog-page .fm-catalog-layout #ff {
+        position: static !important;
+
+        max-height: none;
+
+        overflow: visible;
+    }
+}
+
+        /* =================================
+           INICIO Y CARRUSELES
+        ================================= */
+
+        .fm-home-section {
+            max-width: 1180px;
+            margin: 36px auto;
+            padding: 0 18px;
+        }
+
+        .fm-section-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 18px;
+        }
+
+        .fm-section-head h2 {
+            font-size: 23px;
+            font-weight: 800;
+        }
+
+        .fm-section-head a {
+            color: var(--fm-red);
+            display: flex;
+            gap: 4px;
+            align-items: center;
+            font-weight: 700;
+        }
+
+        .fm-home-cats {
+            display: grid;
+            grid-template-columns: repeat(
+                6,
+                minmax(0, 1fr)
+            );
+            gap: 14px;
+        }
+
+        .fm-cat-tile {
+            border: 1px solid #ebe3e6;
+            border-radius: 12px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            padding-bottom: 12px;
+            text-decoration: none;
+            color: #282328;
+        }
+
+        .fm-cat-tile > div {
+            height: 115px;
+            background: #faf7f8;
+            display: grid;
+            place-items: center;
+            font-size: 38px;
+        }
+
+        .fm-cat-tile img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .fm-cat-tile strong,
+        .fm-cat-tile small {
+            padding: 0 12px;
+        }
+
+        .fm-cat-tile strong {
+            margin-top: 10px;
+            font-size: 13px;
+        }
+
+        .fm-cat-tile small {
+            color: var(--fm-red);
+            margin-top: 4px;
+        }
+
+        .fm-carousel {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .fm-carousel > button {
+            flex-shrink: 0;
+            width: 37px;
+            height: 42px;
+            border: 1px solid #e9dfe2;
+            border-radius: 9px;
+            color: var(--fm-red);
+            background: white;
+            display: grid;
+            place-items: center;
+        }
+
+        .fm-track {
+            display: flex;
+            gap: 15px;
+            min-width: 0;
+            flex: 1;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            scrollbar-width: thin;
+            padding: 7px 2px 15px;
+        }
+
+        .fm-track > div {
+            scroll-snap-align: start;
+        }
+
+        .fm-brand-tile {
+            display: grid;
+            place-items: center;
+            min-height: 80px;
+            border: 1px solid #e8dee2;
+            border-radius: 11px;
+            text-align: center;
+            font-size: 17px;
+            font-weight: 800;
+            color: #5f555b;
+            text-decoration: none;
+        }
+
+        .fm-brand-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 14px;
+        }
+
+        /* =================================
+           TARJETAS DE PRODUCTOS
+        ================================= */
+
+        .fm-products {
+            display: grid;
+            grid-template-columns: repeat(
+                3,
+                minmax(0, 1fr)
+            );
+            gap: 18px;
+        }
+
+        .fm-card {
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+            background: #fcfaf9;
+            border: 1px solid #e9e0e4;
+            border-radius: 16px;
+            padding: 8px;
+            transition:
+                transform .2s,
+                border-color .2s,
+                box-shadow .2s;
+        }
+
+        .fm-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--fm-red);
+            box-shadow: 0 12px 28px #760d2020;
+        }
+
+        .fm-card-media {
+            position: relative;
+            border-radius: 12px;
+            background: #f2eff0;
+            overflow: hidden;
+        }
+
+        .fm-card-stock {
+            position: absolute;
+            top: 10px;
+            left: 9px;
+            z-index: 2;
+            padding: 5px 7px;
+            border-radius: 5px;
+            background: white;
+            color: #167044;
+            font-weight: 800;
+            font-size: 9px;
+        }
+
+        .fm-card-stock.off {
+            color: var(--fm-red);
+        }
+
+        .fm-heart {
+            position: absolute;
+            z-index: 3;
+            top: 8px;
+            right: 8px;
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            border: 1px solid #ece1e4;
+            background: white;
+            color: #777;
+            font-size: 26px;
+            line-height: 1;
+            cursor: pointer;
+        }
+
+        .fm-heart.is-favorite {
+            color: var(--fm-red);
+            background: #fff0f3;
+        }
+
+
+/* ==========================================
+   FERROMAX - IMÁGENES DE PRODUCTOS
+========================================== */
+
+/* CONTENEDOR DE LA FOTOGRAFÍA */
+
+#app .fm-card-media {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+
+    border-radius: 12px;
+    background: #ffffff;
+}
+
+/* ESPACIO UNIFORME PARA CADA PRODUCTO */
+
+#app .fm-card-image {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 100%;
+    height: 245px;
+
+    padding: 16px 12px 8px;
+
+    overflow: hidden;
+
+    background: #ffffff;
+    text-decoration: none;
+}
+
+/* MOSTRAR LA IMAGEN COMPLETA */
+
+#app .fm-card-image img {
+    display: block;
+
+    width: 100%;
+    height: 100%;
+
+    max-width: 100%;
+    max-height: 100%;
+
+    object-fit: contain;
+    object-position: center;
+
+    transform: none !important;
+
+    border: none;
+    border-radius: 0;
+
+    background: transparent;
+}
+
+/* MANTENER LAS TARJETAS UNIFORMES */
+
+#app .fm-card {
+    display: flex;
+    flex-direction: column;
+
+    height: 100%;
+    min-width: 0;
+}
+
+/* ADAPTACIÓN PARA TABLETS */
+
+@media (max-width: 900px) {
+
+    #app .fm-card-image {
+        height: 215px;
+        padding: 14px 10px 8px;
+    }
+
+}
+
+/* ADAPTACIÓN PARA CELULARES */
+
+@media (max-width: 600px) {
+
+    #app .fm-card-image {
+        height: 185px;
+        padding: 12px 8px 6px;
+    }
+
+}
+
+
+        .fm-dots {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            align-items: center;
+            min-height: 28px;
+            padding-bottom: 8px;
+        }
+
+        .fm-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #bbb1b5;
+            border: 0;
+            cursor: pointer;
+        }
+
+        .fm-dot.active {
+            width: 22px;
+            border-radius: 7px;
+            background: var(--fm-red);
+        }
+
+        .fm-card-body {
+            display: flex;
+            flex: 1;
+            flex-direction: column;
+            gap: 8px;
+            padding: 10px 8px;
+        }
+
+        .fm-card-brand {
+            font-size: 11px;
+            text-transform: uppercase;
+            color: #a31a36;
+            font-weight: 800;
+        }
+
+        .fm-card-name {
+            color: #201a1e;
+            font-size: 15px;
+            font-weight: 800;
+            line-height: 1.35;
+            min-height: 40px;
+            text-decoration: none;
+        }
+
+        .fm-card-name:hover {
+            color: var(--fm-red);
+        }
+
+        .fm-card-rating {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: #777;
+            font-size: 11px;
+        }
+
+        .fm-stars {
+            display: flex;
+            gap: 1px;
+            color: #cfc6cb;
+            font-size: 14px;
+        }
+
+        .fm-stars .on {
+            color: var(--fm-red);
+        }
+
+        .fm-card-price {
+            font-size: 21px;
+            font-weight: 900;
+            color: #1d181c;
+        }
+
+        .fm-card-add {
+            margin-top: auto;
+            width: 100%;
+            min-height: 41px;
+            border: 0;
+            border-radius: 9px;
+            background: var(--fm-red);
+            color: #fff;
+            font-size: 12px;
+            font-weight: 800;
+            cursor: pointer;
+        }
+
+        .fm-card-add:disabled {
+            background: #aaa;
+            cursor: not-allowed;
+        }
+
+        /* =================================
+           FILTROS DEL CATÁLOGO
+        ================================= */
+
+        .fm-catalog-layout {
+            display: grid;
+            grid-template-columns:
+                var(--fm-rail)
+                minmax(0, 1fr);
+            gap: var(--fm-gap);
+            align-items: start;
+        }
+
+        .fm-catalog-layout #ff {
+            display: flex;
+            flex-direction: column;
+            gap: 19px;
+            min-width: 0;
+            margin: 0;
+            padding: 0;
+            border: 0;
+            border-radius: 0;
+            background: transparent;
+            box-shadow: none;
+        }
+
+        .fm-catalog-layout #ff h2 {
+            font-size: 25px;
+            font-weight: 850;
+            border-bottom: 1px solid #e7dfe2;
+            padding-bottom: 14px;
+            position: relative;
+        }
+
+        .fm-catalog-layout #ff h2::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background: var(--fm-red);
+        }
+
+        .fm-catalog-layout #ff > label,
+        .fm-category-filter {
+            display: flex;
+            flex-direction: column;
+            gap: 9px;
+            font-size: 15px;
+            font-weight: 700;
+            color: #30292e;
+        }
+
+        .fm-catalog-layout .field,
+        .fm-form .field {
+            min-height: 47px;
+            width: 100%;
+            background: #fff;
+            color: #272027;
+            border: 1px solid #ded6db;
+            border-radius: 9px;
+            padding: 10px 12px;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .fm-catalog-layout .field:focus,
+        .fm-form .field:focus {
+            border-color: var(--fm-red);
+            box-shadow: 0 0 0 3px #c8102e1c;
+        }
+
+        .fm-catalog-layout #ff > .btn {
+            min-height: 45px;
+            background: var(--fm-red);
+            color: white;
+            border: 0;
+            border-radius: 9px;
+            font-weight: 800;
+            font-size: 13px;
+        }
+
+        .fm-catalog-layout #ff > a {
+            text-align: center;
+            color: #7b6b73;
+            font-size: 14px;
+        }
+
+        .fm-catalog-results {
+            min-width: 0;
+        }
+
+        .fm-catalog-results h1 {
+            font-size: 27px;
+            font-weight: 850;
+            margin: 0 0 5px;
+        }
+
+        .fm-catalog-results > p {
+            margin-bottom: 17px;
+            color: #786f74;
+            font-size: 14px;
+        }
+
+        /* =================================
+           MENÚ DE CATEGORÍAS
+        ================================= */
+
+        .fm-category-menu {
+            border: 1px solid #e7dce0;
+            border-radius: 11px;
+            overflow: hidden;
+            background: white;
+        }
+
+        .fm-category-title {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            min-height: 66px;
+            cursor: pointer;
+            background: #faf2f4;
+            padding: 10px;
+            list-style: none;
+        }
+
+        .fm-category-title::-webkit-details-marker {
+            display: none;
+        }
+
+        .fm-category-title > span:nth-child(2) {
+            flex: 1;
+            font-size: 13px;
+            font-weight: 800;
+        }
+
+        .fm-category-title small {
+            display: block;
+            font-size: 11px;
+            color: #82777d;
+            font-weight: 500;
+            margin-top: 3px;
+        }
+
+        .fm-menu-icon {
+            width: 35px;
+            height: 35px;
+            background: var(--fm-red);
+            border-radius: 8px;
+            color: white;
+            display: grid;
+            place-items: center;
+        }
+
+        .fm-category-list {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            max-height: 430px;
+            overflow-y: auto;
+            padding: 9px 7px;
+        }
+
+        .fm-cat-option {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            justify-content: space-between;
+            text-align: left;
+            min-height: 42px;
+            width: 100%;
+            padding: 8px 10px;
+            background: transparent;
+            border: 0;
+            border-radius: 8px;
+            color: #51494f;
+            cursor: pointer;
+            font-size: 13px;
+        }
+
+        .fm-cat-option:hover {
+            background: #fff0f3;
+            color: var(--fm-red);
+        }
+
+        .fm-cat-option.active {
+            background: var(--fm-red);
+            color: white;
+        }
+
+        .fm-cat-option span {
+            flex: 1;
+        }
+
+        .fm-cat-option em {
+            font-style: normal;
+            font-size: 11px;
+            font-weight: 800;
+            background: #f0e9eb;
+            color: #776e74;
+            border-radius: 5px;
+            min-width: 25px;
+            padding: 3px 5px;
+            text-align: center;
+        }
+
+        .fm-cat-option.active em {
+            background: #ffffff36;
+            color: white;
+        }
+
+        .fm-cat-submenu {
+            margin-left: 12px;
+            border-left: 1px solid #e9dce0;
+        }
+
+        .fm-cat-submenu summary {
+            font-size: 12px;
+            color: #a71b38;
+            padding: 8px;
+            cursor: pointer;
+        }
+
+        .fm-cat-submenu > div {
+            padding-left: 8px;
+        }
+
+        /* =================================
+           FICHA DEL PRODUCTO
+        ================================= */
+
+        .fm-pdp {
+            display: grid;
+            grid-template-columns:
+                minmax(0, 1.14fr)
+                minmax(345px, .86fr);
+            gap: clamp(26px, 4vw, 65px);
+            width: 100%;
+            max-width: 1450px;
+            margin: auto;
+            align-items: start;
+        }
+
+        .fm-gallery {
+            display: grid;
+            grid-template-columns:
+                80px
+                minmax(0, 1fr);
+            gap: 14px;
+            min-width: 0;
+        }
+
+        .fm-thumbs {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .fm-thumb {
+            width: 78px;
+            height: 78px;
+            display: grid;
+            place-items: center;
+            background: white;
+            border: 1px solid #e3dade;
+            border-radius: 10px;
+            padding: 5px;
+            cursor: pointer;
+        }
+
+        .fm-thumb.active {
+            border: 2px solid var(--fm-red);
+            box-shadow: 0 0 0 3px #c8102e15;
+        }
+
+        .fm-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .fm-photo-wrap {
+            min-width: 0;
+        }
+
+        .fm-photo-main {
+            display: grid;
+            place-items: center;
+            position: relative;
+            width: 100%;
+            height: clamp(390px, 41vw, 545px);
+            background: #f8f6f7;
+            border: 1px solid #ece4e7;
+            border-radius: 17px;
+            overflow: hidden;
+            padding: 0;
+            cursor: zoom-in;
+        }
+
+        .fm-photo-main.zoomed {
+            cursor: crosshair;
+            touch-action: none;
+        }
+
+        .fm-photo-img {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            pointer-events: none;
+            user-select: none;
+        }
+
+        .fm-lens {
+            position: absolute;
+            z-index: 3;
+            top: 50%;
+            left: 50%;
+            width: 165px;
+            height: 165px;
+            opacity: 0;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            background: #f8f6f7 no-repeat;
+            border: 4px solid white;
+            border-radius: 50%;
+            box-shadow: 0 7px 25px #0004;
+        }
+
+        .fm-zoom-label {
+            position: absolute;
+            bottom: 13px;
+            right: 13px;
+            z-index: 2;
+            background: #fffffff2;
+            padding: 8px 11px;
+            border: 1px solid #eee5e8;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 750;
+            color: #3c3338;
+            pointer-events: none;
+        }
+
+        .fm-photo-nav {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            margin-top: 10px;
+        }
+
+        .fm-photo-nav button {
+            display: grid;
+            place-items: center;
+            width: 34px;
+            height: 34px;
+            background: white;
+            color: var(--fm-red);
+            border: 1px solid #e5d7dd;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 28px;
+        }
+
+        .fm-photo-count {
+            font-size: 12px;
+            color: #7c7379;
+        }
+
+        .fm-photo-help {
+            text-align: center;
+            margin: 10px 0 0;
+            font-size: 12px;
+            line-height: 1.5;
+            color: #81777d;
+        }
+
+        /* =================================
+           INFORMACIÓN DEL PRODUCTO
+        ================================= */
+
+        .fm-product-info {
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .fm-back {
+            margin-bottom: 22px;
+            align-self: flex-start;
+            color: #746971;
+            text-decoration: none;
+            font-size: 13px;
+        }
+
+        .fm-brand {
+            font-size: 12px;
+            color: #a11936;
+            font-weight: 850;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .fm-product-info h1 {
+            font-size: clamp(26px, 2.5vw, 35px);
+            font-weight: 850;
+            line-height: 1.2;
+            margin: 8px 0;
+        }
+
+        .fm-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            font-size: 12px;
+            color: #797078;
+            margin: 8px 0 22px;
+        }
+
+        .fm-price-block {
+            border-top: 1px solid #e9dfe3;
+            padding-top: 20px;
+        }
+
+        .fm-price-block small {
+            font-size: 11px;
+            color: #7d737a;
+            font-weight: 800;
+            letter-spacing: .8px;
+        }
+
+        .fm-price-block > div {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .fm-price-block strong {
+            font-size: clamp(30px, 3vw, 40px);
+            font-weight: 900;
+        }
+
+        .fm-price-block span {
+            color: #a31634;
+            background: #fce8ed;
+            padding: 6px 10px;
+            border-radius: 8px;
+            font-weight: 800;
+        }
+
+        .fm-price-block del {
+            color: #958c91;
+            font-size: 13px;
+        }
+
+        .fm-stock {
+            align-self: flex-start;
+            margin: 18px 0 7px;
+            padding: 8px 11px;
+            color: #237446;
+            background: #eef7f0;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 800;
+        }
+
+        .fm-stock.out {
+            color: var(--fm-red);
+            background: #fbe9ed;
+        }
+
+        /* =================================
+           DESCRIPCIÓN MÁS GRANDE
+        ================================= */
+
+        .fm-description {
+            margin-top: 21px;
+        }
+
+        .fm-description h2 {
+            font-size: 17px;
+            font-weight: 800;
+            margin-bottom: 10px;
+        }
+
+        .fm-description p {
+            font-size: 16px !important;
+            line-height: 1.85 !important;
+            color: #484148;
+            white-space: pre-line;
+            margin: 0;
+        }
+
+        /* =================================
+           ESPECIFICACIONES TÉCNICAS
+        ================================= */
+
+        .fm-spec {
+            margin-top: 28px;
+            border: 1px solid #efd3db;
+            border-radius: 11px;
+            overflow: hidden;
+        }
+
+        .fm-spec > h2 {
+            background: var(--fm-red);
+            color: #fff;
+            margin: 0;
+            padding: 14px 16px;
+            font-size: 16px;
+            font-weight: 850;
+        }
+
+        .fm-spec-row {
+            display: grid;
+            grid-template-columns:
+                minmax(0, 1fr)
+                minmax(0, 1fr);
+            align-items: center;
+            gap: 12px;
+            padding: 12px 15px;
+            font-size: 14px;
+            border-bottom: 1px solid #f2dce2;
+        }
+
+        .fm-spec-row:nth-child(odd) {
+            background: #fff3f5;
+        }
+
+        .fm-spec-row strong {
+            text-align: right;
+            overflow-wrap: anywhere;
+            color: #252026;
+            font-size: 14px;
+        }
+
+        .fm-spec-empty {
+            padding: 15px;
+            color: #776c73;
+            font-size: 14px;
+            margin: 0;
+        }
+
+        .fm-spec-extra summary {
+            background: #fff0f3;
+            color: var(--fm-red);
+            padding: 12px;
+            text-align: center;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 800;
+        }
+
+        .fm-unit {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #6f666c;
+        }
+
+        /* =================================
+           COMPRA
+        ================================= */
+
+        .fm-purchase {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: end;
+            gap: 12px;
+            margin-top: 26px;
+        }
+
+        .fm-purchase label {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+            font-size: 13px;
+            font-weight: 750;
+        }
+
+        .fm-purchase input {
+            width: 88px;
+            height: 47px;
+            border: 1px solid #ded6db;
+            border-radius: 9px;
+            padding: 9px 11px;
+        }
+
+        .fm-buy {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            flex: 1;
+            min-width: 180px;
+            min-height: 47px;
+            padding: 9px 14px;
+            background: var(--fm-red);
+            color: #fff;
+            border: 0;
+            border-radius: 9px;
+            font-size: 13px;
+            font-weight: 800;
+            cursor: pointer;
+        }
+
+        .fm-view-cart {
+            display: grid;
+            place-items: center;
+            min-height: 47px;
+            padding: 8px 13px;
+            color: var(--fm-red);
+            border: 1px solid var(--fm-red);
+            border-radius: 9px;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 800;
+        }
+
+        .fm-demo-note {
+            margin-top: 16px;
+            color: #958990;
+            font-size: 11px;
+        }
+
+        /* =================================
+           OTRAS PÁGINAS
+        ================================= */
+
+        .fm-empty {
+            padding: 70px 16px;
+            text-align: center;
+        }
+
+        .fm-empty h1 {
+            font-size: 23px;
+            font-weight: 850;
+            margin-bottom: 15px;
+        }
+
+        .fm-page-title {
+            font-size: 26px;
+            font-weight: 800;
+            margin-bottom: 20px;
+        }
+
+        .fm-cart-row {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 14px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .fm-cart-row > span:first-child {
+            flex: 1;
+            min-width: 180px;
+        }
+
+        .fm-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 18px;
+        }
+
+        .fm-form {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .fm-form h1 {
+            font-size: 25px;
+            font-weight: 800;
+        }
+
+        .fm-form label {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .fm-error {
+            color: #b71939;
+            font-size: 13px;
+        }
+
+        .fm-account {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            max-width: 850px;
+            margin: auto;
+        }
+
+        .fm-auth-actions {
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .fm-order {
+            border: 1px solid #eee;
+            border-radius: 10px;
+            margin: 12px 0;
+            padding: 16px;
+        }
+
+        /* =================================
+           ENCABEZADO Y ALINEACIÓN
+        ================================= */
+
+        @media (min-width: 960px) {
+
+            #app.fm-catalog-page .fm-catalog-layout {
+                grid-template-columns:
+                    var(--fm-rail)
+                    minmax(0, 1fr);
+            }
+
+            #hdr > header,
+            #hdr > div:last-child,
+            #hdr > div:first-child > div {
+                width: 100% !important;
+                max-width: none !important;
+                margin-left: 0 !important;
+                margin-right: 0 !important;
+                padding-left: var(--fm-pad) !important;
+                padding-right: var(--fm-pad) !important;
+            }
+
+            #hdr > header {
+                display: grid !important;
+                grid-template-columns:
+                    var(--fm-rail)
+                    minmax(200px, 1fr)
+                    max-content
+                    max-content;
+
+                column-gap: var(--fm-gap) !important;
+                row-gap: 14px !important;
+                align-items: center;
+            }
+
+            #hdr > header > a:first-child {
+                width: 100% !important;
+                max-width: 100% !important;
+                grid-column: 1;
+            }
+
+            #hdr > header > #sf {
+                grid-column: 2;
+                width: 100% !important;
+                min-width: 0 !important;
+                margin: 0;
+            }
+
+            #hdr > div:last-child {
+                display: grid !important;
+                grid-template-columns:
+                    var(--fm-rail)
+                    minmax(0, 1fr);
+
+                gap: var(--fm-gap) !important;
+                align-items: center;
+            }
+
+            #hdr #cat-dd,
+            #hdr #nav {
+                width: 100%;
+                min-width: 0;
+            }
+        }
+
+        /* =================================
+           RESPONSIVE
+        ================================= */
+
+        @media (min-width: 1500px) {
+            .fm-products {
+                grid-template-columns: repeat(
+                    4,
+                    minmax(0, 1fr)
+                );
+            }
+        }
+
+        @media (max-width: 1100px) {
+
+            .fm-pdp {
+                grid-template-columns: minmax(0, 1fr);
+            }
+
+            .fm-photo-main {
+                height: 480px;
+            }
+
+            .fm-home-cats {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 959px) {
+
+            :root {
+                --fm-pad: 16px;
+            }
+
+            #app .fm-catalog-layout {
+                grid-template-columns: minmax(0, 1fr);
+            }
+
+            .fm-products {
+                grid-template-columns: repeat(
+                    2,
+                    minmax(0, 1fr)
+                );
+            }
+        }
+
+        @media (max-width: 650px) {
+
+            .fm-gallery {
+                display: flex;
+                flex-direction: column-reverse;
+            }
+
+            .fm-thumbs {
+                flex-direction: row;
+                flex-wrap: wrap;
+            }
+
+            .fm-thumb {
+                height: 60px;
+                width: 60px;
+            }
+
+            .fm-photo-main {
+                height: clamp(310px, 80vw, 440px);
+            }
+
+            .fm-lens {
+                width: 130px;
+                height: 130px;
+            }
+
+            .fm-home-cats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .fm-account {
+                grid-template-columns: 1fr;
+            }
+
+            .fm-brand-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .fm-pdp {
+                gap: 26px;
+            }
+
+            .fm-products {
+                gap: 11px;
+            }
+
+            .fm-card-image {
+                height: 155px;
+            }
+
+            .fm-card-name {
+                font-size: 13px;
+            }
+
+            .fm-card-price {
+                font-size: 17px;
+            }
+
+            .fm-spec-row {
+                font-size: 13px;
+                padding: 11px;
+            }
+
+            .fm-spec-row strong {
+                font-size: 13px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+
+            .fm-card,
+            .fm-dot,
+            .fm-thumb {
+                transition: none;
+            }
+        }
+
+/* ==========================================
+   FERROMAX - TARJETAS DE CATEGORÍAS
+========================================== */
+
+#app .fm-cat-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 24px;
+}
+
+#app .fm-cat-card {
+    min-width: 0;
+}
+
+#app .fm-cat-card-link {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+
+    border: 1px solid #eadde1;
+    border-radius: 20px;
+    background: #fff;
+    text-decoration: none;
+
+    box-shadow: 0 10px 24px rgba(31, 16, 22, 0.04);
+
+    transition:
+        transform 0.22s ease,
+        box-shadow 0.22s ease,
+        border-color 0.22s ease;
+}
+
+#app .fm-cat-card-link:hover {
+    transform: translateY(-4px);
+    border-color: #d4b9c2;
+    box-shadow: 0 18px 34px rgba(31, 16, 22, 0.08);
+}
+
+#app .fm-cat-visual {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    min-height: 210px;
+    padding: 24px 20px;
+
+    border-bottom: 1px solid #efe4e7;
+
+    background:
+        radial-gradient(circle at top left, #fff5f7 0%, transparent 36%),
+        linear-gradient(180deg, #fffefe 0%, #faf7f8 100%);
+}
+
+#app .fm-cat-media {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 170px;
+    height: 170px;
+    padding: 14px;
+
+    border-radius: 18px;
+    background: #ffffff;
+}
+
+#app .fm-cat-media img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    object-position: center;
+    display: block;
+
+    filter: drop-shadow(0 10px 16px rgba(20, 15, 18, 0.08));
+    transition: transform 0.22s ease;
+}
+
+#app .fm-cat-card-link:hover .fm-cat-media img {
+    transform: scale(1.04);
+}
+
+#app .fm-cat-no-image {
+    display: grid;
+    place-items: center;
+
+    width: 100%;
+    height: 100%;
+
+    border: 1px dashed #e2c8d0;
+    border-radius: 14px;
+
+    background: #fff7f9;
+    color: #b15368;
+
+    font-size: 13px;
+    font-weight: 700;
+    text-align: center;
+}
+
+#app .fm-cat-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 12px;
+
+    min-height: 118px;
+    padding: 22px 18px 20px;
+}
+
+#app .fm-cat-content h3 {
+    margin: 0;
+    color: #1a1d25;
+    font-size: 17px;
+    font-weight: 800;
+    line-height: 1.35;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+}
+
+#app .fm-cat-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+
+    color: #c8102e;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 0.01em;
+}
+
+/* ==========================================
+   RESPONSIVE
+========================================== */
+
+@media (max-width: 1024px) {
+    #app .fm-cat-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 640px) {
+    #app .fm-cat-grid {
+        grid-template-columns: 1fr;
+        gap: 18px;
+    }
+
+    #app .fm-cat-visual {
+        min-height: 190px;
+        padding: 20px 16px;
+    }
+
+    #app .fm-cat-media {
+        width: 150px;
+        height: 150px;
+    }
+
+    #app .fm-cat-content {
+        min-height: auto;
+        padding: 18px 16px;
+    }
+
+    #app .fm-cat-content h3 {
+        font-size: 16px;
+    }
+}
+
+
+/* ==========================================
+   IMÁGENES UNIFORMES DE CATEGORÍAS
+========================================== */
+
+#app .fm-cat-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 22px;
+}
+
+#app .fm-cat-visual {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    height: 225px;
+    min-height: 225px;
+
+    padding: 15px;
+
+    background: linear-gradient(
+        145deg,
+        #faf8f9,
+        #f5f2f3
+    );
+}
+
+#app .fm-cat-media {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    width: 100%;
+    height: 195px;
+
+    padding: 10px;
+    background: transparent;
+    overflow: hidden;
+}
+
+#app .fm-cat-media img {
+    display: block;
+
+    width: 100%;
+    height: 100%;
+
+    max-width: 100%;
+    max-height: 100%;
+
+    object-fit: contain;
+    object-position: center;
+
+    mix-blend-mode: multiply;
+
+    transition: transform .25s ease;
+}
+
+#app .fm-cat-card-link:hover .fm-cat-media img {
+    transform: scale(1.06);
+}
+
+#app .fm-cat-empty,
+#app .fm-cat-media-error::after {
+    color: #99939a;
+    font-size: 12px;
+    font-weight: 600;
+    text-align: center;
+}
+
+#app .fm-cat-media-error::after {
+    content: "Imagen no disponible";
+}
+
+@media (max-width: 950px) {
+    #app .fm-cat-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 600px) {
+    #app .fm-cat-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+}
+
+
+/* ==========================================
+   FERROMAX - CATEGORÍAS TIPO BANNER
+========================================== */
+
+/* DISTRIBUCIÓN */
+
+#app .fm-category-banners {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 22px;
+
+    width: 100%;
+    margin-top: 24px;
+}
+
+/* TARJETA */
+
+#app .fm-category-cover {
+    position: relative;
+    display: block;
+    isolation: isolate;
+
+    width: 100%;
+    min-width: 0;
+    aspect-ratio: 1 / 1;
+
+    overflow: hidden;
+
+    border: 0;
+    border-radius: 12px;
+
+    background: #eee8eb;
+    text-decoration: none;
+
+    box-shadow: 0 8px 22px rgba(30, 20, 25, .08);
+
+    transition:
+        transform .3s ease,
+        box-shadow .3s ease;
+}
+
+/* IMAGEN DE FONDO */
+
+#app .fm-category-cover-image {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+
+    display: block;
+
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+    object-position: center;
+
+    transition:
+        transform .55s ease,
+        filter .4s ease;
+}
+
+/* CAPA QUE APARECE AL PASAR EL CURSOR */
+
+#app .fm-category-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 26px;
+
+    background: linear-gradient(
+        180deg,
+        rgba(20, 12, 16, .30) 0%,
+        rgba(35, 8, 18, .78) 100%
+    );
+
+    opacity: 0;
+
+    transition: opacity .3s ease;
+}
+
+/* CONTENIDO */
+
+#app .fm-category-overlay-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+
+    width: 100%;
+    text-align: center;
+
+    color: #fff;
+
+    transform: translateY(15px);
+    transition: transform .35s ease;
+}
+
+#app .fm-category-kicker {
+    color: #f8c5cf;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 2px;
+}
+
+/* NOMBRE DE CATEGORÍA */
+
+#app .fm-category-overlay h3 {
+    margin: 0;
+
+    color: #fff;
+
+    font-size: clamp(20px, 2.2vw, 30px);
+    font-weight: 850;
+    line-height: 1.2;
+    letter-spacing: -.03em;
+
+    text-align: center;
+    text-wrap: balance;
+}
+
+/* VER PRODUCTOS */
+
+#app .fm-category-discover {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+
+    margin-top: 6px;
+    padding: 11px 19px;
+
+    border: 1px solid rgba(255,255,255,.8);
+    border-radius: 7px;
+
+    background: rgba(255,255,255,.10);
+    color: #fff;
+
+    font-size: 12px;
+    font-weight: 800;
+
+    transition:
+        background .25s ease,
+        color .25s ease;
+}
+
+#app .fm-category-discover span {
+    font-size: 17px;
+}
+
+/* ==========================================
+   EFECTO HOVER
+========================================== */
+
+@media (hover: hover) {
+
+    #app .fm-category-cover:hover {
+        transform: translateY(-4px);
+
+        box-shadow:
+            0 18px 38px rgba(30, 20, 25, .18);
+    }
+
+    #app .fm-category-cover:hover
+    .fm-category-cover-image {
+        transform: scale(1.08);
+    }
+
+    #app .fm-category-cover:hover
+    .fm-category-overlay {
+        opacity: 1;
+    }
+
+    #app .fm-category-cover:hover
+    .fm-category-overlay-content {
+        transform: translateY(0);
+    }
+
+    #app .fm-category-cover:hover
+    .fm-category-discover {
+        background: #fff;
+        color: #b50e2e;
+    }
+}
+
+/* ACCESIBILIDAD CON TECLADO */
+
+#app .fm-category-cover:focus-visible {
+    outline: 3px solid #c8102e;
+    outline-offset: 4px;
+}
+
+#app .fm-category-cover:focus-visible
+.fm-category-overlay {
+    opacity: 1;
+}
+
+#app .fm-category-cover:focus-visible
+.fm-category-overlay-content {
+    transform: translateY(0);
+}
+
+/* ==========================================
+   CELULARES SIN HOVER
+========================================== */
+
+@media (hover: none) {
+
+    #app .fm-category-overlay {
+        opacity: 1;
+
+        align-items: flex-end;
+
+        background: linear-gradient(
+            180deg,
+            transparent 30%,
+            rgba(20, 8, 12, .85) 100%
+        );
+    }
+
+    #app .fm-category-overlay-content {
+        gap: 8px;
+        transform: none;
+    }
+
+    #app .fm-category-overlay h3 {
+        font-size: 22px;
+    }
+}
+
+/* ==========================================
+   RESPONSIVE
+========================================== */
+
+@media (max-width: 1000px) {
+
+    #app .fm-category-banners {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 18px;
+    }
+}
+
+@media (max-width: 620px) {
+
+    #app .fm-category-banners {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    #app .fm-category-cover {
+        aspect-ratio: 1.15 / 1;
+    }
+
+    #app .fm-category-overlay h3 {
+        font-size: 23px;
+    }
+}
+
+/* REDUCIR ANIMACIONES CUANDO SE SOLICITE */
+
+@media (prefers-reduced-motion: reduce) {
+
+    #app .fm-category-cover,
+    #app .fm-category-cover-image,
+    #app .fm-category-overlay,
+    #app .fm-category-overlay-content {
+        transition: none;
+    }
+}
+
+/* ==========================================
+   RESPONSIVE
+========================================== */
+
+@media (max-width: 1024px) {
+    #app .fm-cat-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 640px) {
+    #app .fm-cat-grid {
+        grid-template-columns: 1fr;
+        gap: 18px;
+    }
+
+    #app .fm-cat-visual {
+        min-height: 170px;
+        padding: 22px 18px;
+    }
+
+    #app .fm-cat-visual img {
+        max-width: 145px;
+        max-height: 115px;
+    }
+
+    #app .fm-cat-content {
+        min-height: auto;
+        padding: 18px 16px;
+    }
+
+    #app .fm-cat-content h3 {
+        font-size: 16px;
+    }
+}
+
+
+/* ==========================================
+   FERROMAX - CORRECCIÓN GLOBAL DE DISTRIBUCIÓN
+========================================== */
+
+/* CONTENEDOR GENERAL */
+
+#app {
+    box-sizing: border-box;
+    height: auto !important;
+    min-height: 0;
+    overflow: visible !important;
+}
+
+/* ==========================================
+   PÁGINAS NORMALES
+   NOSOTROS, CARRITO, CUENTA, ETC.
+========================================== */
+
+#app.fm-normal-page {
+    width: 100% !important;
+    max-width: 1300px !important;
+
+    margin-left: auto !important;
+    margin-right: auto !important;
+
+    padding: 45px 48px 85px !important;
+
+    box-sizing: border-box;
+}
+
+/* ==========================================
+   APARTADO NOSOTROS
+========================================== */
+
+#app.fm-normal-page .fm-about {
+    width: 100%;
+    max-width: 100%;
+
+    margin: 0 auto;
+    padding: 0;
+
+    box-sizing: border-box;
+}
+
+/* EVITAR QUE TEXTOS E IMÁGENES SE DESBORDEN */
+
+#app .fm-about-intro,
+#app .fm-about-split,
+#app .fm-about-values,
+#app .fm-about-values-grid {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+}
+
+#app .fm-about-intro-text,
+#app .fm-about-text,
+#app .fm-about-photo {
+    min-width: 0;
+}
+
+/* ==========================================
+   CATÁLOGO Y DETALLE DE PRODUCTOS
+========================================== */
+
+#app.fm-catalog-page,
+#app.fm-product-page {
+    display: block;
+
+    width: 100% !important;
+    max-width: none !important;
+
+    height: auto !important;
+
+    margin: 0 auto !important;
+
+    padding:
+        38px
+        clamp(28px, 4vw, 65px)
+        100px !important;
+
+    overflow: visible !important;
+
+    box-sizing: border-box;
+}
+
+/* ==========================================
+   DISTRIBUCIÓN DEL CATÁLOGO
+========================================== */
+
+#app.fm-catalog-page .fm-catalog-layout {
+    display: grid !important;
+
+    grid-template-columns:
+        minmax(230px, 265px)
+        minmax(0, 1fr) !important;
+
+    align-items: start;
+
+    gap: 32px !important;
+
+    width: 100%;
+    max-width: 1480px;
+
+    height: auto;
+
+    margin: 0 auto;
+
+    overflow: visible;
+
+    box-sizing: border-box;
+}
+
+/* ==========================================
+   BARRA LATERAL DE FILTROS
+========================================== */
+
+#app.fm-catalog-page .fm-catalog-layout #ff {
+    display: flex;
+    flex-direction: column;
+
+    width: 100%;
+    min-width: 0;
+
+    margin: 0;
+
+    padding: 18px 15px !important;
+
+    box-sizing: border-box;
+
+    border: 1px solid #e9e1e5;
+    background: transparent;
+}
+
+/* QUE LOS CAMPOS NO SOBRESALGAN */
+
+#app.fm-catalog-page #ff input,
+#app.fm-catalog-page #ff select,
+#app.fm-catalog-page #ff button {
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+/* ==========================================
+   PRODUCTOS DEL CATÁLOGO
+========================================== */
+
+#app.fm-catalog-page .fm-catalog-results {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+
+    height: auto;
+
+    overflow: visible;
+}
+
+#app.fm-catalog-page .fm-products {
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+
+    gap: 20px;
+
+    width: 100%;
+    min-width: 0;
+
+    height: auto;
+
+    margin-top: 25px;
+    margin-bottom: 25px;
+
+    align-items: stretch;
+}
+
+#app.fm-catalog-page .fm-products > * {
+    min-width: 0;
+    max-width: 100%;
+}
+
+/* TARJETAS */
+
+#app.fm-catalog-page .fm-card {
+    display: flex;
+    flex-direction: column;
+
+    width: 100%;
+    min-width: 0;
+
+    height: 100%;
+
+    box-sizing: border-box;
+}
+
+/* ==========================================
+   EVITAR QUE EL FOOTER SE SUPERPONGA
+========================================== */
+
+#ftr {
+    position: relative !important;
+
+    display: block;
+
+    width: 100%;
+    height: auto;
+
+    clear: both;
+
+    margin: 0;
+
+    z-index: 0;
+}
+
+#ftr footer {
+    position: relative !important;
+
+    width: 100%;
+    height: auto;
+
+    margin-top: 0 !important;
+}
+
+/* ==========================================
+   FILTROS FIJOS EN COMPUTADORA
+========================================== */
+
+@media (min-width: 1001px) {
+
+    #app.fm-catalog-page .fm-catalog-layout #ff {
+        position: sticky !important;
+
+        top: 20px;
+
+        align-self: start;
+
+        max-height: calc(100dvh - 40px);
+
+        overflow-y: auto;
+        overflow-x: hidden;
+
+        overscroll-behavior: contain;
+
+        z-index: 1;
+    }
+
+}
+
+/* ==========================================
+   PANTALLAS MEDIANAS
+========================================== */
+
+@media (max-width: 1300px) {
+
+    #app.fm-catalog-page .fm-products {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+}
+
+/* ==========================================
+   TABLETS
+========================================== */
+
+@media (max-width: 1000px) {
+
+    #app.fm-normal-page {
+        padding: 35px 32px 70px !important;
+    }
+
+    #app.fm-catalog-page,
+    #app.fm-product-page {
+        padding: 30px 32px 80px !important;
+    }
+
+    #app.fm-catalog-page .fm-catalog-layout {
+        grid-template-columns: 1fr !important;
+
+        gap: 30px !important;
+    }
+
+    #app.fm-catalog-page .fm-catalog-layout #ff {
+        position: static !important;
+
+        width: 100%;
+
+        max-height: none !important;
+
+        overflow: visible !important;
+    }
+
+}
+
+/* ==========================================
+   CELULARES
+========================================== */
+
+@media (max-width: 650px) {
+
+    #app.fm-normal-page {
+        padding: 28px 20px 60px !important;
+    }
+
+    #app.fm-catalog-page,
+    #app.fm-product-page {
+        padding: 25px 18px 70px !important;
+    }
+
+    #app.fm-catalog-page .fm-catalog-layout {
+        gap: 25px !important;
+    }
+
+    #app.fm-catalog-page .fm-catalog-layout #ff {
+        padding: 16px 12px !important;
+    }
+
+    #app.fm-catalog-page .fm-products {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+
+        gap: 12px;
+
+        margin-top: 20px;
+    }
+
+}
+
+/* CELULARES MUY PEQUEÑOS */
+
+@media (max-width: 420px) {
+
+    #app.fm-catalog-page .fm-products {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+/* ==========================================
+   FERROMAX - PÁGINA CONTACTO
+========================================== */
+
+#app .fm-contact {
+    --contact-bg: #ffffff;
+    --contact-soft: #faf7f8;
+    --contact-text: #20232b;
+    --contact-muted: #626875;
+    --contact-border: #e9e1e5;
+    --contact-red: #c8102e;
+
+    width: 100%;
+    max-width: 1200px;
+
+    margin: 0 auto;
+    padding: 10px 0 60px;
+
+    color: var(--contact-text);
+}
+
+/* TEMA OSCURO */
+
+html[data-ferromax-tema="oscuro"]
+#app .fm-contact {
+    --contact-bg: #171d28;
+    --contact-soft: #202838;
+    --contact-text: #f1f3f7;
+    --contact-muted: #b5bdca;
+    --contact-border: #354051;
+    --contact-red: #f04764;
+}
+
+/* ==========================================
+   TIPOGRAFÍA
+========================================== */
+
+#app .fm-contact-eyebrow {
+    display: block;
+
+    margin-bottom: 16px;
+
+    color: var(--contact-red);
+
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 1.8px;
+}
+
+#app .fm-contact-line {
+    display: block;
+
+    width: 65px;
+    height: 4px;
+
+    margin: 24px 0;
+
+    background: var(--contact-red);
+}
+
+#app .fm-contact p {
+    color: var(--contact-muted);
+
+    font-size: 15px;
+    line-height: 1.85;
+}
+
+/* ==========================================
+   ENCABEZADO PRINCIPAL
+========================================== */
+
+#app .fm-contact-hero {
+    display: grid;
+
+    grid-template-columns:
+        minmax(0, 1.2fr)
+        minmax(0, .8fr);
+
+    align-items: center;
+    gap: 65px;
+
+    padding: 35px 0 80px;
+
+    border-bottom: 1px solid var(--contact-border);
+}
+
+#app .fm-contact-hero-text h1 {
+    margin: 0;
+
+    color: var(--contact-text) !important;
+
+    font-size: clamp(42px, 5vw, 62px);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -1.8px;
+}
+
+#app .fm-contact-hero-text h2 {
+    max-width: 600px;
+
+    margin: 0 0 24px;
+
+    color: var(--contact-text) !important;
+
+    font-size: clamp(23px, 2.5vw, 31px);
+    font-weight: 750;
+    line-height: 1.35;
+}
+
+#app .fm-contact-hero-text p {
+    max-width: 600px;
+    margin: 0 0 18px;
+}
+
+/* ==========================================
+   BOTONES
+========================================== */
+
+#app .fm-contact-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+
+    margin-top: 32px;
+}
+
+#app .fm-contact-button-primary,
+#app .fm-contact-button-secondary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+
+    min-height: 48px;
+    padding: 13px 22px;
+
+    font-size: 13px;
+    font-weight: 800;
+    text-decoration: none;
+
+    transition:
+        background .2s ease,
+        transform .2s ease;
+}
+
+#app .fm-contact-button-primary {
+    background: #c8102e;
+    color: #ffffff !important;
+
+    border: 1px solid #c8102e;
+}
+
+#app .fm-contact-button-primary:hover {
+    background: #a50d26;
+    transform: translateY(-2px);
+}
+
+#app .fm-contact-button-secondary {
+    background: var(--contact-bg);
+    color: var(--contact-text) !important;
+
+    border: 1px solid var(--contact-border);
+}
+
+#app .fm-contact-button-secondary:hover {
+    border-color: var(--contact-red);
+    color: var(--contact-red) !important;
+}
+
+#app .fm-contact-button-primary svg,
+#app .fm-contact-button-secondary svg {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+}
+
+/* ==========================================
+   TARJETA DE ATENCIÓN
+========================================== */
+
+#app .fm-contact-hero-card {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+
+    width: 100%;
+
+    padding: 40px 35px;
+
+    background: var(--contact-soft);
+    border: 1px solid var(--contact-border);
+
+    border-top: 5px solid var(--contact-red);
+
+    box-shadow: 0 15px 35px rgba(0,0,0,.05);
+}
+
+#app .fm-contact-card-eyebrow {
+    color: var(--contact-red);
+
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+}
+
+#app .fm-contact-hero-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 68px;
+    height: 68px;
+
+    margin: 26px 0;
+
+    background: var(--contact-bg);
+
+    color: var(--contact-red);
+    border: 1px solid var(--contact-border);
+}
+
+#app .fm-contact-hero-icon svg {
+    width: 30px;
+    height: 30px;
+}
+
+#app .fm-contact-hero-card h3 {
+    margin: 0 0 14px;
+
+    color: var(--contact-text) !important;
+
+    font-size: 25px;
+    font-weight: 800;
+}
+
+#app .fm-contact-hero-card p {
+    margin: 0 0 25px;
+}
+
+#app .fm-contact-hero-phone {
+    color: var(--contact-red);
+
+    font-size: clamp(23px, 2.7vw, 34px);
+    font-weight: 800;
+
+    text-decoration: none;
+    letter-spacing: -.5px;
+}
+
+#app .fm-contact-hero-phone:hover {
+    text-decoration: underline;
+}
+
+#app .fm-contact-hero-note {
+    margin-top: 15px;
+
+    color: var(--contact-muted);
+
+    font-size: 12px;
+    line-height: 1.6;
+}
+
+/* ==========================================
+   ENCABEZADOS DE SECCIÓN
+========================================== */
+
+#app .fm-contact-section-heading {
+    max-width: 650px;
+
+    margin: 0 auto 42px;
+
+    text-align: center;
+}
+
+#app .fm-contact-section-heading h2 {
+    margin: 0 0 18px;
+
+    color: var(--contact-text) !important;
+
+    font-size: clamp(30px, 3.5vw, 42px);
+    font-weight: 800;
+}
+
+#app .fm-contact-section-heading h2 span {
+    color: var(--contact-red) !important;
+}
+
+#app .fm-contact-section-heading p {
+    margin: 0;
+}
+
+/* ==========================================
+   TARJETAS DE INFORMACIÓN
+========================================== */
+
+#app .fm-contact-information {
+    padding: 75px 0;
+}
+
+#app .fm-contact-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 22px;
+}
+
+#app .fm-contact-info-card {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+
+    min-width: 0;
+    min-height: 235px;
+
+    padding: 30px;
+
+    background: var(--contact-bg) !important;
+
+    border: 1px solid var(--contact-border);
+
+    transition:
+        transform .25s ease,
+        border-color .25s ease,
+        box-shadow .25s ease;
+}
+
+#app .fm-contact-info-card:hover {
+    transform: translateY(-4px);
+
+    border-color: var(--contact-red);
+
+    box-shadow: 0 12px 28px rgba(0,0,0,.07);
+}
+
+#app .fm-contact-info-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 55px;
+    height: 55px;
+
+    margin-bottom: 22px;
+
+    background: var(--contact-soft);
+    color: var(--contact-red);
+
+    border: 1px solid var(--contact-border);
+}
+
+#app .fm-contact-info-icon svg {
+    width: 25px;
+    height: 25px;
+}
+
+#app .fm-contact-info-card h3 {
+    margin: 0 0 10px;
+
+    color: var(--contact-text) !important;
+
+    font-size: 21px;
+    font-weight: 800;
+}
+
+#app .fm-contact-info-card p {
+    margin: 0 0 16px;
+
+    font-size: 14px;
+}
+
+#app .fm-contact-info-card a {
+    color: var(--contact-red);
+
+    font-size: 16px;
+    font-weight: 750;
+
+    overflow-wrap: anywhere;
+    text-decoration: none;
+}
+
+#app .fm-contact-info-card a:hover {
+    text-decoration: underline;
+}
+
+#app .fm-contact-info-card address,
+#app .fm-contact-info-card strong {
+    color: var(--contact-text);
+
+    font-size: 15px;
+    font-weight: 650;
+    font-style: normal;
+    line-height: 1.7;
+}
+
+/* ==========================================
+   MAPA Y UBICACIÓN
+========================================== */
+
+#app .fm-contact-location {
+    padding: 70px 0 30px;
+
+    border-top: 1px solid var(--contact-border);
+}
+
+#app .fm-contact-location-layout {
+    display: grid;
+
+    grid-template-columns:
+        minmax(0, 1.25fr)
+        minmax(0, .75fr);
+
+    align-items: stretch;
+    gap: 30px;
+}
+
+#app .fm-contact-map {
+    position: relative;
+
+    width: 100%;
+    min-height: 400px;
+
+    overflow: hidden;
+
+    background: var(--contact-soft);
+    border: 1px solid var(--contact-border);
+}
+
+#app .fm-contact-map iframe {
+    display: block;
+
+    width: 100% !important;
+    height: 100% !important;
+    min-height: 400px;
+
+    border: 0;
+}
+
+/* DETALLES A LA DERECHA */
+
+#app .fm-contact-location-details {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+
+    min-width: 0;
+
+    padding: 35px;
+
+    background: var(--contact-soft);
+    border: 1px solid var(--contact-border);
+}
+
+#app .fm-contact-location-details h3 {
+    margin: 0 0 20px;
+
+    color: var(--contact-text) !important;
+
+    font-size: 27px;
+    font-weight: 800;
+    line-height: 1.3;
+}
+
+#app .fm-contact-location-details > p {
+    margin: 0 0 25px;
+}
+
+#app .fm-contact-location-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 13px;
+
+    margin-bottom: 22px;
+
+    color: var(--contact-text);
+
+    font-size: 14px;
+    line-height: 1.7;
+}
+
+#app .fm-contact-location-item svg {
+    width: 21px;
+    height: 21px;
+
+    flex-shrink: 0;
+    margin-top: 2px;
+
+    color: var(--contact-red);
+}
+
+#app .fm-contact-location-details
+.fm-contact-button-primary {
+    margin-top: 10px;
+}
+
+/* ==========================================
+   RESPONSIVE - TABLETS
+========================================== */
+
+@media (max-width: 950px) {
+
+    #app .fm-contact-hero {
+        grid-template-columns: 1fr;
+        gap: 35px;
+        padding-bottom: 60px;
+    }
+
+    #app .fm-contact-hero-card {
+        max-width: 600px;
+    }
+
+    #app .fm-contact-location-layout {
+        grid-template-columns: 1fr;
+    }
+
+    #app .fm-contact-map {
+        min-height: 350px;
+    }
+
+    #app .fm-contact-map iframe {
+        min-height: 350px;
+    }
+}
+
+/* ==========================================
+   RESPONSIVE - CELULARES
+========================================== */
+
+@media (max-width: 650px) {
+
+    #app .fm-contact {
+        padding: 0 0 35px;
+    }
+
+    #app .fm-contact-hero {
+        padding: 15px 0 50px;
+        gap: 30px;
+    }
+
+    #app .fm-contact-hero-text h1 {
+        font-size: 43px;
+    }
+
+    #app .fm-contact-hero-text h2 {
+        font-size: 24px;
+    }
+
+    #app .fm-contact p {
+        font-size: 14px;
+    }
+
+    #app .fm-contact-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    #app .fm-contact-hero-card {
+        padding: 28px 22px;
+    }
+
+    #app .fm-contact-information {
+        padding: 55px 0;
+    }
+
+    #app .fm-contact-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+
+    #app .fm-contact-info-card {
+        min-height: auto;
+        padding: 25px 22px;
+    }
+
+    #app .fm-contact-location {
+        padding-top: 50px;
+    }
+
+    #app .fm-contact-map,
+    #app .fm-contact-map iframe {
+        min-height: 300px;
+    }
+
+    #app .fm-contact-location-details {
+        padding: 28px 22px;
+    }
+
+    #app .fm-contact-location-details h3 {
+        font-size: 23px;
+    }
+}
+
+/* ==========================================
+   FERROMAX - PANEL MI CUENTA
+========================================== */
+
+#app .fm-cuenta {
+    --cuenta-fondo: #ffffff;
+    --cuenta-suave: #faf8f9;
+    --cuenta-texto: #20232b;
+    --cuenta-secundario: #69707d;
+    --cuenta-borde: #e8e0e4;
+    --cuenta-rojo: #c8102e;
+
+    width: 100%;
+    max-width: 1250px;
+
+    margin: 0 auto;
+    padding-bottom: 45px;
+}
+
+/* TEMA OSCURO */
+
+html[data-ferromax-tema="oscuro"]
+#app .fm-cuenta {
+    --cuenta-fondo: #171d28;
+    --cuenta-suave: #202838;
+    --cuenta-texto: #f1f3f7;
+    --cuenta-secundario: #b5bdca;
+    --cuenta-borde: #354051;
+    --cuenta-rojo: #f04764;
+}
+
+/* ENCABEZADO */
+
+#app .fm-cuenta-heading {
+    margin-bottom: 35px;
+}
+
+#app .fm-cuenta-heading > span,
+#app .fm-cuenta-section-head > span {
+    display: block;
+
+    margin-bottom: 10px;
+
+    color: var(--cuenta-rojo);
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 1.4px;
+}
+
+#app .fm-cuenta-heading h1 {
+    margin: 0 0 10px;
+
+    color: var(--cuenta-texto) !important;
+    font-size: 38px;
+    font-weight: 800;
+}
+
+#app .fm-cuenta-heading p {
+    color: var(--cuenta-secundario);
+    font-size: 15px;
+}
+
+/* ESTRUCTURA */
+
+#app .fm-cuenta-layout {
+    display: grid;
+
+    grid-template-columns:
+        minmax(250px, 280px)
+        minmax(0, 1fr);
+
+    gap: 30px;
+    align-items: start;
+}
+
+/* ==========================================
+   BARRA LATERAL
+========================================== */
+
+#app .fm-cuenta-sidebar {
+    min-width: 0;
+
+    background: var(--cuenta-fondo);
+    border: 1px solid var(--cuenta-borde);
+}
+
+#app .fm-cuenta-user {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+
+    padding: 25px 20px;
+
+    border-bottom: 1px solid var(--cuenta-borde);
+}
+
+#app .fm-cuenta-avatar {
+    display: grid;
+    place-items: center;
+
+    flex-shrink: 0;
+
+    width: 55px;
+    height: 55px;
+
+    background: #c8102e;
+    color: #ffffff;
+
+    font-size: 24px;
+    font-weight: 800;
+}
+
+#app .fm-cuenta-user-data {
+    min-width: 0;
+}
+
+#app .fm-cuenta-user-data strong {
+    display: block;
+
+    color: var(--cuenta-texto);
+
+    font-size: 15px;
+    font-weight: 800;
+    line-height: 1.4;
+}
+
+#app .fm-cuenta-user-data span {
+    display: block;
+
+    margin-top: 4px;
+
+    color: var(--cuenta-secundario);
+
+    font-size: 12px;
+    overflow-wrap: anywhere;
+}
+
+/* MENÚ */
+
+#app .fm-cuenta-nav {
+    display: flex;
+    flex-direction: column;
+
+    padding: 12px;
+}
+
+#app .fm-cuenta-nav a {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+
+    min-height: 48px;
+    padding: 12px 15px;
+
+    color: var(--cuenta-texto);
+
+    font-size: 14px;
+    font-weight: 650;
+    text-decoration: none;
+
+    transition: background .2s ease;
+}
+
+#app .fm-cuenta-nav a:hover {
+    background: var(--cuenta-suave);
+    color: var(--cuenta-rojo);
+}
+
+#app .fm-cuenta-nav a.active {
+    background: #c8102e;
+    color: #ffffff !important;
+}
+
+#app .fm-cuenta-logout {
+    display: block;
+
+    width: calc(100% - 24px);
+    margin: 8px 12px 18px;
+    padding: 13px 15px;
+
+    border: 1px solid var(--cuenta-borde);
+
+    background: var(--cuenta-suave);
+    color: var(--cuenta-rojo);
+
+    font-size: 13px;
+    font-weight: 800;
+    text-align: left;
+
+    cursor: pointer;
+}
+
+#app .fm-cuenta-logout:hover {
+    border-color: var(--cuenta-rojo);
+}
+
+/* ==========================================
+   CONTENIDO PRINCIPAL
+========================================== */
+
+#app .fm-cuenta-main {
+    min-width: 0;
+
+    padding: 30px;
+
+    background: var(--cuenta-fondo);
+    border: 1px solid var(--cuenta-borde);
+}
+
+#app .fm-cuenta-section-head {
+    margin-bottom: 28px;
+}
+
+#app .fm-cuenta-section-head h2 {
+    margin: 0 0 12px;
+
+    color: var(--cuenta-texto) !important;
+
+    font-size: 27px;
+    font-weight: 800;
+}
+
+#app .fm-cuenta-section-head p {
+    color: var(--cuenta-secundario);
+
+    font-size: 14px;
+    line-height: 1.7;
+}
+
+/* DATOS PERSONALES */
+
+#app .fm-cuenta-data {
+    display: grid;
+    gap: 12px;
+}
+
+#app .fm-cuenta-data-item {
+    padding: 17px 20px;
+
+    background: var(--cuenta-suave);
+    border: 1px solid var(--cuenta-borde);
+}
+
+#app .fm-cuenta-data-item span {
+    display: block;
+
+    margin-bottom: 8px;
+
+    color: var(--cuenta-secundario);
+    font-size: 12px;
+}
+
+#app .fm-cuenta-data-item strong {
+    display: block;
+
+    color: var(--cuenta-texto);
+
+    font-size: 15px;
+    font-weight: 750;
+
+    overflow-wrap: anywhere;
+}
+
+/* ACCESOS RÁPIDOS */
+
+#app .fm-cuenta-subtitle {
+    margin: 35px 0 20px;
+
+    color: var(--cuenta-texto) !important;
+
+    font-size: 21px;
+    font-weight: 800;
+}
+
+#app .fm-cuenta-shortcuts {
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+
+    gap: 15px;
+}
+
+#app .fm-cuenta-shortcut {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+
+    min-width: 0;
+    min-height: 190px;
+
+    padding: 20px 15px;
+
+    background: var(--cuenta-suave);
+    border: 1px solid var(--cuenta-borde);
+
+    text-decoration: none;
+
+    transition: border-color .2s ease;
+}
+
+#app .fm-cuenta-shortcut:hover {
+    border-color: var(--cuenta-rojo);
+}
+
+#app .fm-cuenta-shortcut-number,
+#app .fm-cuenta-shortcut-symbol {
+    display: block;
+
+    margin-bottom: 18px;
+
+    color: var(--cuenta-rojo);
+
+    font-size: 30px;
+    font-weight: 850;
+}
+
+#app .fm-cuenta-shortcut strong {
+    color: var(--cuenta-texto);
+    font-size: 15px;
+    font-weight: 800;
+}
+
+#app .fm-cuenta-shortcut small {
+    margin-top: 8px;
+
+    color: var(--cuenta-secundario);
+
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+#app .fm-cuenta-shortcut-arrow {
+    margin-top: auto;
+    padding-top: 17px;
+
+    color: var(--cuenta-rojo);
+
+    font-size: 12px;
+    font-weight: 800;
+}
+
+/* ==========================================
+   PRODUCTOS FAVORITOS
+========================================== */
+
+#app .fm-cuenta-favoritos-resumen {
+    margin-bottom: 22px;
+
+    color: var(--cuenta-secundario);
+    font-size: 14px;
+}
+
+#app .fm-cuenta-favoritos-resumen strong {
+    color: var(--cuenta-rojo);
+}
+
+#app .fm-cuenta-products {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 18px;
+}
+
+#app .fm-cuenta-products .fm-card {
+    width: 100%;
+    min-width: 0;
+    height: 100%;
+}
+
+/* ==========================================
+   PEDIDOS
+========================================== */
+
+#app .fm-cuenta-orders {
+    display: flex;
+    flex-direction: column;
+
+    gap: 18px;
+}
+
+#app .fm-cuenta-order {
+    min-width: 0;
+
+    border: 1px solid var(--cuenta-borde);
+    background: var(--cuenta-fondo);
+}
+
+#app .fm-cuenta-order-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 20px;
+
+    padding: 20px;
+
+    background: var(--cuenta-suave);
+    border-bottom: 1px solid var(--cuenta-borde);
+}
+
+#app .fm-cuenta-order-header small {
+    display: block;
+
+    color: var(--cuenta-secundario);
+
+    font-size: 11px;
+    font-weight: 750;
+}
+
+#app .fm-cuenta-order-header h3 {
+    margin: 7px 0;
+
+    color: var(--cuenta-texto) !important;
+
+    font-size: 20px;
+    font-weight: 800;
+}
+
+#app .fm-cuenta-order-header span {
+    color: var(--cuenta-secundario);
+    font-size: 13px;
+}
+
+#app .fm-cuenta-order-status {
+    padding: 8px 12px;
+
+    border: 1px solid var(--cuenta-borde);
+
+    background: var(--cuenta-fondo);
+
+    color: var(--cuenta-texto) !important;
+
+    font-size: 12px;
+    font-weight: 750;
+}
+
+#app .fm-cuenta-order-items {
+    padding: 15px 20px;
+}
+
+#app .fm-cuenta-order-item {
+    display: flex;
+    justify-content: space-between;
+    gap: 18px;
+
+    padding: 12px 0;
+
+    border-bottom: 1px solid var(--cuenta-borde);
+}
+
+#app .fm-cuenta-order-item:last-child {
+    border-bottom: 0;
+}
+
+#app .fm-cuenta-order-item span {
+    color: var(--cuenta-texto);
+
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+#app .fm-cuenta-order-item strong {
+    flex-shrink: 0;
+
+    color: var(--cuenta-texto);
+
+    font-size: 13px;
+}
+
+/* TOTAL */
+
+#app .fm-cuenta-order-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+
+    padding: 20px;
+
+    border-top: 1px solid var(--cuenta-borde);
+}
+
+#app .fm-cuenta-order-footer small,
+#app .fm-cuenta-order-footer span {
+    display: block;
+
+    color: var(--cuenta-secundario);
+
+    font-size: 12px;
+}
+
+#app .fm-cuenta-order-footer strong {
+    display: block;
+
+    margin-top: 7px;
+
+    color: var(--cuenta-texto);
+
+    font-size: 22px;
+    font-weight: 850;
+}
+
+/* ==========================================
+   ESTADO VACÍO
+========================================== */
+
+#app .fm-cuenta-empty {
+    padding: 55px 25px;
+
+    background: var(--cuenta-suave);
+    border: 1px solid var(--cuenta-borde);
+
+    text-align: center;
+}
+
+#app .fm-cuenta-empty h3 {
+    color: var(--cuenta-texto) !important;
+
+    font-size: 21px;
+    font-weight: 800;
+}
+
+#app .fm-cuenta-empty p {
+    max-width: 460px;
+
+    margin: 15px auto 25px;
+
+    color: var(--cuenta-secundario);
+
+    font-size: 14px;
+    line-height: 1.7;
+}
+
+/* ==========================================
+   RESPONSIVE
+========================================== */
+
+@media (max-width: 950px) {
+
+    #app .fm-cuenta-layout {
+        grid-template-columns: 1fr;
+    }
+
+    #app .fm-cuenta-shortcuts {
+        grid-template-columns:
+            repeat(3, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 650px) {
+
+    #app .fm-cuenta-heading h1 {
+        font-size: 32px;
+    }
+
+    #app .fm-cuenta-main {
+        padding: 22px 16px;
+    }
+
+    #app .fm-cuenta-shortcuts {
+        grid-template-columns: 1fr;
+    }
+
+    #app .fm-cuenta-shortcut {
+        min-height: 130px;
+    }
+
+    #app .fm-cuenta-products {
+        grid-template-columns: 1fr;
+    }
+
+    #app .fm-cuenta-order-header,
+    #app .fm-cuenta-order-footer {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    #app .fm-cuenta-order-item {
+        flex-wrap: wrap;
+    }
+}
+
+/* ==========================================
+   FERROMAX - CARRITO MODERNO
+========================================== */
+
+#app .fm-cart-page {
+    --cart-surface: #ffffff;
+    --cart-soft: #f8f7f8;
+    --cart-text: #20232b;
+    --cart-muted: #737985;
+    --cart-border: #e8e3e6;
+    --cart-red: #c8102e;
+
+    width: 100%;
+    max-width: 1300px;
+
+    margin: 0 auto;
+    padding: 5px 0 45px;
+
+    color: var(--cart-text);
+}
+
+/* TEMA OSCURO */
+
+html[data-ferromax-tema="oscuro"]
+#app .fm-cart-page {
+    --cart-surface: #171d28;
+    --cart-soft: #202838;
+    --cart-text: #f1f3f7;
+    --cart-muted: #b5bdca;
+    --cart-border: #354051;
+    --cart-red: #f04764;
+}
+
+/* ==========================================
+   ENCABEZADO
+========================================== */
+
+#app .fm-cart-header {
+    margin-bottom: 38px;
+}
+
+#app .fm-cart-header > span {
+    display: block;
+
+    margin-bottom: 12px;
+
+    color: var(--cart-red);
+
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+}
+
+#app .fm-cart-header h1 {
+    margin: 0 0 14px;
+
+    color: var(--cart-text) !important;
+
+    font-size: clamp(34px, 4vw, 48px);
+    font-weight: 850;
+    line-height: 1.2;
+    letter-spacing: -1px;
+}
+
+#app .fm-cart-header p {
+    max-width: 650px;
+
+    margin: 0;
+
+    color: var(--cart-muted);
+
+    font-size: 15px;
+    line-height: 1.7;
+}
+
+/* ==========================================
+   DISTRIBUCIÓN PRINCIPAL
+========================================== */
+
+#app .fm-cart-layout {
+    display: grid;
+
+    grid-template-columns:
+        minmax(0, 1fr)
+        minmax(290px, 350px);
+
+    align-items: start;
+
+    gap: 30px;
+}
+
+#app .fm-cart-left {
+    min-width: 0;
+}
+
+/* ==========================================
+   ENCABEZADO DE PRODUCTOS
+========================================== */
+
+#app .fm-cart-list-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+
+    gap: 15px;
+
+    margin-bottom: 20px;
+}
+
+#app .fm-cart-list-header h2 {
+    margin: 0;
+
+    color: var(--cart-text) !important;
+
+    font-size: 21px;
+    font-weight: 800;
+}
+
+#app .fm-cart-list-header > span {
+    color: var(--cart-muted);
+
+    font-size: 13px;
+    font-weight: 700;
+}
+
+/* ==========================================
+   TARJETAS DE PRODUCTOS
+========================================== */
+
+#app .fm-cart-products {
+    display: flex;
+    flex-direction: column;
+
+    gap: 18px;
+}
+
+#app .fm-cart-product {
+    display: grid;
+
+    grid-template-columns:
+        155px
+        minmax(0, 1fr);
+
+    gap: 24px;
+
+    width: 100%;
+    min-width: 0;
+
+    padding: 22px;
+
+    background: var(--cart-surface);
+    border: 1px solid var(--cart-border);
+
+    box-sizing: border-box;
+
+    transition:
+        border-color .2s ease,
+        box-shadow .2s ease;
+}
+
+#app .fm-cart-product:hover {
+    border-color: #d5b3bd;
+
+    box-shadow:
+        0 8px 24px rgba(0,0,0,.045);
+}
+
+/* ==========================================
+   IMÁGENES
+========================================== */
+
+#app .fm-cart-product-image {
+    position: relative;
+
+    display: grid;
+    place-items: center;
+
+    width: 100%;
+    height: 165px;
+
+    overflow: hidden;
+
+    background: #ffffff;
+
+    border: 1px solid var(--cart-border);
+
+    text-decoration: none;
+}
+
+#app .fm-cart-product-image img {
+    position: absolute;
+    inset: 0;
+
+    display: block;
+
+    width: 100%;
+    height: 100%;
+
+    object-fit: contain;
+    object-position: center;
+
+    padding: 10px;
+
+    background: #ffffff;
+
+    box-sizing: border-box;
+}
+
+/* IMAGEN ALTERNATIVA */
+
+#app .fm-cart-image-fallback {
+    display: grid;
+    place-items: center;
+
+    width: 100%;
+    height: 100%;
+
+    color: #b8aeb3;
+}
+
+#app .fm-cart-image-fallback svg {
+    width: 45px;
+    height: 45px;
+}
+
+/* ==========================================
+   INFORMACIÓN DEL PRODUCTO
+========================================== */
+
+#app .fm-cart-product-info {
+    display: flex;
+    flex-direction: column;
+
+    min-width: 0;
+}
+
+#app .fm-cart-brand {
+    display: block;
+
+    margin-bottom: 8px;
+
+    color: var(--cart-red);
+
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: .8px;
+    text-transform: uppercase;
+}
+
+#app .fm-cart-product-name {
+    display: block;
+
+    margin-bottom: 9px;
+
+    color: var(--cart-text);
+
+    font-size: 17px;
+    font-weight: 800;
+    line-height: 1.45;
+
+    text-decoration: none;
+}
+
+#app .fm-cart-product-name:hover {
+    color: var(--cart-red);
+}
+
+#app .fm-cart-sku {
+    display: block;
+
+    margin-bottom: 15px;
+
+    color: var(--cart-muted);
+
+    font-size: 12px;
+    font-weight: 600;
+}
+
+#app .fm-cart-unit-price {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+
+    color: var(--cart-muted);
+
+    font-size: 13px;
+}
+
+#app .fm-cart-unit-price strong {
+    color: var(--cart-text);
+    font-weight: 800;
+}
+
+/* ==========================================
+   CANTIDAD Y SUBTOTAL
+========================================== */
+
+#app .fm-cart-product-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+
+    flex-wrap: wrap;
+    gap: 18px;
+
+    margin-top: 25px;
+}
+
+#app .fm-cart-quantity > span,
+#app .fm-cart-line-total > span {
+    display: block;
+
+    margin-bottom: 10px;
+
+    color: var(--cart-muted);
+
+    font-size: 12px;
+    font-weight: 650;
+}
+
+/* CONTROLES DE CANTIDAD */
+
+#app .fm-cart-quantity-controls {
+    display: inline-flex;
+    align-items: center;
+
+    height: 43px;
+
+    border: 1px solid var(--cart-border);
+
+    background: var(--cart-surface);
+}
+
+#app .fm-cart-quantity-controls button {
+    display: grid;
+    place-items: center;
+
+    width: 40px;
+    height: 100%;
+
+    border: 0;
+
+    background: transparent;
+    color: var(--cart-text);
+
+    font-size: 21px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition: background .2s ease;
+}
+
+#app .fm-cart-quantity-controls button:hover {
+    background: var(--cart-soft);
+    color: var(--cart-red);
+}
+
+#app .fm-cart-quantity-controls strong {
+    display: grid;
+    place-items: center;
+
+    min-width: 39px;
+    height: 100%;
+
+    color: var(--cart-text);
+
+    font-size: 14px;
+    font-weight: 800;
+
+    border-left: 1px solid var(--cart-border);
+    border-right: 1px solid var(--cart-border);
+}
+
+/* SUBTOTAL */
+
+#app .fm-cart-line-total {
+    text-align: right;
+}
+
+#app .fm-cart-line-total strong {
+    display: block;
+
+    color: var(--cart-text);
+
+    font-size: 19px;
+    font-weight: 850;
+}
+
+/* ==========================================
+   ELIMINAR PRODUCTO
+========================================== */
+
+#app .fm-cart-remove {
+    display: inline-flex;
+    align-items: center;
+    align-self: flex-start;
+
+    gap: 7px;
+
+    margin-top: 22px;
+    padding: 6px 0;
+
+    border: 0;
+    background: transparent;
+
+    color: var(--cart-muted);
+
+    font-size: 12px;
+    font-weight: 700;
+
+    cursor: pointer;
+}
+
+#app .fm-cart-remove svg {
+    width: 16px;
+    height: 16px;
+}
+
+#app .fm-cart-remove:hover {
+    color: var(--cart-red);
+}
+
+/* ==========================================
+   ACCIONES INFERIORES
+========================================== */
+
+#app .fm-cart-list-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+
+    gap: 15px;
+
+    margin-top: 24px;
+}
+
+#app .fm-cart-continue,
+#app .fm-cart-clear {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+
+    padding: 10px 0;
+
+    border: 0;
+    background: transparent;
+
+    color: var(--cart-text);
+
+    font-size: 13px;
+    font-weight: 750;
+
+    cursor: pointer;
+    text-decoration: none;
+}
+
+#app .fm-cart-continue:hover,
+#app .fm-cart-clear:hover {
+    color: var(--cart-red);
+}
+
+#app .fm-cart-clear svg {
+    width: 17px;
+    height: 17px;
+}
+
+/* ==========================================
+   RESUMEN DE COMPRA
+========================================== */
+
+#app .fm-cart-summary {
+    position: sticky;
+    top: 25px;
+
+    min-width: 0;
+
+    padding: 28px 25px;
+
+    border: 1px solid var(--cart-border);
+    border-top: 4px solid var(--cart-red);
+
+    background: var(--cart-surface);
+
+    box-sizing: border-box;
+}
+
+#app .fm-cart-summary-heading {
+    margin-bottom: 26px;
+}
+
+#app .fm-cart-summary-heading > span {
+    display: block;
+
+    margin-bottom: 10px;
+
+    color: var(--cart-red);
+
+    font-size: 10px;
+    font-weight: 850;
+    letter-spacing: 1.2px;
+}
+
+#app .fm-cart-summary-heading h2 {
+    margin: 0 0 10px;
+
+    color: var(--cart-text) !important;
+
+    font-size: 25px;
+    font-weight: 850;
+}
+
+#app .fm-cart-summary-heading p {
+    margin: 0;
+
+    color: var(--cart-muted);
+
+    font-size: 13px;
+    line-height: 1.7;
+}
+
+/* DESGLOSE */
+
+#app .fm-cart-summary-details {
+    display: flex;
+    flex-direction: column;
+
+    gap: 18px;
+
+    padding-bottom: 25px;
+
+    border-bottom: 1px solid var(--cart-border);
+}
+
+#app .fm-cart-summary-row {
+    display: flex;
+    justify-content: space-between;
+
+    gap: 14px;
+
+    color: var(--cart-muted);
+
+    font-size: 13px;
+}
+
+#app .fm-cart-summary-row strong {
+    color: var(--cart-text);
+    font-weight: 750;
+    white-space: nowrap;
+}
+
+/* TOTAL GENERAL */
+
+#app .fm-cart-summary-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    gap: 10px;
+
+    padding: 25px 0;
+}
+
+#app .fm-cart-summary-total > div > span {
+    display: block;
+
+    color: var(--cart-text);
+
+    font-size: 18px;
+    font-weight: 800;
+}
+
+#app .fm-cart-summary-total small {
+    display: block;
+
+    margin-top: 7px;
+
+    color: var(--cart-muted);
+
+    font-size: 11px;
+}
+
+#app .fm-cart-summary-total > strong {
+    color: var(--cart-red);
+
+    font-size: 24px;
+    font-weight: 850;
+
+    white-space: nowrap;
+}
+
+/* ==========================================
+   BOTÓN DE COMPRA
+========================================== */
+
+#app .fm-cart-primary {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 14px;
+
+    width: 100%;
+    min-height: 52px;
+
+    padding: 14px 18px;
+
+    background: #c8102e;
+    color: #ffffff !important;
+
+    border: 1px solid #c8102e;
+
+    font-size: 13px;
+    font-weight: 800;
+
+    text-align: center;
+    text-decoration: none;
+
+    transition:
+        background .2s ease,
+        transform .2s ease;
+}
+
+#app .fm-cart-primary:hover {
+    background: #a50d26;
+    transform: translateY(-2px);
+}
+
+#app .fm-cart-summary-note {
+    margin: 19px 0 0;
+
+    color: var(--cart-muted);
+
+    font-size: 12px;
+    line-height: 1.6;
+
+    text-align: center;
+}
+
+/* ==========================================
+   CARRITO VACÍO
+========================================== */
+
+#app .fm-cart-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    min-height: 390px;
+
+    padding: 45px 25px;
+
+    border: 1px solid var(--cart-border);
+
+    background: var(--cart-surface);
+
+    text-align: center;
+}
+
+#app .fm-cart-empty-icon {
+    display: grid;
+    place-items: center;
+
+    width: 90px;
+    height: 90px;
+
+    margin-bottom: 25px;
+
+    background: var(--cart-soft);
+
+    color: var(--cart-red);
+}
+
+#app .fm-cart-empty-icon svg {
+    width: 45px;
+    height: 45px;
+}
+
+#app .fm-cart-empty h2 {
+    margin: 0 0 16px;
+
+    color: var(--cart-text) !important;
+
+    font-size: 27px;
+    font-weight: 850;
+}
+
+#app .fm-cart-empty p {
+    max-width: 490px;
+
+    margin: 0 0 27px;
+
+    color: var(--cart-muted);
+
+    font-size: 14px;
+    line-height: 1.8;
+}
+
+#app .fm-cart-empty .fm-cart-primary {
+    width: auto;
+    min-width: 220px;
+}
+
+/* ==========================================
+   RESPONSIVE
+========================================== */
+
+@media (max-width: 1050px) {
+
+    #app .fm-cart-layout {
+        grid-template-columns: 1fr;
+    }
+
+    #app .fm-cart-summary {
+        position: static;
+    }
+
+}
+
+@media (max-width: 650px) {
+
+    #app .fm-cart-header h1 {
+        font-size: 34px;
+    }
+
+    #app .fm-cart-product {
+        grid-template-columns: 1fr;
+
+        gap: 18px;
+        padding: 18px;
+    }
+
+    #app .fm-cart-product-image {
+        width: 100%;
+        height: 200px;
+    }
+
+    #app .fm-cart-product-bottom {
+        align-items: flex-start;
+    }
+
+    #app .fm-cart-summary {
+        padding: 23px 18px;
+    }
+
+    #app .fm-cart-list-actions {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+    #app .fm-cart-product,
+    #app .fm-cart-primary {
+        transition: none;
+    }
+
+}
+
+/* ==========================================
+   FERROMAX - ENCABEZADO DEL CATÁLOGO
+   CORRECCIÓN DE TAMAÑOS Y ESPACIADOS
+========================================== */
+
+/* CONTENEDOR PRINCIPAL */
+
+#app.fm-catalog-page .fm-editorial-page-header {
+    display: block !important;
+
+    width: 100% !important;
+    max-width: 1480px !important;
+
+    margin: 0 auto 45px !important;
+    padding: 10px 0 0 !important;
+
+    text-align: left !important;
+    box-sizing: border-box;
+}
+
+/* TEXTO ROJO SUPERIOR */
+
+#app.fm-catalog-page .fm-editorial-eyebrow {
+    display: block !important;
+
+    margin: 0 0 14px !important;
+
+    color: #c8102e !important;
+
+    font-size: 12px !important;
+    font-weight: 800 !important;
+
+    letter-spacing: 1.5px !important;
+    line-height: 1.5 !important;
+
+    text-transform: uppercase;
+}
+
+/* TÍTULO TODOS LOS PRODUCTOS */
+
+#app.fm-catalog-page .fm-editorial-page-header h1 {
+    display: block !important;
+
+    margin: 0 0 16px !important;
+    padding: 0 !important;
+
+    color: #20232b !important;
+
+    font-size: 46px !important;
+    font-weight: 800 !important;
+
+    line-height: 1.15 !important;
+    letter-spacing: -1.4px !important;
+}
+
+/* DESCRIPCIÓN */
+
+#app.fm-catalog-page .fm-editorial-page-header p {
+    display: block !important;
+
+    max-width: 750px !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    color: #69707d !important;
+
+    font-size: 15px !important;
+    font-weight: 400 !important;
+
+    line-height: 1.8 !important;
+}
+
+/* ESPACIO ENTRE EL TÍTULO Y LOS FILTROS */
+
+#app.fm-catalog-page .fm-catalog-layout {
+    margin-top: 0 !important;
+}
+
+/* CONTADOR DE RESULTADOS */
+
+#app.fm-catalog-page .fm-catalog-counter {
+    display: block !important;
+
+    margin: 0 0 25px !important;
+    padding: 0 0 16px !important;
+
+    color: #69707d !important;
+
+    font-size: 14px !important;
+    font-weight: 600 !important;
+
+    border-bottom: 1px solid #e9e1e5;
+}
+
+/* ==========================================
+   TEMA OSCURO
+========================================== */
+
+html[data-ferromax-tema="oscuro"]
+#app.fm-catalog-page .fm-editorial-page-header h1 {
+    color: #f3f4f7 !important;
+}
+
+html[data-ferromax-tema="oscuro"]
+#app.fm-catalog-page .fm-editorial-page-header p,
+html[data-ferromax-tema="oscuro"]
+#app.fm-catalog-page .fm-catalog-counter {
+    color: #b5bdca !important;
+}
+
+/* ==========================================
+   TABLETS
+========================================== */
+
+@media (max-width: 900px) {
+
+    #app.fm-catalog-page .fm-editorial-page-header h1 {
+        font-size: 38px !important;
+    }
+
+    #app.fm-catalog-page .fm-editorial-page-header {
+        margin-bottom: 35px !important;
+    }
+
+}
+
+/* ==========================================
+   CELULARES
+========================================== */
+
+@media (max-width: 650px) {
+
+    #app.fm-catalog-page .fm-editorial-page-header {
+        margin-bottom: 30px !important;
+    }
+
+    #app.fm-catalog-page .fm-editorial-page-header h1 {
+        font-size: 32px !important;
+        letter-spacing: -0.7px !important;
+    }
+
+    #app.fm-catalog-page .fm-editorial-page-header p {
+        font-size: 14px !important;
+        line-height: 1.7 !important;
+    }
+
+}
+
+/* ==========================================
+   FERROMAX - ESTILO UNIFICADO DE TÍTULOS
+========================================== */
+
+/* VARIABLES */
+
+#app {
+    --fm-heading-color: #20232b;
+    --fm-heading-muted: #69707d;
+    --fm-heading-red: #c8102e;
+}
+
+/* TEMA OSCURO */
+
+html[data-ferromax-tema="oscuro"] #app {
+    --fm-heading-color: #f1f3f7;
+    --fm-heading-muted: #b5bdca;
+    --fm-heading-red: #f04764;
+}
+
+
+/* ==========================================
+   ENCABEZADOS DEL INICIO
+========================================== */
+
+#app .fm-home-section .fm-editorial-section {
+    display: flex !important;
+    align-items: flex-end !important;
+    justify-content: space-between !important;
+
+    gap: 30px !important;
+
+    width: 100%;
+
+    margin: 0 0 32px !important;
+    padding: 0 !important;
+}
+
+#app .fm-editorial-section-info {
+    flex: 1;
+    min-width: 0;
+    max-width: 750px;
+}
+
+/* ETIQUETA ROJA */
+
+#app .fm-editorial-section-label {
+    display: block !important;
+
+    margin: 0 0 12px !important;
+
+    color: var(--fm-heading-red) !important;
+
+    font-family: "Plus Jakarta Sans", sans-serif !important;
+    font-size: 12px !important;
+    font-weight: 800 !important;
+
+    letter-spacing: 1.6px !important;
+    line-height: 1.5 !important;
+    text-transform: uppercase;
+}
+
+/* TÍTULO PRINCIPAL */
+
+#app .fm-home-section
+.fm-editorial-section-title {
+    display: block !important;
+
+    margin: 0 0 14px !important;
+    padding: 0 !important;
+
+    color: var(--fm-heading-color) !important;
+
+    font-family: "Plus Jakarta Sans", sans-serif !important;
+
+    font-size: clamp(32px, 3.3vw, 44px) !important;
+    font-weight: 800 !important;
+
+    line-height: 1.2 !important;
+    letter-spacing: -1.4px !important;
+
+    text-align: left !important;
+}
+
+/* DESCRIPCIÓN */
+
+#app .fm-editorial-section-description {
+    display: block !important;
+
+    max-width: 620px;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    color: var(--fm-heading-muted) !important;
+
+    font-family: "Plus Jakarta Sans", sans-serif !important;
+
+    font-size: 15px !important;
+    font-weight: 400 !important;
+
+    line-height: 1.8 !important;
+    text-align: left !important;
+}
+
+/* ENLACE VER TODAS */
+
+#app .fm-home-section
+.fm-editorial-section-link {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: flex-end;
+
+    gap: 9px;
+
+    flex-shrink: 0;
+
+    margin-bottom: 6px;
+
+    color: var(--fm-heading-red) !important;
+
+    font-family: "Plus Jakarta Sans", sans-serif !important;
+    font-size: 14px !important;
+    font-weight: 800 !important;
+
+    text-decoration: none !important;
+    white-space: nowrap;
+}
+
+#app .fm-editorial-section-link:hover {
+    text-decoration: underline !important;
+}
+
+#app .fm-editorial-section-link svg {
+    width: 17px;
+    height: 17px;
+}
+
+
+/* ==========================================
+   TÍTULO DEL CATÁLOGO
+========================================== */
+
+#app.fm-catalog-page
+.fm-editorial-page-header {
+    margin-bottom: 42px !important;
+}
+
+#app.fm-catalog-page
+.fm-editorial-eyebrow {
+    display: block !important;
+
+    margin-bottom: 12px !important;
+
+    color: var(--fm-heading-red) !important;
+
+    font-family: "Plus Jakarta Sans", sans-serif !important;
+    font-size: 12px !important;
+    font-weight: 800 !important;
+
+    letter-spacing: 1.5px !important;
+}
+
+#app.fm-catalog-page
+.fm-editorial-page-header h1 {
+    margin: 0 0 16px !important;
+
+    color: var(--fm-heading-color) !important;
+
+    font-family: "Plus Jakarta Sans", sans-serif !important;
+
+    font-size: clamp(36px, 4vw, 48px) !important;
+    font-weight: 800 !important;
+
+    line-height: 1.15 !important;
+    letter-spacing: -1.3px !important;
+}
+
+#app.fm-catalog-page
+.fm-editorial-page-header p {
+    max-width: 700px;
+
+    margin: 0 !important;
+
+    color: var(--fm-heading-muted) !important;
+
+    font-family: "Plus Jakarta Sans", sans-serif !important;
+    font-size: 15px !important;
+
+    line-height: 1.8 !important;
+}
+
+
+/* ==========================================
+   TÍTULO DE LA PÁGINA MARCAS
+========================================== */
+
+#app .fm-brands-page-header {
+    margin-bottom: 40px !important;
+    text-align: left !important;
+}
+
+#app .fm-brands-page-header .fm-brands-label {
+    display: block;
+
+    margin-bottom: 12px;
+
+    color: var(--fm-heading-red) !important;
+
+    font-family: "Plus Jakarta Sans", sans-serif !important;
+    font-size: 12px !important;
+    font-weight: 800 !important;
+
+    letter-spacing: 1.5px;
+}
+
+#app .fm-brands-page-header h1 {
+    margin: 0 0 16px !important;
+
+    color: var(--fm-heading-color) !important;
+
+    font-family: "Plus Jakarta Sans", sans-serif !important;
+
+    font-size: clamp(36px, 4vw, 48px) !important;
+    font-weight: 800 !important;
+
+    line-height: 1.15 !important;
+    letter-spacing: -1.3px !important;
+}
+
+#app .fm-brands-page-header p {
+    max-width: 700px;
+
+    margin: 0 !important;
+
+    color: var(--fm-heading-muted) !important;
+
+    font-family: "Plus Jakarta Sans", sans-serif !important;
+
+    font-size: 15px !important;
+    line-height: 1.8 !important;
+}
+
+
+/* ==========================================
+   SEPARACIÓN DE SECCIONES
+========================================== */
+
+#app .fm-home-section {
+    margin-top: 45px !important;
+    margin-bottom: 50px !important;
+}
+
+
+/* ==========================================
+   TABLETS
+========================================== */
+
+@media (max-width: 900px) {
+
+    #app .fm-home-section
+    .fm-editorial-section-title {
+        font-size: 34px !important;
+    }
+
+}
+
+
+/* ==========================================
+   CELULARES
+========================================== */
+
+@media (max-width: 650px) {
+
+    #app .fm-home-section
+    .fm-editorial-section {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+
+        gap: 20px !important;
+    }
+
+    #app .fm-home-section
+    .fm-editorial-section-title {
+        font-size: 30px !important;
+        letter-spacing: -.8px !important;
+    }
+
+    #app .fm-editorial-section-description {
+        font-size: 14px !important;
+    }
+
+    #app .fm-home-section
+    .fm-editorial-section-link {
+        align-self: flex-start;
+    }
+
+    #app .fm-brands-page-header h1 {
+        font-size: 34px !important;
+    }
+
+    #app .fm-home-section {
+        margin-top: 35px !important;
+        margin-bottom: 40px !important;
+    }
+
+}
+
+/* ==========================================
+   FERROMAX - NOTIFICACIÓN INFERIOR DERECHA
+========================================== */
+
+.fm-toast {
+    position: fixed;
+
+    bottom: 18px;
+    right: 18px;
+
+    z-index: 9999;
+
+    display: flex;
+    align-items: center;
+
+    width: max-content;
+    max-width: calc(100vw - 36px);
+
+    padding: 10px 15px;
+
+    background: #ffffff;
+    color: #333333;
+
+    border: 1px solid #eeeeee;
+    border-left: 3px solid #c8102e;
+    border-radius: 8px;
+
+    font-family: "Segoe UI", Arial, sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.4;
+
+    box-shadow:
+        0 5px 20px rgba(0, 0, 0, 0.12);
+
+    pointer-events: none;
+
+    animation: fmToastEntrada 0.25s ease-out;
+}
+
+/* ANIMACIÓN SUAVE */
+
+@keyframes fmToastEntrada {
+
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+}
+
+/* ADAPTACIÓN A CELULARES */
+
+@media (max-width: 600px) {
+
+    .fm-toast {
+        bottom: 12px;
+        right: 12px;
+
+        padding: 9px 12px;
+
+        font-size: 11px;
+    }
+
+}
+
+
+/* ==========================================
+   NAVEGACIÓN SIN DESPLAZAMIENTOS EXTRAÑOS
+========================================== */
+
+html {
+    scroll-behavior: auto !important;
+}
+
+body {
+    scroll-behavior: auto !important;
+}
+
+/* ==========================================
+   FERROMAX
+   FOOTER CENTRADO Y ORGANIZADO
+========================================== */
+
+/* CONTENEDOR PRINCIPAL */
+
+#ftr .fm-footer-main {
+    display: grid !important;
+
+    grid-template-columns:
+        1.1fr
+        0.75fr
+        1.2fr
+        1.2fr !important;
+
+    align-items: start;
+    justify-content: center;
+
+    gap: 36px;
+
+    width: 100%;
+    max-width: 1180px;
+
+    margin: 0 auto;
+
+    padding: 42px 24px 34px;
+
+    box-sizing: border-box;
+}
+
+/* CENTRAR CADA APARTADO */
+
+#ftr .fm-footer-main > div {
+    display: flex;
+    flex-direction: column;
+
+    align-items: center;
+
+    min-width: 0;
+
+    text-align: center;
+}
+
+/* LOGOTIPO */
+
+#ftr .fm-footer-main > div:first-child > a {
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    margin: 0 auto 12px;
+}
+
+/* DESCRIPCIÓN DE FERROMAX */
+
+#ftr .fm-footer-main > div:first-child p {
+    max-width: 250px;
+
+    margin-left: auto;
+    margin-right: auto;
+
+    text-align: center;
+
+    font-size: 13px;
+    line-height: 1.7;
+}
+
+/* TÍTULOS */
+
+#ftr .fm-footer-main h2 {
+    width: 100%;
+
+    margin-bottom: 18px;
+
+    color: #25212a;
+
+    font-size: 14px;
+    font-weight: 800;
+
+    text-align: center;
+}
+
+/* LISTAS */
+
+#ftr .fm-footer-main ul {
+    width: 100%;
+
+    padding: 0;
+    margin: 0;
+
+    list-style: none;
+}
+
+/* ENLACES */
+
+#ftr .fm-footer-main > div:nth-child(2) li {
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+#ftr .fm-footer-main > div:nth-child(2) a {
+    display: inline-block;
+
+    color: #4b4550;
+
+    font-size: 13px;
+
+    text-decoration: none;
+
+    transition: color 0.2s ease;
+}
+
+#ftr .fm-footer-main > div:nth-child(2) a:hover {
+    color: #c8102e;
+}
+
+/* CONTACTO */
+
+#ftr .fm-footer-main > div:nth-child(3) ul {
+    max-width: 285px;
+
+    margin: 0 auto;
+}
+
+#ftr .fm-footer-main > div:nth-child(3) li {
+    display: flex;
+
+    align-items: flex-start;
+    justify-content: flex-start;
+
+    gap: 10px;
+
+    margin-bottom: 14px;
+
+    color: #4b4550;
+
+    font-size: 12px;
+    line-height: 1.6;
+
+    text-align: left;
+
+    overflow-wrap: anywhere;
+}
+
+/* ICONOS DE CONTACTO */
+
+#ftr .fm-footer-main > div:nth-child(3) li svg {
+    flex-shrink: 0;
+
+    width: 17px;
+    height: 17px;
+
+    color: #c8102e;
+}
+
+/* ==========================================
+   MAPA DE UBICACIÓN
+========================================== */
+
+#ftr .fm-footer-map {
+    display: flex !important;
+
+    align-items: center;
+    justify-content: center;
+
+    width: 100%;
+    max-width: 310px;
+
+    margin: 0 auto;
+
+    overflow: hidden;
+
+    border-radius: 12px;
+
+    background: #eee;
+}
+
+/* MAPA */
+
+#ftr .fm-footer-map iframe {
+    display: block;
+
+    width: 100% !important;
+    height: 230px !important;
+
+    min-height: 0 !important;
+
+    border: none !important;
+
+    border-radius: 12px;
+}
+
+/* ==========================================
+   BARRA INFERIOR
+========================================== */
+
+#ftr footer > div:last-child > div {
+    display: flex;
+
+    align-items: center;
+    justify-content: center !important;
+
+    flex-wrap: wrap;
+
+    gap: 14px 32px;
+
+    text-align: center;
+
+    padding-top: 18px;
+    padding-bottom: 18px;
+}
+
+/* ENLACES INFERIORES */
+
+#ftr footer > div:last-child > div > span:last-child {
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    flex-wrap: wrap;
+
+    gap: 12px 22px;
+}
+
+/* ==========================================
+   TABLETS
+========================================== */
+
+@media (max-width: 1000px) {
+
+    #ftr .fm-footer-main {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr)) !important;
+
+        gap: 35px;
+
+        padding: 35px 24px;
+    }
+
+    #ftr .fm-footer-map {
+        max-width: 350px;
+    }
+}
+
+/* ==========================================
+   CELULARES
+========================================== */
+
+@media (max-width: 600px) {
+
+    #ftr .fm-footer-main {
+        grid-template-columns: 1fr !important;
+
+        gap: 30px;
+
+        padding: 32px 20px;
+    }
+
+    #ftr .fm-footer-main > div {
+        width: 100%;
+    }
+
+    #ftr .fm-footer-main h2 {
+        margin-bottom: 12px;
+    }
+
+    #ftr .fm-footer-main > div:nth-child(3) ul {
+        max-width: 280px;
+    }
+
+    #ftr .fm-footer-map {
+        width: 100%;
+        max-width: 330px;
+    }
+
+    #ftr .fm-footer-map iframe {
+        height: 210px !important;
+    }
+}
+
+
+/* FERROMAX - BARRA LATERAL FIJA DEL CLIENTE */
+
+@media (min-width: 900px) {
+
+    #app .fm-cuenta {
+        overflow: visible !important;
+    }
+
+    #app .fm-cuenta-layout {
+        display: grid;
+        grid-template-columns: minmax(240px, 290px) minmax(0, 1fr);
+        align-items: start !important;
+        overflow: visible !important;
+    }
+
+    #app .fm-cuenta-sidebar {
+        position: sticky !important;
+        top: 20px !important;
+        align-self: start !important;
+        height: max-content;
+        max-height: calc(100dvh - 40px);
+        overflow-y: auto;
+        overflow-x: hidden;
+        overscroll-behavior: contain;
+        z-index: 10;
+    }
+
+    #app .fm-cuenta-main {
+        min-width: 0;
+    }
+}
+
+@media (max-width: 899px) {
+
+    #app .fm-cuenta-sidebar {
+        position: static !important;
+        max-height: none;
+        overflow: visible;
+    }
+}
