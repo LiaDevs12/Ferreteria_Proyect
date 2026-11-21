@@ -96,7 +96,8 @@ export async function api(url, options = {}) {
                 `Error ${response.status}`
             ),
             {
-                fields: data.fields
+                fields: data.fields,
+                code: data.code
             }
         );
     }

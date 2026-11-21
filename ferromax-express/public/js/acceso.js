@@ -405,7 +405,23 @@ export function vistaCuenta(cliente, googleClientId = '') {
                                 id="gbtn"
                                 class="fm-auth-google"
                             ></div>
-                        ` : ''}
+
+                            <form id="google-link-form" hidden>
+                                <label for="google-link-password">
+                                    Contraseña de tu cuenta de FerroMax
+                                </label>
+                                <input
+                                    id="google-link-password"
+                                    type="password"
+                                    autocomplete="current-password"
+                                    maxlength="72"
+                                    required
+                                >
+                                <button type="submit" class="fm-auth-primary">
+                                    Vincular cuenta de Google
+                                </button>
+                            </form>
+                            ` : ''}
 
                         <button
                             type="button"
