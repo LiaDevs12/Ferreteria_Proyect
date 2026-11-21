@@ -7,6 +7,12 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import bcrypt from 'bcryptjs';
 import { createSuppliersRouter } from './suppliers-router.js';
+// ALMACENAMIENTO DE IMÁGENES EN RAILWAY
+import {
+    guardarImagen,
+    leerImagen,
+    borrarImagen
+} from '../storage/imagenes.js';
 
 const clean = value => String(value ?? '').trim();
 
@@ -271,6 +277,7 @@ function productPhotoPayload(body = {}) {
 
 /* ==========================================
    GUARDAR IMÁGENES
+   LOCAL / RAILWAY STORAGE BUCKET
 ========================================== */
 
 async function saveImage(data, folder) {
@@ -300,20 +307,22 @@ async function saveImage(data, folder) {
     const name =
         `${Date.now()}-${crypto.randomBytes(8).toString('hex')}.${ext}`;
 
-    const dir = path.resolve('public/uploads', folder);
+    const url = `/uploads/${folder}/${name}`;
 
-    await fs.mkdir(dir, {
-        recursive: true
-    });
+    const mime = ext === 'jpg'
+        ? 'image/jpeg'
+        : `image/${ext}`;
 
-    await fs.writeFile(
-        path.join(dir, name),
-        bytes,
-        { flag: 'wx' }
-    );
+    // Local: public/uploads/
+    // Railway: Storage Bucket
+    await guardarImagen(url, bytes, mime);
 
-    return `/uploads/${folder}/${name}`;
+    return url;
 }
+
+/* ==========================================
+   ELIMINAR UNA IMAGEN
+========================================== */
 
 async function cleanupUploadedFile(url, folder) {
     const pattern = new RegExp(
@@ -324,16 +333,19 @@ async function cleanupUploadedFile(url, folder) {
         return;
     }
 
-    await fs.unlink(
-        path.resolve('public', String(url).slice(1))
-    ).catch(() => {});
+    await borrarImagen(url);
 }
+
+/* ==========================================
+   ELIMINAR VARIAS IMÁGENES DE PRODUCTOS
+========================================== */
 
 async function cleanupProductFiles(urls) {
     for (const url of urls) {
         await cleanupUploadedFile(url, 'products');
     }
 }
+
 
 /* ==========================================
    FOTOGRAFÍAS DE PRODUCTOS
@@ -2985,9 +2997,6 @@ router.get(
            UBICACION DE LAS FOTOGRAFIAS
         ================================== */
 
-        const carpeta = path.resolve(
-            'public/uploads/reports'
-        );
 
         /* ==================================
            INSERTAR IMAGENES EN EL PDF
@@ -3027,34 +3036,13 @@ router.get(
                 continue;
             }
 
-            const rutaArchivo = path.resolve(
-                'public',
-                url.slice(1)
-            );
-
-            if (
-                !rutaArchivo.startsWith(
-                    carpeta + path.sep
-                )
-            ) {
-
-                campo(
-                    tituloFoto,
-                    'Imagen no disponible.'
-                );
-
-                continue;
-            }
-
             try {
 
                 /* ==========================
                    LEER FOTOGRAFIA
                 ========================== */
 
-                const bytes = await fs.readFile(
-                    rutaArchivo
-                );
+                const { bytes } = await leerImagen(url);
 
                 if (
                     bytes.length > MAX_FOTO_BYTES
@@ -3517,29 +3505,39 @@ router.post(
                 message: 'Reporte enviado al administrador.'
             });
 
-        } catch (error) {
 
-            await conexion.rollback().catch(() => {});
+} catch (error) {
 
-            if (
-                fotoGuardada &&
-                /^\/uploads\/reports\/[\w.-]+$/.test(
-                    fotoGuardada
-                )
-            ) {
-                await fs.unlink(
-                    path.resolve(
-                        'public',
-                        fotoGuardada.slice(1)
-                    )
-                ).catch(() => {});
-            }
+    await conexion.rollback().catch(() => {});
 
-            throw error;
+    /* ======================================
+       LIMPIAR EVIDENCIA SI FALLA EL REPORTE
+       LOCAL / RAILWAY STORAGE BUCKET
+    ====================================== */
 
-        } finally {
-            conexion.release();
-        }
+    if (
+        fotoGuardada &&
+        /^\/uploads\/reports\/[a-zA-Z0-9_.-]+$/.test(
+            fotoGuardada
+        )
+    ) {
+        await cleanupUploadedFile(
+            fotoGuardada,
+            'reports'
+        ).catch(errorLimpieza => {
+            console.error(
+                'No se pudo limpiar la evidencia:',
+                errorLimpieza
+            );
+        });
+    }
+
+    throw error;
+
+} finally {
+    conexion.release();
+}
+
     })
 );
 

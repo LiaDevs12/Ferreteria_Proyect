@@ -1,10 +1,11 @@
 
 import express from 'express';
 import crypto from 'node:crypto';
-import fs from 'node:fs/promises';
-import path from 'node:path';
 
-const DIR = path.resolve('public/uploads/brands');
+import {
+    guardarImagen,
+    borrarImagen
+} from '../storage/imagenes.js';
 const MAX = 5 * 1024 * 1024;
 
 const DATA_URI =
@@ -24,6 +25,7 @@ function errorHttp(message, status = 400) {
 
 /* ==========================================
    GUARDAR LOGOTIPO
+   LOCAL / RAILWAY STORAGE BUCKET
 ========================================== */
 
 async function guardarLogo(data) {
@@ -50,36 +52,35 @@ async function guardarLogo(data) {
     const filename =
         `${Date.now()}-${crypto.randomBytes(8).toString('hex')}.${ext}`;
 
-    await fs.mkdir(DIR, {
-        recursive: true
-    });
+    const url = `/uploads/brands/${filename}`;
 
-    await fs.writeFile(
-        path.join(DIR, filename),
-        bytes,
-        { flag: 'wx' }
-    );
+    const mime = ext === 'jpg'
+        ? 'image/jpeg'
+        : `image/${ext}`;
 
-    return `/uploads/brands/${filename}`;
+    await guardarImagen(url, bytes, mime);
+
+    return url;
 }
+
 
 /* ==========================================
    ELIMINAR LOGOTIPO ANTERIOR
+   LOCAL / RAILWAY STORAGE BUCKET
 ========================================== */
 
 async function eliminarLogo(url) {
     const match =
-        /^\/uploads\/brands\/([a-z0-9.-]+)$/i.exec(
+        /^\/uploads\/brands\/([a-zA-Z0-9_.-]+)$/.exec(
             String(url || '')
         );
 
-    if (match) {
-        await fs.unlink(
-            path.join(DIR, match[1])
-        ).catch(() => {});
+    if (!match) {
+        return;
     }
-}
 
+    await borrarImagen(url);
+}
 /* ==========================================
    VALIDAR MARCA Y CATEGORÍAS
 ========================================== */

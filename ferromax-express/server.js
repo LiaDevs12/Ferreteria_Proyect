@@ -1,4 +1,4 @@
-
+import { leerImagen } from './src/storage/imagenes.js';
 import express from 'express';
 import crypto from 'node:crypto';
 import path from 'node:path';
@@ -266,13 +266,56 @@ app.use('/api', (_req, res) => {
 
 /* ==========================================
    ARCHIVOS PÚBLICOS
+   LOCAL / RAILWAY STORAGE BUCKET
 ========================================== */
 
+// Fotografías públicas de productos y marcas
+app.get(
+    /^\/uploads\/(products|brands)\/[a-zA-Z0-9_.-]+$/,
+    async (req, res, next) => {
+
+        // En local, Express sirve los archivos normales
+        if (process.env.STORAGE_PROVIDER !== 's3') {
+            return next();
+        }
+
+        try {
+            const { bytes, tipo } = await leerImagen(req.path);
+
+            res.setHeader('Content-Type', tipo);
+            res.setHeader('Cache-Control', 'public, max-age=3600');
+
+            return res.send(bytes);
+
+        } catch (error) {
+
+            if (
+                error.name === 'NoSuchKey' ||
+                error.name === 'NotFound'
+            ) {
+                return res.status(404).end();
+            }
+
+            return next(error);
+        }
+    }
+);
+
+// Evitar que las evidencias privadas de reportes
+// se publiquen como archivos estáticos
+app.use('/uploads/reports', (_req, res) => {
+    res.status(403).json({
+        error: 'Acceso no autorizado a evidencias.'
+    });
+});
+
+// Archivos públicos normales: HTML, CSS, JS, etc.
 app.use(
     express.static(
         path.join(raiz, 'public')
     )
 );
+
 
 /* ==========================================
    NAVEGACIÓN DE LA TIENDA
