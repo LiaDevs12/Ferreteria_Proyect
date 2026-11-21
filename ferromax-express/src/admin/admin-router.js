@@ -572,6 +572,67 @@ export function createAdminRouter({ pool }) {
         });
     };
 
+/* ==========================================
+   CONSULTAR EVIDENCIAS PRIVADAS
+========================================== */
+
+router.get(
+    '/evidencias/:nombre',
+    requireLogin,
+    async (req, res, next) => {
+        const nombre = String(req.params.nombre || '');
+
+        if (
+            !/^[a-zA-Z0-9_.-]+\.(jpg|jpeg|png|webp)$/i.test(nombre)
+        ) {
+            return res.status(400).json({
+                error: 'Nombre de archivo inválido.'
+            });
+        }
+
+        try {
+            const url = `/uploads/reports/${nombre}`;
+
+            // Verificar que la evidencia esté registrada
+            // y que pertenezca a una incidencia existente.
+            const [rows] = await pool.query(`
+                SELECT 1
+                FROM evidencias_incidencia
+                WHERE url_foto = ?
+                LIMIT 1
+            `, [url]);
+
+            if (!rows.length) {
+                return res.status(404).json({
+                    error: 'Evidencia no encontrada.'
+                });
+            }
+
+            const { bytes, tipo } = await leerImagen(url);
+
+            res.setHeader('Content-Type', tipo);
+            res.setHeader('Cache-Control', 'private, no-store');
+            res.setHeader('X-Content-Type-Options', 'nosniff');
+
+            return res.send(bytes);
+
+        } catch (error) {
+            if (
+                error.name === 'NoSuchKey' ||
+                error.name === 'NotFound' ||
+                error.code === 'ENOENT'
+            ) {
+                return res.status(404).json({
+                    error: 'Fotografía no encontrada.'
+                });
+            }
+
+            next(error);
+        }
+    }
+);
+
+
     const requireAdmin = (req, res, next) => {
         if (req.s?.user?.rol === 'ADMINISTRADOR') {
             return next();

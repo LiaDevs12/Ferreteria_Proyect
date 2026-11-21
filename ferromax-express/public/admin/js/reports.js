@@ -192,10 +192,10 @@ export async function reports() {
                         ${(report.evidencias || []).map(photo => `
 
                             <div class="field full">
-
+                                
                                 <img
                                     class="report-photo"
-                                    src="${esc(photo.url_foto)}"
+                                    src="${esc('/api/admin/evidencias/' + String(photo.url_foto || '').split('/').pop())}"
                                     alt="Evidencia del reporte"
                                 >
 
