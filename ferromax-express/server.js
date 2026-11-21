@@ -63,8 +63,10 @@ const [
 
 const app = express();
 
-const PORT = Number(process.env.PORT) || 3000;
+app.set('trust proxy', 1);
 
+const PORT = Number(process.env.PORT) || 3000;
+const HOST = '0.0.0.0';
 app.disable('x-powered-by');
 
 app.use(
@@ -332,11 +334,8 @@ const pagoPruebasHabilitado =
    INICIAR SERVIDOR
 ========================================== */
 
-app.listen(PORT, () => {
-
-    console.log(
-        `FerroMax disponible en http://localhost:${PORT}`
-    );
+app.listen(PORT, HOST, () => {
+    console.log(`FerroMax escuchando en ${HOST}:${PORT}`);
 
     console.log(
         'Sesiones independientes: CLIENTES / ADMIN'
@@ -353,10 +352,6 @@ app.listen(PORT, () => {
 
     console.log(
         'NODE_ENV: ' +
-        (
-            process.env.NODE_ENV ||
-            'development'
-        )
+        (process.env.NODE_ENV || 'development')
     );
-
 });
