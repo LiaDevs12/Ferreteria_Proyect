@@ -7,6 +7,7 @@ import { clean, emailOk, handle } from './helpers.js';
 
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID || '';
 const googleClient = GOOGLE_CLIENT_ID ? new OAuth2Client(GOOGLE_CLIENT_ID) : null;
+const DEMO_EMAIL = 'prueba@ejemplo.com';
 
 export function registrarAutenticacion(api) {
 const publicUser = user => user
@@ -120,7 +121,8 @@ async function newUser(
     name,
     surname,
     mail,
-    hash
+    hash,
+    googleSubject = null
 ) {
 
     const conn = await pool.getConnection();
@@ -129,7 +131,7 @@ async function newUser(
 
         await conn.beginTransaction();
 
-        const [result] = await conn.query(`
+            const [result] = await conn.query(`
             INSERT INTO usuarios (
                 nombre,
                 apellido_paterno,
@@ -137,16 +139,15 @@ async function newUser(
                 password_hash,
                 rol
             )
+            VALUES (?, ?, ?, ?, 'CLIENTE')
+        `, [name, surname, mail, hash]);
 
-            VALUES (
-                ?, ?, ?, ?, 'CLIENTE'
-            )
-        `, [
-            name,
-            surname,
-            mail,
-            hash
-        ]);
+        if (googleSubject) {
+            await conn.query(
+                'UPDATE usuarios SET google_sub = ? WHERE id_usuario = ?',
+                [googleSubject, result.insertId]
+            );
+        }
 
         await conn.query(
             'INSERT INTO clientes (id_usuario) VALUES (?)',
@@ -178,7 +179,7 @@ api.post('/auth/demo-login', handle(async (
     res
 ) => {
 
-    const email = 'prueba@ejemplo.com';
+    const email = DEMO_EMAIL;
 
     let [[user]] = await pool.query(
         'SELECT id_usuario AS id FROM usuarios WHERE correo = ?',
@@ -426,117 +427,119 @@ api.post('/auth/login', handle(async (
    LOGIN CON GOOGLE
 ========================================== */
 
-api.post('/auth/google', handle(async (
-    req,
-    res
-) => {
-
+api.post('/auth/google', handle(async (req, res) => {
     if (!googleClient) {
         return res.status(501).json({
-            error:
-                'Inicio con Google no configurado (falta GOOGLE_CLIENT_ID)'
+            error: 'Inicio con Google no configurado (falta GOOGLE_CLIENT_ID)'
         });
     }
 
     if (limited(req)) {
         return res.status(429).json({
-            error:
-                'Demasiados intentos. Espera unos minutos.'
+            error: 'Demasiados intentos. Espera unos minutos.'
         });
     }
 
     let payload;
-
     try {
-        const ticket =
-            await googleClient.verifyIdToken({
-                idToken: String(
-                    req.body?.credential || ''
-                ),
-
-                audience:
-                    GOOGLE_CLIENT_ID
-            });
-
+        const ticket = await googleClient.verifyIdToken({
+            idToken: String(req.body?.credential || ''),
+            audience: GOOGLE_CLIENT_ID
+        });
         payload = ticket.getPayload();
-
     } catch {
         return res.status(401).json({
-            error:
-                'Token de Google inválido'
+            error: 'Token de Google inválido'
         });
     }
 
     if (
-        !payload?.email ||
-        !payload.email_verified
+        typeof payload?.sub !== 'string' ||
+        !/^[\x21-\x7e]{1,255}$/.test(payload.sub) ||
+        typeof payload.email !== 'string' ||
+        payload.email.length > 150 ||
+        !emailOk(payload.email) ||
+        payload.email_verified !== true
     ) {
         return res.status(401).json({
-            error:
-                'Tu correo de Google no está verificado'
+            error: 'Tu correo de Google no está verificado'
         });
     }
 
-    const mail = payload.email.toLowerCase();
+    const mail = clean(payload.email).toLowerCase();
+    const subject = payload.sub;
+    const [[existingUser]] = await pool.query(`
+        SELECT id_usuario AS id, nombre, correo, password_hash, rol, activo, google_sub
+        FROM usuarios
+        WHERE google_sub = ? OR correo = ?
+        ORDER BY (google_sub = ?) DESC
+        LIMIT 1
+    `, [subject, mail, subject]);
+    let user = existingUser;
 
-    let user = await findUser(
-        mail
-    );
-
-    if (
-        user &&
-        (
-            !user.activo ||
-            user.rol !== 'CLIENTE'
-        )
-    ) {
+    if (mail === DEMO_EMAIL || (user && (!user.activo || user.rol !== 'CLIENTE'))) {
         return res.status(403).json({
-            error:
-                'Esta cuenta no puede entrar a la tienda'
+            error: 'Esta cuenta no puede entrar a la tienda'
         });
     }
 
-    if (!user) {
+    const conflict = () => res.status(409).json({
+        error: 'No se pudo vincular la cuenta de Google. Vuelve a iniciar sesión con Google.'
+    });
 
-        const nombre = clean(
-            payload.given_name ||
-            payload.name
-        ) || 'Cliente';
+    try {
+        if (!user) {
+            const nombre = clean(payload.given_name || payload.name).slice(0, 100) || 'Cliente';
+            const apellido = clean(payload.family_name).slice(0, 100) || '-';
+            const id = await newUser(nombre, apellido, mail, '!GOOGLE', subject);
+            user = { id, nombre, correo: mail };
+        } else if (user.google_sub !== subject) {
+            if (user.google_sub !== null) return conflict();
 
-        const id = await newUser(
-            nombre,
+            const googleControlsEmail = mail.endsWith('@gmail.com') || Boolean(payload.hd);
+            const legacyGoogleAccount = user.password_hash === '!GOOGLE' && googleControlsEmail;
 
-            clean(
-                payload.family_name
-            ) || '-',
+            if (!legacyGoogleAccount) {
+                if (!user.password_hash?.startsWith('$2')) {
+                    return res.status(403).json({
+                        error: 'Contacta a soporte para vincular tu cuenta de FerroMax con Google.'
+                    });
+                }
 
-            mail,
+                const password = req.body?.password;
+                if (typeof password !== 'string' || password.length === 0) {
+                    return res.status(409).json({
+                        code: 'GOOGLE_LINK_REQUIRED',
+                        error: 'Confirma tu contraseña de FerroMax para vincular la cuenta de Google.'
+                    });
+                }
 
-            '!GOOGLE'
-        );
+                if (password.length > 72 || !(await bcrypt.compare(password, user.password_hash))) {
+                    return res.status(401).json({
+                        error: 'La contraseña de FerroMax es incorrecta.'
+                    });
+                }
+            }
 
-        user = {
-            id,
-            nombre,
-            correo: mail
-        };
+            const [updated] = await pool.query(`
+                UPDATE usuarios SET google_sub = ?
+                WHERE id_usuario = ? AND correo = ? AND BINARY password_hash = ?
+                  AND google_sub IS NULL AND activo = 1 AND rol = 'CLIENTE'
+            `, [subject, user.id, user.correo, user.password_hash]);
+
+            if (updated.affectedRows !== 1) return conflict();
+        }
+    } catch (error) {
+        if (error.code === 'ER_DUP_ENTRY') return conflict();
+        throw error;
     }
 
-    res.json(
-        startSession(
-            req,
-            res,
-            {
-                id: user.id,
-
-                name: user.nombre,
-
-                email: user.correo,
-
-                rol: 'CLIENTE'
-            }
-        )
-    );
+    res.json(startSession(req, res, {
+        id: user.id,
+        name: user.nombre,
+        email: user.correo,
+        rol: 'CLIENTE'
+    }));
 }));
 
 /* ==========================================
