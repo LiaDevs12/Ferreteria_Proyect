@@ -1,7 +1,14 @@
 
 import { pool } from '../../db.js';
 import { priceCart } from '../../pricing.js';
-
+import { randomUUID } from 'node:crypto';
+import {
+    centavos,
+    crearSesionStripe,
+    devolverReserva,
+    motivoReserva,
+    reconciliarSesionStripe
+} from './stripe-checkout.js';
 const s = valor => String(valor ?? '').trim();
 
 const emailValido = valor =>
@@ -9,7 +16,7 @@ const emailValido = valor =>
 
 const PAGO = {
     tarjeta: 'TARJETA',
-    transferencia: 'TRANSFERENCIA',
+    //transferencia: 'TRANSFERENCIA',
     tienda: 'EFECTIVO'
 };
 
@@ -28,8 +35,15 @@ const CANCELABLES = new Set([
     'PREPARANDO'
 ]);
 
-const HORAS_CANCELACION = 12;
+const ESTADOS_STRIPE = {
+    PENDIENTE: ['stripe_pendiente', 'Pendiente en Stripe (prueba)'],
+    PAGADO: ['stripe_pagado', 'Pagado en Stripe (prueba)'],
+    EXPIRADO: ['stripe_expirado', 'Sesión de Stripe vencida'],
+    REEMBOLSADO: ['stripe_reembolsado', 'Reembolsado en Stripe (prueba)'],
+    CANCELADO: ['stripe_cancelado', 'Pago de prueba cancelado']
+};
 const TIEMPO_BLOQUEO = 5;
+const HORAS_CANCELACION = 12;
 
 function crearError(estado, mensaje) {
     const error = new Error(mensaje);
@@ -137,6 +151,13 @@ function respuestaPedido(pedido, detalles = []) {
     const metodo = s(pedido.metodo_pago).toUpperCase();
 
     const notas = s(pedido.observaciones);
+        const pago = ESTADOS_STRIPE[pedido.stripe_estado] ?? (
+        codigo === 'CANCELADO'
+            ? ['cancelado', 'Cancelado']
+            : metodo === 'TARJETA' || notas.includes('PAGO SIMULADO APROBADO')
+                ? ['simulado_aprobado', 'Pago simulado']
+                : ['pendiente_de_integracion', 'Pago pendiente']
+    );
 
     return {
         id: `PED-${pedido.id_pedido}`,
@@ -146,13 +167,8 @@ function respuestaPedido(pedido, detalles = []) {
         status: ESTADOS[codigo] || codigo,
         statusCode: codigo,
 
-        paymentStatus:
-            codigo === 'CANCELADO'
-                ? 'cancelado'
-                : metodo === 'TARJETA' ||
-                  notas.includes('PAGO SIMULADO APROBADO')
-                    ? 'simulado_aprobado'
-                    : 'pendiente_de_integracion',
+        paymentStatus: pago[0],
+        paymentLabel: pago[1],
 
         canCancel:
             CANCELABLES.has(codigo) &&
@@ -173,7 +189,69 @@ function respuestaPedido(pedido, detalles = []) {
     };
 }
 
-export function registrarPedidos(api, { load } = {}) {
+    async function cancelarPagoStripe(stripe, pedido) {
+    try {
+        const sesiones = stripe.cliente.checkout.sessions;
+        const sesion = await sesiones.retrieve(pedido.stripe_session_id);
+
+        if (sesion.livemode !== false) {
+            throw new Error('La sesión no es de prueba.');
+        }
+
+        if (pedido.stripe_estado === 'PENDIENTE' && sesion.status === 'open') {
+            await sesiones.expire(sesion.id);
+            return 'CANCELADO';
+        }
+
+        if (pedido.stripe_estado === 'PENDIENTE' && sesion.status === 'expired') {
+            return 'EXPIRADO';
+        }
+        if (pedido.stripe_estado === 'PAGADO' && typeof sesion.payment_intent === 'string') {
+            const reembolsos = stripe.cliente.refunds;
+            const reembolso = await reembolsos.create(
+                { payment_intent: sesion.payment_intent },
+                { idempotencyKey: `ferromax-refund-${sesion.id}` }
+            );
+
+            const actual = reembolso.status === 'pending'
+                ? await reembolsos.retrieve(reembolso.id)
+                : reembolso;
+
+            if (actual.status === 'succeeded') return 'REEMBOLSADO';
+        }
+    } catch (error) {
+        console.error('Error al cancelar el pago Stripe:', error.code || error.type || error.name);
+    }
+
+throw crearError(409, 'Stripe no pudo cancelar el pago todavía. Intenta de nuevo.');
+}
+    async function datosPagoStripe(stripe, pedido) {
+    let estadoPago = pedido.stripe_estado;
+    let checkoutUrl;
+
+    if (stripe && estadoPago === 'PENDIENTE') {
+        const sesion = await stripe.cliente.checkout.sessions.retrieve(
+            pedido.stripe_session_id
+        );
+
+        estadoPago = (await reconciliarSesionStripe(pool, sesion)) ?? estadoPago;
+
+        if (estadoPago === 'PENDIENTE' && sesion.status === 'open') {
+            checkoutUrl = sesion.url;
+        }
+    }
+
+    const [paymentStatus, paymentLabel] = ESTADOS_STRIPE[estadoPago];
+
+    return {
+        id: `PED-${pedido.id_pedido}`,
+        total: Number(pedido.total),
+        paymentStatus,
+        paymentLabel,
+        ...(checkoutUrl ? { checkoutUrl } : {})
+    };
+}
+    export function registrarPedidos(api, { load, stripe } = {}) {
     if (typeof load !== 'function') {
         throw new Error(
             'registrarPedidos requiere la función load.'
@@ -201,6 +279,7 @@ export function registrarPedidos(api, { load } = {}) {
             address = {},
             delivery,
             paymentMethod,
+            checkoutRequestId,
             lines
         } = req.body || {};
 
@@ -213,35 +292,32 @@ export function registrarPedidos(api, { load } = {}) {
         if (!emailValido(customer?.email)) {
             camposInvalidos.push('email');
         }
+        if (delivery === 'domicilio') {
+            for (const campo of [
+                'calle',
+                'numeroExterior',
+                'colonia',
+                'codigoPostal',
+                'ciudad',
+                'estado'
+            ]) {
+                if (!s(address?.[campo])) {
+                    camposInvalidos.push(campo);
+                }
+            }
 
-        for (const campo of [
-            'calle',
-            'numeroExterior',
-            'colonia',
-            'codigoPostal',
-            'ciudad',
-            'estado'
-        ]) {
-            if (!s(address?.[campo])) {
-                camposInvalidos.push(campo);
+            if (!/^\d{5}$/.test(s(address?.codigoPostal))) {
+                camposInvalidos.push('codigoPostal');
             }
         }
 
-        if (!/^\d{5}$/.test(s(address?.codigoPostal))) {
-            camposInvalidos.push('codigoPostal');
-        }
-
-        if (
-            !Object.prototype.hasOwnProperty.call(
-                PAGO,
-                paymentMethod
-            )
-        ) {
+            if (!Object.prototype.hasOwnProperty.call(PAGO, paymentMethod)) {
             camposInvalidos.push('paymentMethod');
         }
 
         if (
-            !['domicilio', 'sucursal'].includes(delivery)
+            !['domicilio', 'sucursal'].includes(delivery) ||
+            (paymentMethod === 'tienda' && delivery !== 'sucursal')
         ) {
             camposInvalidos.push('delivery');
         }
@@ -287,13 +363,36 @@ export function registrarPedidos(api, { load } = {}) {
             solicitadas.set(id, cantidad);
         }
 
-        const tarjeta = paymentMethod === 'tarjeta';
+                const tarjeta = paymentMethod === 'tarjeta';
+        if (tarjeta && !stripe) {
+            return res.status(503).json({ error: 'Stripe sandbox no está configurado.' });
+        }
+
+        if (tarjeta && checkoutRequestId !== undefined &&
+            !/^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i.test(checkoutRequestId)) {
+            return res.status(400).json({ error: 'Identificador de compra inválido.' });
+        }
+
+        const solicitudStripe = tarjeta ? checkoutRequestId || randomUUID() : null;
+        const buscarSolicitud = async () => {
+            const [[pedido]] = await pool.query(
+                `SELECT id_pedido, stripe_session_id, stripe_estado, total
+                 FROM pedidos WHERE id_usuario = ? AND stripe_request_id = ?`,
+                [usuarioId, solicitudStripe]
+            );
+            return pedido;
+        };
 
         let conexion;
         let tiempoOriginal = null;
         let transaccionActiva = false;
 
         try {
+            if (tarjeta) {
+                const existente = await buscarSolicitud();
+                if (existente) return res.json(await datosPagoStripe(stripe, existente));
+            }
+
             conexion = await pool.getConnection();
 
             tiempoOriginal = await iniciarTransaccion(
@@ -384,10 +483,7 @@ export function registrarPedidos(api, { load } = {}) {
             // RECALCULAR IMPORTE
             // ==================================
 
-            const total = priceCart(
-                lines,
-                productos
-            );
+            const total = priceCart(lines, productos, { delivery });
 
             if (
                 !total ||
@@ -432,11 +528,14 @@ export function registrarPedidos(api, { load } = {}) {
             // REGISTRAR PEDIDO
             // ==================================
 
-            const estado = tarjeta
-                ? 'CONFIRMADO'
-                : 'PENDIENTE';
+                       if (tarjeta && (centavos(total.total) < 1000 || centavos(total.total) > 99999999)) {
+                throw crearError(400, 'Stripe acepta importes de 10.00 a 999,999.99 MXN.');
+            }
 
+            const estado = 'PENDIENTE';
             const observaciones = '';
+
+                        const aDomicilio = delivery === 'domicilio';
 
             const [creado] = await conexion.query(
                 `
@@ -448,6 +547,9 @@ export function registrarPedidos(api, { load } = {}) {
                     estado,
                     metodo_pago,
                     observaciones,
+                    stripe_request_id,
+                    stripe_estado,
+                    tipo_entrega,
                     domicilio_calle,
                     domicilio_numero_exterior,
                     domicilio_numero_interior,
@@ -458,7 +560,7 @@ export function registrarPedidos(api, { load } = {}) {
                     domicilio_referencias
                 )
                 VALUES (
-                    ?, ?, ?, ?, ?, ?, ?,
+                    ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
                     ?, ?, ?, ?, ?, ?, ?, ?
                 )
                 `,
@@ -470,14 +572,17 @@ export function registrarPedidos(api, { load } = {}) {
                     estado,
                     PAGO[paymentMethod],
                     observaciones,
-                    s(address.calle),
-                    s(address.numeroExterior),
-                    s(address.numeroInterior) || null,
-                    s(address.colonia),
-                    s(address.codigoPostal),
-                    s(address.ciudad),
-                    s(address.estado),
-                    s(address.referencias) || null
+                    solicitudStripe,
+                    tarjeta ? 'PENDIENTE' : null,
+                    aDomicilio ? 'DOMICILIO' : 'SUCURSAL',
+                    aDomicilio ? s(address.calle) : null,
+                    aDomicilio ? s(address.numeroExterior) : null,
+                    aDomicilio ? s(address.numeroInterior) || null : null,
+                    aDomicilio ? s(address.colonia) : null,
+                    aDomicilio ? s(address.codigoPostal) : null,
+                    aDomicilio ? s(address.ciudad) : null,
+                    aDomicilio ? s(address.estado) : null,
+                    aDomicilio ? s(address.referencias) || null : null
                 ]
             );
 
@@ -562,7 +667,7 @@ export function registrarPedidos(api, { load } = {}) {
                             id,
                             usuarioId,
                             cantidad,
-                            `Pedido PED-${pedidoId} · pago simulado`
+                            motivoReserva(pedidoId)
                         ]
                     );
                 }
@@ -571,6 +676,46 @@ export function registrarPedidos(api, { load } = {}) {
             // ==================================
             // CONFIRMAR TODAS LAS OPERACIONES
             // ==================================
+         let sesion;
+            if (tarjeta) {
+                                try {
+                    sesion = await crearSesionStripe(stripe, pedidoId, s(customer.email), total);
+                } catch (error) {
+                    console.error('Error al crear una sesión de Stripe:', {
+                        tipo: error.type || error.name,
+                        codigo: error.code,
+                        parametro: error.param,
+                        mensaje: String(error.message ?? '').replace(
+                            /(?:sk_test_|sk_live_|rk_test_|rk_live_|whsec_)\S+/g,
+                            '[secreto oculto]'
+                        )
+                    });
+
+                    throw crearError(502, 'Stripe no pudo iniciar el pago de prueba. Intenta de nuevo.');
+                }
+
+                await conexion.query(
+                    'UPDATE pedidos SET stripe_session_id = ? WHERE id_pedido = ?',
+                    [sesion.id, pedidoId]
+                );
+            }
+                        if (aDomicilio) {
+                await conexion.query(
+                    `UPDATE usuarios
+                     SET calle = ?, numero_exterior = ?, colonia = ?,
+                         codigo_postal = ?, ciudad = ?, estado = ?
+                     WHERE id_usuario = ?`,
+                    [
+                        s(address.calle),
+                        s(address.numeroExterior),
+                        s(address.colonia),
+                        s(address.codigoPostal),
+                        s(address.ciudad),
+                        s(address.estado),
+                        usuarioId
+                    ]
+                );
+            }
 
             await conexion.commit();
             transaccionActiva = false;
@@ -584,6 +729,7 @@ export function registrarPedidos(api, { load } = {}) {
                         estado,
                         metodo_pago: PAGO[paymentMethod],
                         observaciones,
+                        stripe_estado: tarjeta ? 'PENDIENTE' : null,
                         segundosRestantes:
                             HORAS_CANCELACION * 60 * 60
                     },
@@ -593,7 +739,8 @@ export function registrarPedidos(api, { load } = {}) {
                         subtotal: item.subtotal
                     }))
                 ),
-                stockUpdated: tarjeta
+                    stockUpdated: tarjeta,
+                ...(sesion ? { checkoutUrl: sesion.url } : {})
             });
 
         } catch (error) {
@@ -612,11 +759,20 @@ export function registrarPedidos(api, { load } = {}) {
                 }
             }
 
-            console.error(
-                'Error al crear pedido:',
-                error
-            );
+            await cerrarConexion(conexion, tiempoOriginal);
+            conexion = null;
 
+            if (tarjeta) {
+                try {
+                    const existente = await buscarSolicitud();
+                    if (existente) {
+                        return res.json(await datosPagoStripe(stripe, existente));
+                    }
+                } catch (errorConsulta) {
+                    console.error('Error al recuperar la compra Stripe:', errorConsulta.code || errorConsulta.name);
+                }
+            }
+            console.error('Error al crear pedido:', error);
             next(normalizarError(error));
 
         } finally {
@@ -651,6 +807,7 @@ export function registrarPedidos(api, { load } = {}) {
                     estado,
                     metodo_pago,
                     observaciones,
+                    stripe_estado,
 
                     TIMESTAMPDIFF(
                         SECOND,
@@ -815,7 +972,8 @@ export function registrarPedidos(api, { load } = {}) {
                             estado,
                             metodo_pago,
                             observaciones,
-
+                            stripe_session_id,
+                            stripe_estado,
                             (
                                 NOW() >= fecha_pedido
                                 AND
@@ -862,7 +1020,38 @@ export function registrarPedidos(api, { load } = {}) {
                         'Este pedido ya no puede cancelarse por su estado actual.'
                     );
                 }
+                                if (pedido.stripe_estado) {
+                    if (!stripe) {
+                        throw crearError(503, 'Stripe sandbox no está configurado.');
+                    }
 
+                    const estadoPago = await cancelarPagoStripe(stripe, pedido);
+
+                    await devolverReserva(
+                        conexion,
+                        pedido,
+                        `Devolución por cancelación PED-${pedidoId}`
+                    );
+
+                    await conexion.query(
+                        `UPDATE pedidos
+                         SET estado = 'CANCELADO', stripe_estado = ?, observaciones = ?
+                         WHERE id_pedido = ?`,
+                        [estadoPago, motivo, pedidoId]
+                    );
+
+                    await conexion.commit();
+                    transaccionActiva = false;
+
+                    return res.json({
+                        ok: true,
+                        id: `PED-${pedidoId}`,
+                        status: 'Cancelado',
+                        statusCode: 'CANCELADO',
+                        cancelReason: motivo,
+                        message: 'Pedido cancelado correctamente.'
+                    });
+                }
                 // ==================================
                 // CONSULTAR DETALLES
                 // ==================================
@@ -1156,10 +1345,56 @@ export function registrarPedidos(api, { load } = {}) {
     // INTEGRACIÓN DE PAGOS EXTERNOS
     // ==========================================
 
-    api.post('/payments/session', (_req, res) => {
-        return res.status(501).json({
-            error:
-                'La pasarela de pago externa todavía no está integrada.'
-        });
+    api.get('/orders/shipping-address', async (req, res, next) => {
+        const usuarioId = Number(req.s?.user?.id);
+
+        if (!Number.isSafeInteger(usuarioId) || usuarioId <= 0) {
+            return res.status(401).json({ error: 'Inicia sesión para consultar tu dirección.' });
+        }
+
+        try {
+            const [[direccion]] = await pool.query(
+                `SELECT calle, numero_exterior AS numeroExterior, colonia,
+                        codigo_postal AS codigoPostal, ciudad, estado
+                 FROM usuarios
+                 WHERE id_usuario = ?`,
+                [usuarioId]
+            );
+
+            res.set('Cache-Control', 'no-store');
+            return res.json(direccion ?? null);
+        } catch (error) {
+            next(error);
+        }
+    });
+
+    api.get('/orders/:id/payment', async (req, res, next) => {
+        const usuarioId = Number(req.s?.user?.id);
+        const pedidoId = Number(req.params.id);
+
+        if (!Number.isSafeInteger(usuarioId) || usuarioId <= 0) {
+            return res.status(401).json({ error: 'Inicia sesión para consultar el pago.' });
+        }
+
+        if (!Number.isSafeInteger(pedidoId) || pedidoId <= 0) {
+            return res.status(400).json({ error: 'Folio de pedido inválido.' });
+        }
+
+        try {
+            const [[pedido]] = await pool.query(
+                `SELECT id_pedido, stripe_session_id, stripe_estado, total
+                 FROM pedidos
+                 WHERE id_pedido = ? AND id_usuario = ? AND stripe_session_id IS NOT NULL`,
+                [pedidoId, usuarioId]
+            );
+
+            if (!pedido) {
+                return res.status(404).json({ error: 'Pago no encontrado en tu cuenta.' });
+            }
+
+            return res.json(await datosPagoStripe(stripe, pedido));
+        } catch (error) {
+            next(error);
+        }
     });
 }

@@ -1,0 +1,8 @@
+ALTER TABLE pedidos
+    ADD COLUMN tipo_entrega ENUM('DOMICILIO', 'SUCURSAL') DEFAULT NULL,
+    MODIFY COLUMN domicilio_calle VARCHAR(150) DEFAULT NULL,
+    MODIFY COLUMN domicilio_numero_exterior VARCHAR(20) DEFAULT NULL,
+    MODIFY COLUMN domicilio_colonia VARCHAR(100) DEFAULT NULL,
+    MODIFY COLUMN domicilio_codigo_postal VARCHAR(10) DEFAULT NULL,
+    MODIFY COLUMN domicilio_ciudad VARCHAR(100) DEFAULT NULL,
+    MODIFY COLUMN domicilio_estado VARCHAR(100) DEFAULT NULL;

@@ -4,7 +4,10 @@ import {
     cart,
     user,
     esc,
-    mxn
+    mxn,
+    app,
+    setCart,
+    saveCart
 } from './core.js';
 
 /* ==========================================
@@ -43,6 +46,7 @@ const campo = (
 ========================================== */
 
 export async function vistaCheckout() {
+    const direccion = await api('/orders/shipping-address');
 
     const total = await api('/pricing', {
 
@@ -134,23 +138,19 @@ export async function vistaCheckout() {
                         </div>
 
                         <div class="fm-pay-fields">
-
                             ${campo(
                                 'name',
                                 'Nombre completo',
                                 'text',
-                                `autocomplete="name"
-                                 value="${esc(user?.name || '')}"`
+                                `autocomplete="name" value="${esc(user?.name || '')}"`
                             )}
 
                             ${campo(
                                 'email',
                                 'Correo electrónico',
                                 'email',
-                                `autocomplete="email"
-                                 value="${esc(user?.email || '')}"`
+                                `autocomplete="email" value="${esc(user?.email || '')}"`
                             )}
-
                         </div>
 
                     </section>
@@ -179,44 +179,25 @@ export async function vistaCheckout() {
 
                         </div>
 
-                        <div class="fm-pay-fields">
+                       <div class="fm-pay-fields" id="fm-campos-direccion">
+                            ${campo('calle', 'Calle', 'text',
+                                `autocomplete="address-line1" value="${esc(direccion?.calle ?? '')}"`)}
 
-                            ${campo(
-                                'calle',
-                                'Calle',
-                                'text',
-                                'autocomplete="address-line1"'
-                            )}
+                            ${campo('numeroExterior', 'Número exterior', 'text',
+                                `value="${esc(direccion?.numeroExterior ?? '')}"`)}
 
-                            ${campo(
-                                'numeroExterior',
-                                'Número exterior'
-                            )}
+                            ${campo('colonia', 'Colonia', 'text',
+                                `value="${esc(direccion?.colonia ?? '')}"`)}
 
-                            ${campo(
-                                'colonia',
-                                'Colonia'
-                            )}
+                            ${campo('codigoPostal', 'Código postal', 'text',
+                                `inputmode="numeric" maxlength="5" autocomplete="postal-code"
+                                 value="${esc(direccion?.codigoPostal ?? '')}"`)}
 
-                            ${campo(
-                                'codigoPostal',
-                                'Código postal',
-                                'text',
-                                `inputmode="numeric"
-                                 maxlength="5"
-                                 autocomplete="postal-code"`
-                            )}
+                            ${campo('ciudad', 'Ciudad', 'text',
+                                `value="${esc(direccion?.ciudad ?? '')}"`)}
 
-                            ${campo(
-                                'ciudad',
-                                'Ciudad'
-                            )}
-
-                            ${campo(
-                                'estado',
-                                'Estado'
-                            )}
-
+                            ${campo('estado', 'Estado', 'text',
+                                `value="${esc(direccion?.estado ?? '')}"`)}
                         </div>
 
                         <label class="fm-pay-field">
@@ -284,9 +265,9 @@ export async function vistaCheckout() {
                                     Tarjeta de crédito o débito
                                 </option>
 
-                                <option value="transferencia">
+                                <!-- <option value="transferencia">
                                     Transferencia bancaria
-                                </option>
+                                </option> -->
 
                                 <option value="tienda">
                                     Pago en tienda
@@ -299,86 +280,8 @@ export async function vistaCheckout() {
 
                         <!-- CAMPOS DE TARJETA -->
 
-                        <div
-                            id="fm-demo-fields"
-                            class="fm-pay-demo"
-                        >
-
-                            <label class="fm-pay-field">
-
-                                <span>
-                                    Número de tarjeta
-                                </span>
-
-                                <input
-                                    class="field"
-                                    id="fm-demo-number"
-                                    type="text"
-                                    inputmode="numeric"
-                                    autocomplete="off"
-                                    maxlength="19"
-                                    placeholder="0000 0000 0000 0000"
-                                >
-
-                                <small
-                                    class="fm-pay-error"
-                                    data-err="cardNumber"
-                                ></small>
-
-                            </label>
-
-
-                            <div class="fm-pay-fields">
-
-                                <label class="fm-pay-field">
-
-                                    <span>
-                                        Fecha de vencimiento
-                                    </span>
-
-                                    <input
-                                        class="field"
-                                        id="fm-demo-expiry"
-                                        type="text"
-                                        inputmode="numeric"
-                                        autocomplete="off"
-                                        maxlength="5"
-                                        placeholder="MM/AA"
-                                    >
-
-                                    <small
-                                        class="fm-pay-error"
-                                        data-err="expiry"
-                                    ></small>
-
-                                </label>
-
-
-                                <label class="fm-pay-field">
-
-                                    <span>
-                                        Código de seguridad
-                                    </span>
-
-                                    <input
-                                        class="field"
-                                        id="fm-demo-cvv"
-                                        type="password"
-                                        inputmode="numeric"
-                                        autocomplete="off"
-                                        maxlength="3"
-                                        placeholder="CVV"
-                                    >
-
-                                    <small
-                                        class="fm-pay-error"
-                                        data-err="cvv"
-                                    ></small>
-
-                                </label>
-
-                            </div>
-
+                            <div id="fm-stripe-notice" class="fm-pay-test-notice">
+                            <p>Pagarás en Stripe en modo de prueba.</p>
                         </div>
 
                     </section>
@@ -466,7 +369,7 @@ export async function vistaCheckout() {
                                 Envío
                             </span>
 
-                            <strong>
+                            <strong id="fm-envio" data-importe="${total.shipping}">
                                 ${mxn(total.shipping)}
                             </strong>
 
@@ -481,7 +384,7 @@ export async function vistaCheckout() {
                             Total
                         </span>
 
-                        <strong>
+                        <strong id="fm-total" data-subtotal="${total.subtotal}">
                             ${mxn(total.total)}
                         </strong>
 
@@ -509,13 +412,154 @@ export async function vistaCheckout() {
    VALIDACIÓN DE TARJETA FICTICIA
 ========================================== */
 
-/*
-   Se conserva el nombre de esta función
-   porque eventos.js ya la importa.
+export function actualizarBotonCheckout(formulario) {
+    const enTienda = formulario.elements.paymentMethod.value === 'tienda';
+    const entrega = formulario.elements.delivery;
 
-   Los datos se validan localmente.
-   Nunca se envían al backend.
-*/
+    if (enTienda && !entrega.disabled) {
+        entrega.dataset.anterior = entrega.value;
+        entrega.value = 'sucursal';
+    } else if (!enTienda && entrega.disabled) {
+        entrega.value = entrega.dataset.anterior || 'domicilio';
+    }
+
+    entrega.disabled = enTienda;
+
+    const recoger = entrega.value === 'sucursal';
+    const campos = formulario.querySelector('#fm-campos-direccion');
+
+    campos.style.display = recoger ? 'none' : '';
+    campos.querySelectorAll('input').forEach(input => {
+        input.disabled = recoger;
+    });
+
+    const envio = app.querySelector('#fm-envio');
+    const total = app.querySelector('#fm-total');
+    const costoEnvio = recoger ? 0 : Number(envio.dataset.importe);
+
+    envio.textContent = mxn(costoEnvio);
+    total.textContent = mxn(Number(total.dataset.subtotal) + costoEnvio);
+
+    formulario.querySelector('#fm-stripe-notice').hidden = enTienda;
+    formulario.querySelector('.fm-pay-submit').textContent = enTienda
+        ? 'Confirmar pedido'
+        : 'Continuar a Stripe';
+}
+
+export function activarCheckout() {
+    const formulario = document.querySelector('#co');
+    if (!formulario) return;
+
+    const actualizar = () => {
+        if (formulario.dataset.enviando !== '1') {
+            actualizarBotonCheckout(formulario);
+        }
+    };
+
+    formulario.elements.paymentMethod.addEventListener('change', actualizar);
+    formulario.elements.delivery.addEventListener('change', actualizar);
+    actualizar();
+}
+
+function firmaCarrito(lineas) {
+    return JSON.stringify(lineas.map(({ productId, quantity }) =>
+        [String(productId), Number(quantity)]
+    ).sort(([a], [b]) => a.localeCompare(b)));
+}
+
+export function recordarCarritoStripe(folio, lineas) {
+    sessionStorage.setItem(`ferromax_stripe_${folio}`, firmaCarrito(lineas));
+}
+
+export async function mostrarPagoStripe(id) {
+    const destino = location.hash;
+    const pago = await api(`/orders/${encodeURIComponent(id)}/payment`);
+    if (location.hash !== destino) return;
+
+    const pagado = pago.paymentStatus === 'stripe_pagado';
+    const pendiente = pago.paymentStatus === 'stripe_pendiente';
+    const clave = `ferromax_stripe_${pago.id}`;
+
+    if (!pendiente) {
+        if (pagado && sessionStorage.getItem(clave) === firmaCarrito(cart)) {
+            setCart([]);
+            saveCart();
+        }
+        sessionStorage.removeItem(clave);
+    }
+
+    const titulo = pagado ? 'Pago de prueba confirmado' : pago.paymentLabel;
+    const descripcion = pendiente && !pago.checkoutUrl
+        ? '<p>Estamos esperando la confirmación de Stripe. Puedes actualizar el estado en unos segundos.</p>'
+        : '';
+
+    app.innerHTML = `
+        <section class="fm-pay-success">
+            <h1>${esc(titulo)}</h1>
+            <p>${esc(pago.id)} · ${mxn(pago.total)}</p>
+            ${descripcion}
+
+            <div class="fm-pay-actions">
+                ${pago.checkoutUrl ? `
+                    <a class="fm-pay-submit" href="${esc(pago.checkoutUrl)}">
+                        Continuar en Stripe
+                    </a>
+                    <button type="button" class="fm-pay-submit" id="fm-cambiar-pago">
+                        Cambiar método de pago
+                    </button>
+                ` : ''}
+
+                ${pendiente && !pago.checkoutUrl ? `
+                    <button type="button" class="fm-pay-submit" id="fm-refresh-payment">
+                        Consultar estado del pago
+                    </button>
+                ` : ''}
+
+                <a class="fm-pay-submit" href="#/cuenta?tab=pedidos">Ver mis pedidos</a>
+
+                ${!pagado ? `
+                    <a class="fm-pay-submit" href="#/carrito">Volver al carrito</a>
+                ` : ''}
+            </div>
+
+            <p id="fm-error-cambiar-pago" class="fm-pay-global-error" role="alert"></p>
+        </section>
+    `;
+
+    const actualizar = app.querySelector('#fm-refresh-payment');
+        actualizar?.addEventListener('click', async () => {
+        const aviso = app.querySelector('#fm-error-cambiar-pago');
+        aviso.textContent = '';
+        actualizar.disabled = true;
+
+        try {
+            await mostrarPagoStripe(id);
+        } catch (error) {
+            aviso.textContent = error.message;
+            actualizar.disabled = false;
+        }
+    });
+        const cambiar = app.querySelector('#fm-cambiar-pago');
+
+    cambiar?.addEventListener('click', async () => {
+        const aviso = app.querySelector('#fm-error-cambiar-pago');
+        cambiar.disabled = true;
+        aviso.textContent = '';
+
+        try {
+            await api(`/orders/${encodeURIComponent(id)}/cancel`, {
+                method: 'POST',
+                body: { motivo: 'Cambio de método de pago' }
+            });
+
+            sessionStorage.removeItem(clave);
+            if (location.hash === destino) location.hash = '#/checkout';
+        } catch (error) {
+            aviso.textContent = error.message;
+            cambiar.disabled = false;
+        }
+    });
+}
 
 
 /* ==========================================

@@ -27,7 +27,8 @@ import {
 import { render } from './navegacion.js';
 
 import {
-    validarTarjetaDePrueba
+    actualizarBotonCheckout,
+    recordarCarritoStripe
 } from './checkout.js';
 
 
@@ -924,9 +925,8 @@ document.addEventListener(
                 new FormData(formulario)
             );
 
-            const errores = validarTarjetaDePrueba(
-                formulario
-            );
+            const errores = {};
+            const delivery = formulario.elements.delivery.value;
 
 
             /* NOMBRE */
@@ -955,38 +955,17 @@ document.addEventListener(
 
             /* DIRECCIÓN */
 
-            for (const campo of [
+                        if (delivery === 'domicilio') {
+                for (const campo of ['calle', 'numeroExterior', 'colonia', 'ciudad', 'estado']) {
+                    if (!String(datos[campo] || '').trim()) {
+                        errores[campo] = 'Este campo es obligatorio.';
+                    }
+                }
 
-                'calle',
-                'numeroExterior',
-                'colonia',
-                'ciudad',
-                'estado'
-
-            ]) {
-
-                if (
-                    !String(datos[campo] || '').trim()
-                ) {
-
-                    errores[campo] =
-                        'Este campo es obligatorio.';
+                if (!/^\d{5}$/.test(String(datos.codigoPostal || ''))) {
+                    errores.codigoPostal = 'Introduce un código postal de 5 dígitos.';
                 }
             }
-
-
-            /* CÓDIGO POSTAL */
-
-            if (
-                !/^\d{5}$/.test(
-                    String(datos.codigoPostal || '')
-                )
-            ) {
-
-                errores.codigoPostal =
-                    'Introduce un código postal de 5 dígitos.';
-            }
-
 
             /* ERRORES */
 
@@ -1032,75 +1011,42 @@ document.addEventListener(
 
                 /* CREAR PEDIDO */
 
-                const pedido = await api('/orders', {
+                const lineas = cart.map(({ productId, quantity }) => ({ productId, quantity }));
+                const cuerpo = {
+                    lines: lineas,
+                    customer: { name: datos.name, email: datos.email },
+                    address: {
+                        calle: datos.calle,
+                        numeroExterior: datos.numeroExterior,
+                        colonia: datos.colonia,
+                        codigoPostal: datos.codigoPostal,
+                        ciudad: datos.ciudad,
+                        estado: datos.estado
+                    },
+                    delivery,
+                    paymentMethod: datos.paymentMethod
+                };
 
-                    method: 'POST',
-
-                    body: {
-
-                        lines: cart.map(item => ({
-
-                            productId: item.productId,
-
-                            quantity: item.quantity
-
-                        })),
-
-                        customer: {
-
-                            name: datos.name,
-
-                            email: datos.email
-
-                        },
-
-                        address: {
-
-                            calle: datos.calle,
-
-                            numeroExterior:
-                                datos.numeroExterior,
-
-                            colonia: datos.colonia,
-
-                            codigoPostal:
-                                datos.codigoPostal,
-
-                            ciudad: datos.ciudad,
-
-                            estado: datos.estado
-
-                        },
-
-                        delivery: datos.delivery,
-
-                        paymentMethod:
-                            datos.paymentMethod,
-
-                        demoPayment:
-                            datos.paymentMethod === 'tarjeta'
+                const tarjeta = datos.paymentMethod === 'tarjeta';
+                if (tarjeta) {
+                    const firma = JSON.stringify(cuerpo);
+                    if (formulario.checkoutStripe?.firma !== firma) {
+                        formulario.checkoutStripe = { firma, id: crypto.randomUUID() };
                     }
+                    cuerpo.checkoutRequestId = formulario.checkoutStripe.id;
+                }
 
-                });
+                const pedido = await api('/orders', { method: 'POST', body: cuerpo });
 
-
-                /* RESPUESTA DEL SERVIDOR */
-
-                const aprobado =
-                    pedido.paymentStatus ===
-                    'simulado_aprobado';
-
-                const titulo = aprobado
-                    ? '¡Pedido confirmado!'
-                    : '¡Pedido registrado!';
-
-                const descripcion = aprobado
-
-                    ? 'Tu pedido se registró correctamente y se actualizó el inventario.'
-
-                    : 'El pedido fue registrado. Su pago está pendiente de confirmación.';
-
-
+                if (tarjeta) {
+                    recordarCarritoStripe(pedido.id, lineas);
+                    if (pedido.checkoutUrl) {
+                        location.assign(pedido.checkoutUrl);
+                    } else {
+                        location.hash = `#/pago/${pedido.id.slice(4)}`;
+                    }
+                    return;
+                }
                 /* VACIAR CARRITO */
 
                 setCart([]);
@@ -1176,12 +1122,9 @@ app.innerHTML = `
                     toast(error.message);
                 }
 
-                if (boton) {
-
-                    boton.disabled = false;
-
-                    boton.textContent =
-                        'Confirmar pedido';
+                    if (boton) {
+                        boton.disabled = false;
+                        actualizarBotonCheckout(formulario);
                 }
 
                 delete formulario.dataset.enviando;
