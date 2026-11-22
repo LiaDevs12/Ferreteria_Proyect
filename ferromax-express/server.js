@@ -238,9 +238,9 @@ app.use('/api', (_req, res) => {
    LOCAL / RAILWAY STORAGE BUCKET
 ========================================== */
 
-// Fotografías públicas de productos y marcas
+// Fotografías públicas de productos, perfiles y marcas
 app.get(
-    /^\/uploads\/(products|brands)\/[a-zA-Z0-9_.-]+$/,
+    /^\/uploads\/(products|brands|profiles)\/[a-zA-Z0-9_.-]+$/,
     async (req, res, next) => {
 
         // En local, Express sirve los archivos normales
