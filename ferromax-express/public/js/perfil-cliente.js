@@ -687,19 +687,21 @@ async function seccionPedidos() {
                             </div>
 
                             <div class="fm-cuenta-order-footer">
-
                                 <div>
-
-                                    <span>
-                                        Total del pedido
-                                    </span>
-
-                                    <strong>
-                                        ${mxn(pedido.total)}
-                                    </strong>
-
+                                    <span>Total del pedido</span>
+                                    <strong>${mxn(pedido.total)}</strong>
                                 </div>
 
+                                ${pedido.paymentLabel ? `
+                                    <div>
+                                        <span>Estado del pago</span>
+                                        <strong>${esc(pedido.paymentLabel)}</strong>
+
+                                        ${pedido.paymentStatus === 'stripe_pendiente' && numero ? `
+                                            <a href="#/pago/${numero}">Ver pago</a>
+                                        ` : ''}
+                                    </div>
+                                ` : ''}
                             </div>
 
                             ${puedeCancelar ? `

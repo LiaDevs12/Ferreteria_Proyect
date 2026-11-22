@@ -4,7 +4,11 @@ import crypto from 'node:crypto';
 import path from 'node:path';
 import { existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
-
+import {
+    configurarStripe,
+    iniciarRevisionPagosStripe,
+    webhookStripe
+} from './src/storefront/stripe-checkout.js';
 /* ==========================================
    FERROMAX
    CONFIGURACIÓN DEL ENTORNO
@@ -68,6 +72,13 @@ app.set('trust proxy', 1);
 const PORT = Number(process.env.PORT) || 3000;
 const HOST = '0.0.0.0';
 app.disable('x-powered-by');
+const stripe = configurarStripe();
+
+app.post(
+    '/api/payments/stripe/webhook',
+    express.raw({ type: 'application/json' }),
+    webhookStripe(stripe, pool)
+);
 
 app.use(
     express.json({
@@ -194,8 +205,7 @@ const { load } = registrarCatalogo(api);
 
 registrarAutenticacion(api);
 
-registrarPedidos(api, { load });
-
+registrarPedidos(api, { load, stripe });
 app.use('/api', api);
 
 /* ==========================================
@@ -347,6 +357,7 @@ const pagoPruebasHabilitado =
 ========================================== */
 
 app.listen(PORT, HOST, () => {
+        iniciarRevisionPagosStripe(stripe, pool);
     console.log(`FerroMax escuchando en ${HOST}:${PORT}`);
 
     console.log(

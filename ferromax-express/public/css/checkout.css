@@ -926,3 +926,17 @@ html[data-ferromax-tema="oscuro"]
     }
 
 }
+#app .fm-pay-success .fm-pay-actions {
+    display: grid;
+    gap: 12px;
+    max-width: 340px;
+    margin: 24px auto 0;
+}
+
+#app .fm-pay-success .fm-pay-actions .fm-pay-submit {
+    border-radius: 999px;
+}
+
+#app .fm-pay-success #fm-error-cambiar-pago:empty {
+    display: none;
+}

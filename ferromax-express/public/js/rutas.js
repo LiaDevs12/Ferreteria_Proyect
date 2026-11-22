@@ -9,7 +9,8 @@ import {
 import { card, grid, productPage } from './productos.js';
 import {
     vistaCheckout,
-    activarCheckoutDemo
+    activarCheckout,
+    mostrarPagoStripe
 } from './checkout.js';
 import {
     head,
@@ -615,100 +616,47 @@ export const routes = {
     },
 
 
-/* CHECKOUT */
+    /* CHECKOUT */
 
+    async checkout() {
+        if (!cart.length) {
+            app.innerHTML = empty(
+                'Tu carrito está vacío',
+                '#/catalogo',
+                'Explorar productos'
+            );
+            return;
+        }
 
-async checkout() {
+        if (!user) {
+            app.innerHTML = empty(
+                'Inicia sesión para continuar con tu compra',
+                '#/cuenta',
+                'Iniciar sesión'
+            );
+            return;
+        }
 
-    if (!cart.length) {
-
-        app.innerHTML = empty(
-            'Tu carrito está vacío',
-            '#/catalogo',
-            'Explorar productos'
-        );
-
-        return;
-    }
-
-    if (!user) {
-
-        app.innerHTML = empty(
-            'Inicia sesión para continuar con tu compra',
-            '#/cuenta',
-            'Iniciar sesión'
-        );
-
-        return;
-    }
-
-    app.innerHTML = await vistaCheckout();
-
-    activarCheckoutDemo();
-},
+        app.innerHTML = await vistaCheckout();
+        activarCheckout();
+    },
 
 
     /* ======================================
        PEDIDOS
     ====================================== */
 
-    async pedidos() {
+    async pago([id]) {
+        if (!user) {
+            app.innerHTML = empty(
+                'Inicia sesión para consultar tu pago',
+                '#/cuenta',
+                'Iniciar sesión'
+            );
+            return;
+        }
 
-        const orders = await api('/orders');
-
-        app.innerHTML = `
-
-            <h1 class="fm-page-title">
-                Mis pedidos (demostración)
-            </h1>
-
-            ${orders.length
-
-                ? orders.map(o => `
-
-                    <article class="fm-order">
-
-                        <b>
-                            ${esc(o.id)}
-                        </b>
-
-                        · ${new Date(
-                            o.createdAt
-                        ).toLocaleString('es-MX')}
-
-                        <p>
-                            ${esc(o.status)}
-                            · Pago:
-                            ${esc(o.paymentStatus || '')}
-                        </p>
-
-                        <ul>
-
-                            ${(o.items || []).map(i => `
-
-                                <li>
-                                    ${i.quantity}
-                                    × ${esc(i.name)}
-                                    — ${mxn(i.subtotal)}
-                                </li>
-
-                            `).join('')}
-
-                        </ul>
-
-                        <strong>
-                            Total ${mxn(o.total)}
-                        </strong>
-
-                    </article>
-
-                `).join('')
-
-                : '<p>Aún no tienes pedidos.</p>'
-            }
-
-        `;
-
+        await mostrarPagoStripe(id);
     },
 
 
