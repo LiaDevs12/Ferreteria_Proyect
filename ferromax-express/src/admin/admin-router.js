@@ -1,4 +1,5 @@
 
+import { registrarAccesoGoogle } from './acceso-google.js';
 import express from 'express';
 import PDFDocument from 'pdfkit';
 import sharp from 'sharp';
@@ -553,6 +554,28 @@ export function createAdminRouter({ pool }) {
         res.status(status).json({
             error: message
         });
+            router.use(wrap(async (req, res, next) => {
+        const usuario = req.s?.user;
+        if (!usuario) return next();
+
+        const [[actual]] = await pool.query(`
+            SELECT activo, rol, google_sub
+            FROM usuarios
+            WHERE id_usuario = ?
+        `, [usuario.id]);
+
+        if (
+            !actual?.activo ||
+            actual.rol !== usuario.rol ||
+            (usuario.googleSub && actual.google_sub !== usuario.googleSub)
+        ) {
+            req.cerrarSesionAdmin();
+        }
+
+        next();
+    }));
+
+    const limitarAcceso = registrarAccesoGoogle(router, { pool, roles: ROLES, wrap });
 
     /* ======================================
        AUTENTICACIÓN Y PERMISOS
@@ -1322,6 +1345,7 @@ router.get(
 
     router.post(
         '/login',
+        limitarAcceso,
         wrap(async (req, res) => {
             const email = clean(
                 req.body?.email
@@ -1364,12 +1388,12 @@ router.get(
                 );
             }
 
-            req.s.user = {
+                req.iniciarSesionAdmin({
                 id: user.id,
                 name: user.nombre,
                 email: user.correo,
                 rol: user.rol
-            };
+            });
 
             res.json(publicUser(user));
         })
@@ -1377,11 +1401,8 @@ router.get(
 
     router.get('/me', current);
 
-    router.post('/logout', (req, res) => {
-        if (req.s) {
-            req.s.user = null;
-        }
-
+        router.post('/logout', (req, res) => {
+        req.cerrarSesionAdmin();
         res.status(204).end();
     });
 
