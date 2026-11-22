@@ -1,5 +1,5 @@
 import { $, call, msg, me, setMe } from './core.js';
-
+import { iniciarAccesoGoogle } from './acceso-google.js';
 /* ==========================================
    AUTENTICACIÓN
 ========================================== */
@@ -50,4 +50,9 @@ export async function login() {
             }
         }
     };
+        try {
+        await iniciarAccesoGoogle(form);
+    } catch (error) {
+        msg(error.message);
+    }
 }

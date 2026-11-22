@@ -94,93 +94,62 @@ const NOMBRE_COOKIE_ADMIN = 'ferromax_admin_sid';
 const DURACION_ADMIN = 8 * 60 * 60 * 1000;
 
 function sesionAdministrativa(req, res, next) {
+    const opcionesCookie = {
+        httpOnly: true,
+        sameSite: 'lax',
+        path: '/api/admin',
+        secure: req.secure || process.env.NODE_ENV === 'production'
+    };
 
-    const ahora = Date.now();
-
-    const cookies = String(
-        req.headers.cookie || ''
-    ).split(';');
-
-    const cookieAdmin = cookies
-        .map(valor => valor.trim())
-        .find(valor =>
-            valor.startsWith(
-                NOMBRE_COOKIE_ADMIN + '='
-            )
+    function escribirCookie(sid, maxAge) {
+        const cookies = [res.getHeader('Set-Cookie')].flat().filter(cookie =>
+            typeof cookie === 'string' &&
+            !cookie.startsWith(`${NOMBRE_COOKIE_ADMIN}=`)
         );
 
-    const sidAnterior = cookieAdmin
-        ? cookieAdmin
-            .slice(NOMBRE_COOKIE_ADMIN.length + 1)
-        : '';
-
-    let sid = /^[a-f0-9]{64}$/.test(sidAnterior)
-        ? sidAnterior
-        : '';
-
-    let sesion = sid
-        ? sesionesAdmin.get(sid)
-        : null;
-
-    /* ======================================
-       CREAR SESIÓN SI NO EXISTE
-    ====================================== */
-
-    if (
-        !sesion ||
-        sesion.expira <= ahora
-    ) {
-
-        if (sid) {
-            sesionesAdmin.delete(sid);
-        }
-
-        sid = crypto
-            .randomBytes(32)
-            .toString('hex');
-
-        sesion = {
-            user: null,
-            expira: ahora + DURACION_ADMIN
-        };
-
-        sesionesAdmin.set(sid, sesion);
-
-    } else {
-
-        sesion.expira = ahora + DURACION_ADMIN;
+        res.setHeader('Set-Cookie', cookies);
+        res.cookie(NOMBRE_COOKIE_ADMIN, sid, { ...opcionesCookie, maxAge });
     }
 
-    /* ======================================
-       COOKIE INDEPENDIENTE DEL CLIENTE
-    ====================================== */
+    const prefijo = `${NOMBRE_COOKIE_ADMIN}=`;
+    const sidRecibido = (req.headers.cookie || '').split(';')
+        .map(cookie => cookie.trim())
+        .find(cookie => cookie.startsWith(prefijo))?.slice(prefijo.length);
 
-    const cookie = [
-        `${NOMBRE_COOKIE_ADMIN}=${sid}`,
-        'HttpOnly',
-        'SameSite=Lax',
-        'Path=/api/admin',
-        `Max-Age=${Math.floor(DURACION_ADMIN / 1000)}`,
-        ...(req.secure ? ['Secure'] : [])
-    ].join('; ');
+    let sid = /^[a-f0-9]{64}$/.test(sidRecibido || '') ? sidRecibido : null;
+    let sesion = sid ? sesionesAdmin.get(sid) : null;
 
-    res.append('Set-Cookie', cookie);
+    function invalidarSesion() {
+        if (sid) sesionesAdmin.delete(sid);
 
-    res.setHeader(
-        'Cache-Control',
-        'no-store'
-    );
+        if (sesion) {
+            sesion.user = null;
+            delete sesion.accesoGooglePersonal;
+        }
+    }
 
-    /* ======================================
-       ASIGNAR SESIÓN ADMINISTRATIVA
+    function crearSesion(usuario) {
+        invalidarSesion();
+        sid = crypto.randomBytes(32).toString('hex');
+        sesion = { user: usuario, expira: Date.now() + DURACION_ADMIN };
+        sesionesAdmin.set(sid, sesion);
+        req.s = sesion;
+        escribirCookie(sid, DURACION_ADMIN);
+    }
 
-       Las rutas del administrador siguen
-       utilizando req.s.user, pero ahora
-       apuntan a una sesión independiente.
-    ====================================== */
+    if (!sesion || sesion.expira <= Date.now()) {
+        crearSesion(null);
+    } else {
+        req.s = sesion;
+    }
 
-    req.s = sesion;
+    req.iniciarSesionAdmin = crearSesion;
+    req.cerrarSesionAdmin = () => {
+        invalidarSesion();
+        escribirCookie('', 0);
+    };
 
+    res.setHeader('Cache-Control', 'no-store');
     next();
 }
 
