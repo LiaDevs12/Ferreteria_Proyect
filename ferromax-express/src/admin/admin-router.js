@@ -8,6 +8,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import bcrypt from 'bcryptjs';
 import { createSuppliersRouter } from './suppliers-router.js';
+import { googleClientIdPersonal, verificarGoogleMovil } from './personal-google.js';
 // ALMACENAMIENTO DE IMÁGENES EN RAILWAY
 import {
     guardarImagen,
@@ -3627,59 +3628,70 @@ router.post(
        LOGIN DE LA APP MÓVIL
     ====================================== */
 
-    router.post(
+        router.post(
         '/mobile/login',
+        (req, res, next) => {
+            if (req.body?.idToken === undefined) return next();
+            return limitarAcceso(req, res, next);
+        },
         wrap(async (req, res) => {
-            const email = clean(
-                req.body?.email
-            ).toLowerCase();
+            const usaGoogle = req.body?.idToken !== undefined;
 
-            const password = String(
-                req.body?.password || ''
-            );
+            if (usaGoogle && !googleClientIdPersonal) {
+                return errorResponse(res, 'El acceso con Google no está configurado.', 503);
+            }
+
+            const identidad = usaGoogle
+                ? await verificarGoogleMovil(req.body.idToken)
+                : null;
+
+            if (usaGoogle && !identidad) {
+                return errorResponse(res, 'Token de Google inválido.', 401);
+            }
+
+            const email = identidad?.correo ?? clean(req.body?.email).toLowerCase();
+            const password = String(req.body?.password || '');
 
             const [[user]] = await pool.query(`
-                SELECT
-                    id_usuario AS id,
-                    nombre,
-                    correo,
-                    password_hash,
-                    rol,
-                    activo
+                SELECT id_usuario AS id, nombre, correo, password_hash,
+                       google_sub, rol, activo
                 FROM usuarios
                 WHERE correo = ?
             `, [email]);
 
-            const ok =
-                user?.activo &&
-                [
-                    'INVENTARIO',
-                    'ADMINISTRADOR'
-                ].includes(user.rol) &&
-                typeof user.password_hash === 'string' &&
-                user.password_hash.startsWith('$2') &&
-                await bcrypt.compare(
-                    password,
-                    user.password_hash
-                );
+            const autorizado = user?.activo &&
+                ['INVENTARIO', 'ADMINISTRADOR'].includes(user.rol);
 
-            if (!ok) {
+            if (identidad && autorizado && user.google_sub === null) {
                 return errorResponse(
                     res,
-                    'Credenciales de empleado incorrectas.',
-                    401
+                    'Vincula primero tu cuenta de Google desde el panel web.',
+                    409
                 );
             }
 
-            const secret =
-                process.env.MOBILE_API_SECRET;
+            const ok = autorizado && (identidad
+                ? user.google_sub === identidad.sub
+                : typeof user.password_hash === 'string' &&
+                  user.password_hash.startsWith('$2') &&
+                  await bcrypt.compare(password, user.password_hash));
+
+            if (!ok) {
+                if (identidad) {
+                    return errorResponse(
+                        res,
+                        'Esta cuenta no está autorizada para la app móvil.',
+                        403
+                    );
+                }
+
+                return errorResponse(res, 'Credenciales de empleado incorrectas.', 401);
+            }
+
+            const secret = process.env.MOBILE_API_SECRET;
 
             if (!secret) {
-                return errorResponse(
-                    res,
-                    'Configura MOBILE_API_SECRET en .env',
-                    503
-                );
+                return errorResponse(res, 'Configura MOBILE_API_SECRET en .env', 503);
             }
 
             const token = sign({
