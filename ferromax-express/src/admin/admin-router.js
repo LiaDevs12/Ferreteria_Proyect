@@ -3699,6 +3699,15 @@ router.post(
                 rol: user.rol,
                 exp: Date.now() + 8 * 60 * 60 * 1000
             }, secret);
+                        if (identidad) {
+                req.iniciarSesionAdmin({
+                    id: user.id,
+                    name: user.nombre,
+                    email: user.correo,
+                    rol: user.rol,
+                    googleSub: identidad.sub
+                });
+            }
 
             res.json({
                 token,
